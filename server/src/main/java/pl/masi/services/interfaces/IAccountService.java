@@ -1,4 +1,4 @@
 package pl.masi.services.interfaces;
 
-public interface AccountService {
+public interface IAccountService {
 }
