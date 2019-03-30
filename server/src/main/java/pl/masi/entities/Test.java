@@ -16,7 +16,6 @@ import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
 import java.util.List;
-import pl.masi.entities.Permission;
 
 @Entity
 @Getter @Setter
@@ -36,5 +35,5 @@ public class Test {
 
     @ManyToOne
     @JoinColumn
-    private Permission permission;
+    private Position position;
 }

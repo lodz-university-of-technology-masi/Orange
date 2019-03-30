@@ -1,37 +1,48 @@
 package pl.masi.controllers;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import pl.masi.services.implementations.TestService;
+import pl.masi.exceptions.AppException;
+import pl.masi.services.interfaces.ITestService;
 import pl.masi.entities.Test;
+
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
 
 @RestController(value = "/tests")
 public class TestController {
 
     @Autowired
-    private TestService testService;
+    private ITestService testService;
 
     @GetMapping
-    public List<Test> getAllTests(){
+    public List<Test> getAllTests() {
         return testService.getAllTests();
     }
 
     @GetMapping
-    @RequestMapping(value="{id}")
-    public Test getTestById(@PathVariable Long id) {
-        Optional<Test> test = testService.get(id);
-        if(!test.isPresent()) {
-            throw new IllegalArgumentException("The test with given id " + id + " wasn't found");
-        }
-        return test.get();
+    @RequestMapping(value = "{id}")
+    public Test getTestById(@PathVariable Long id) throws AppException {
+        return testService.getById(id);
     }
 
-    @DeleteMapping
-    @RequestMapping(value="{id}")
-    public void deleteTestById(@PathVariable Long id) {
+    @DeleteMapping(value = "{id}")
+    public void deleteTestById(@PathVariable Long id) throws AppException {
         testService.deleteById(id);
+    }
+
+    @PutMapping(value = "/{id}")
+    public boolean updateTest(
+            @PathVariable Long id,
+            @RequestParam("test") Test test) throws AppException {
+        return testService.updateTest(id, test);
+    }
+
+    @ExceptionHandler({AppException.class})
+    public void handleException(AppException appException, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value(), appException.toString());
     }
 }
