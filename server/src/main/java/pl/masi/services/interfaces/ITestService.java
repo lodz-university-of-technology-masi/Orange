@@ -1,23 +1,18 @@
 package pl.masi.services.interfaces;
-import pl.masi.entities.Permission;
 import pl.masi.entities.Test;
+import pl.masi.exceptions.AppException;
 
-import java.util.Optional;
 import java.util.List;
 
 public interface ITestService {
 
     boolean add(Test test);
 
-    Optional<Test> get(Long id);
-
-    boolean update(Test test);
-
-    void delete(Long id);
+    Test getById(Long id) throws AppException;
 
     List<Test> getAllTests();
 
-    void deleteById(Long id);
+    void deleteById(Long id) throws AppException;
 
-    void setTestPermission(Long id, Permission permission);
+    boolean updateTest(Long id, Test test) throws AppException;
 }
