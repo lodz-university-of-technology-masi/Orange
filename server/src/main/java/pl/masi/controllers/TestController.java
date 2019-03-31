@@ -20,6 +20,7 @@ public class TestController {
     private ITestService testService;
 
     @GetMapping
+    @RequestMapping(value="/all")
     public List<Test> getAllTests() {
         return testService.getAllTests();
     }
