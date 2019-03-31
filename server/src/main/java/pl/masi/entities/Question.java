@@ -1,5 +1,6 @@
 package pl.masi.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -27,6 +28,7 @@ public class Question {
     @NotNull
     private String content;
 
+    @JsonIgnore
     @ManyToMany(mappedBy = "questions")
     private List<Test> tests;
 }
