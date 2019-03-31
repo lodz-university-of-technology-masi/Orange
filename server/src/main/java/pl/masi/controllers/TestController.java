@@ -12,7 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
 
-@RestController(value = "/tests")
+@RestController
+@RequestMapping(value="/tests")
 public class TestController {
 
     @Autowired
