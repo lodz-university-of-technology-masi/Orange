@@ -1,6 +1,6 @@
 package pl.masi.services.implementations;
 
-import lombok.RequiredArgsConstructor;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
@@ -9,11 +9,18 @@ import pl.masi.exceptions.AppException;
 import pl.masi.repositories.PositionRepository;
 import pl.masi.services.interfaces.IPositionService;
 
+import java.util.List;
+
 @Service
-@RequiredArgsConstructor(onConstructor = @__(@Autowired))
+@AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PositionService implements IPositionService {
 
     private final PositionRepository positionRepository;
+
+    @Override
+    public List<Position> getAll() {
+        return positionRepository.findAll();
+    }
 
     @Override
     public Position createPosition(Position position) throws AppException {
