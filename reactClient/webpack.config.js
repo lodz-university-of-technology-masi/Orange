@@ -10,7 +10,8 @@ module.exports = {
         rules: [
             {
                 test: /\.jsx?$/,
-                loader: 'babel-loader'
+                loader: 'babel-loader',
+                exclude: /(node_modules|bower_compontents)/,
             }
         ]
     },
@@ -23,13 +24,16 @@ module.exports = {
     plugins: [new HtmlWebpackPlugin({
         template: './src/index.html'
     })],
+    
     devServer: {
-        historyApiFallback: true
+        historyApiFallback: true,
     },
+    
     externals: {
         // global app config object
         config: JSON.stringify({
             apiUrl: 'http://localhost:4000'
         })
-    }
+    },
+    
 }

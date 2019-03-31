@@ -5,6 +5,14 @@ export function configureFakeBackend() {
         { id: 1, username: 'admin', password: 'admin', firstName: 'Admin', lastName: 'User', role: Role.Admin },
         { id: 2, username: 'user', password: 'user', firstName: 'Normal', lastName: 'User', role: Role.User }
     ];
+    let positions = [
+        {name: "Junior React Developer", isActive: true},
+        {name: "Mid React Developer", isActive: false},
+        {name: "Senior React Developer", isActive: false},
+        {name: "Junior Jave Developer", isActive: false},
+        {name: "Mid Java Developer", isActive: true},
+        {name: "Senior Java Developer", isActive: false},
+    ]; 
     let realFetch = window.fetch;
     window.fetch = function (url, opts) {
         const authHeader = opts.headers['Authorization'];
@@ -12,7 +20,7 @@ export function configureFakeBackend() {
         const roleString = isLoggedIn && authHeader.split('.')[1];
         const role = roleString ? Role[roleString] : null;
 
-        return new Promise((resolve, reject) => {
+        return new Promise((resolve) => {
             // wrap in timeout to simulate server api call
             setTimeout(() => {
                 // authenticate - public
@@ -50,6 +58,11 @@ export function configureFakeBackend() {
                 if (url.endsWith('/users') && opts.method === 'GET') {
                     if (role !== Role.Admin) return unauthorised();
                     return ok(users);
+                }
+
+                if (url.endsWith('/position') && opts.method === 'GET') {
+                    if (role !== Role.Admin) return unauthorised();
+                    return ok(positions);
                 }
 
                 // pass through any requests not handled above
