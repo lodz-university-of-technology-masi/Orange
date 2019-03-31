@@ -31,5 +31,5 @@ public class Question {
 
     @ManyToMany
     @JoinColumn
-    private List<Test> test;
+    private List<Test> tests;
 }

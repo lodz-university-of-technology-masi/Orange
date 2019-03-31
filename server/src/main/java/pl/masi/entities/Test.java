@@ -31,7 +31,7 @@ public class Test {
 
     @ManyToMany
     @JoinColumn
-    private List<Question> question;
+    private List<Question> questions;
 
     @ManyToOne
     @JoinColumn
