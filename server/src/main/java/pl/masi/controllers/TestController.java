@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value="/tests")
+@RequestMapping(value="/test")
 public class TestController {
 
     @Autowired
@@ -26,12 +26,12 @@ public class TestController {
     }
 
     @GetMapping
-    @RequestMapping(value = "{id}")
+    @RequestMapping(value = "/{id}")
     public Test getTestById(@PathVariable Long id) throws AppException {
         return testService.getById(id);
     }
 
-    @DeleteMapping(value = "{id}")
+    @DeleteMapping(value = "/{id}")
     public void deleteTestById(@PathVariable Long id) throws AppException {
         testService.deleteById(id);
     }

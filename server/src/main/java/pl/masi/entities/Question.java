@@ -7,12 +7,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToMany;
+import javax.persistence.*;
+import javax.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
@@ -25,11 +21,12 @@ public class Question {
 
     @Id
     @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @Column(nullable = false, unique = true)
     private Long id;
 
-    private String payload;
+    @NotNull
+    private String content;
 
-    @ManyToMany
-    @JoinColumn
+    @ManyToMany(mappedBy = "questions")
     private List<Test> tests;
 }
