@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { userService, authenticationService, editorService } from '@/_services';
+import { Table, TableRow, TableHead, TableBody, TableCell } from "@material-ui/core";
 
 class EditorsManagerPage extends React.Component {
     constructor(props) {
@@ -24,11 +25,24 @@ class EditorsManagerPage extends React.Component {
 
             if (editorsFromApi !== null) {
                 return (
-                    <ul>
-                        {editorsFromApi.map(function(object, i){
-                            return <li key={ "editorRow" + i }>{object.username}</li>
-                        })}
-                    </ul>
+                   <Table>
+                       <TableHead>
+                           <TableRow>
+                               <TableCell>Username</TableCell>
+                               <TableCell align="right">First Name</TableCell>
+                               <TableCell align="right">Last Name</TableCell>
+                           </TableRow>
+                       </TableHead>
+                       <TableBody>
+                           {editorsFromApi.map((row, index) => (
+                               <TableRow key={ "editorTableCell" + index }>
+                                   <TableCell>{row.username}</TableCell>
+                                   <TableCell align="right">{row.firstName}</TableCell>
+                                   <TableCell align="right">{row.lastName}</TableCell>
+                               </TableRow>
+                           ))}
+                       </TableBody>
+                   </Table>
                 )
             } else {
                return null
