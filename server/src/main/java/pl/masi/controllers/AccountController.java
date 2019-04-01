@@ -34,7 +34,7 @@ public class AccountController {
         return accountService.getAccount(username);
     }
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = "")
     public List<AccountBean> getAccounts(){
         return accountService.getAll();
     }
