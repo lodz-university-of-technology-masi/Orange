@@ -3,7 +3,7 @@ import React from 'react';
 import { userService, authenticationService, editorService } from '@/_services';
 import { Table, TableRow, TableHead, TableBody, TableCell } from "@material-ui/core";
 
-class EditorsManagerPage extends React.Component {
+class EditorManagerPage extends React.Component {
     constructor(props) {
         super(props);
 
@@ -50,4 +50,4 @@ class EditorsManagerPage extends React.Component {
     }
 }
 
-export { EditorsManagerPage };
+export { EditorManagerPage };
