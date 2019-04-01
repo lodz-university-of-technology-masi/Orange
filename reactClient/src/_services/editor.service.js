@@ -7,6 +7,6 @@ export const editorService = {
 
 function getAll() {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/account`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/editor`, requestOptions).then(handleResponse);
 }
 

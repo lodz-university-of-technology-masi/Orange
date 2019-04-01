@@ -10,4 +10,5 @@ import java.util.List;
 public interface AccountRepository extends CrudRepository<Account, Long> {
     Account findByUsername(String username);
     List<Account> findAll();
+    List<Account> findByPermissionId(Long id);
 }
