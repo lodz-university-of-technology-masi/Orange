@@ -23,26 +23,18 @@ public class AccountService implements IAccountService {
     private final PermissionRepository permissionRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    @Override
-    public List<AccountBean> getAll() {
-        return accountRepository.findAll().stream()
-                .map(account -> AccountBean.builder()
-                        .firstName(account.getFirstName())
-                        .lastName(account.getLastName())
-                        .username(account.getUsername())
-                        .permissionName(account.getPermission().getPermissionName())
-                        .build())
-                .collect(Collectors.toList());
-    }
 
     @Override
-    public List<AccountBean> getAllWithPermission(String permissionName) {
-        Permission permission = permissionRepository.findByPermissionName(accountBean.getPermissionName());
-        if( permission == null) {
-            throw new AppException("PERMISSION_NOT_FOUND", "Permission with given name doesn't exists");
+    public List<AccountBean> getAll(String permissionName) throws AppException {
+        List<Account> accounts = null;
+        if(permissionName == null) {
+            accounts = accountRepository.findAll();
+        } else {
+            Permission permission = getPermissionByName(permissionName);
+            accounts = accountRepository.findByPermission(permission);
         }
 
-        return accountRepository.findByPermission().stream()
+        return accounts.stream()
                 .map(account -> AccountBean.builder()
                         .firstName(account.getFirstName())
                         .lastName(account.getLastName())
@@ -68,10 +60,7 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account createAccount(AccountBean accountBean) throws AppException {
-        Permission permission = permissionRepository.findByPermissionName(accountBean.getPermissionName());
-        if( permission == null) {
-            throw new AppException("PERMISSION_NOT_FOUND", "Permission with given name doesn't exists");
-        }
+        Permission permission = getPermissionByName(accountBean.getPermissionName());
 
         Account accountToSave = Account.builder()
                 .firstName(accountBean.getFirstName())
@@ -109,5 +98,11 @@ public class AccountService implements IAccountService {
         accountRepository.delete(account);
     }
 
-    private
+    private Permission getPermissionByName(String permissionName) throws AppException {
+        Permission result = permissionRepository.findByPermissionName(permissionName);
+        if(result == null) {
+            throw new AppException("PERMISSION_NOT_FOUND", "Permission with given name doesn't exists");
+        }
+        return result;
+    }
 }

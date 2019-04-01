@@ -36,13 +36,8 @@ public class AccountController {
     }
 
     @GetMapping(value = "")
-    public List<AccountBean> getAccounts(){
-        return accountService.getAll();
-    }
-
-    @GetMapping(value = "")
-    public List<AccountBean> getAccountsWithPermissionName(@Param("permissionName") String permission){
-        return accountService.getAllWithPermission(permission);
+    public List<AccountBean> getAccounts(@Param("permissionName") String permissionName) throws AppException {
+        return accountService.getAll(permissionName);
     }
 
     @PostMapping(value = "/create")
