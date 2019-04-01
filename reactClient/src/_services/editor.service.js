@@ -5,7 +5,8 @@ export const editorService = {
     getAll,
     getByUsername,
     create,
-    update
+    update,
+    remove
 };
 
 function getAll() {
@@ -50,4 +51,10 @@ function update(username, firstName, lastName) {
         .then(user => {
             return user;
         });
+}
+
+function remove(username) {
+    const requestOptions = { method: 'DELETE', headers: authHeader() };
+    return fetch(`${config.apiUrl}/account/delete/${username}`, requestOptions)
+        .then(handleResponse)
 }

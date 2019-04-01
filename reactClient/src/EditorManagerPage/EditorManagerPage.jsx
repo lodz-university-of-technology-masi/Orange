@@ -18,6 +18,10 @@ class EditorManagerPage extends React.Component {
     componentDidMount() {
         const { currentUser } = this.state;
         userService.getById(currentUser.id).then(userFromApi => this.setState({ userFromApi }));
+        this.refresh()
+    }
+
+    refresh() {
         editorService.getAll().then( editorsFromApi => this.setState({ editorsFromApi }));
     }
 
@@ -32,7 +36,8 @@ class EditorManagerPage extends React.Component {
                                <TableCell>Username</TableCell>
                                <TableCell align="right">First Name</TableCell>
                                <TableCell align="right">Last Name</TableCell>
-                               <TableCell align="right"></TableCell>
+                               <TableCell/>
+                               <TableCell/>
                            </TableRow>
                        </TableHead>
                        <TableBody>
@@ -43,6 +48,11 @@ class EditorManagerPage extends React.Component {
                                    <TableCell align="right">{row.lastName}</TableCell>
                                    <TableCell align="right">
                                        <Link to={`/editorForm/${row.username}`} className="nav-item nav-link">Edit</Link>
+                                   </TableCell>
+                                   <TableCell align="right">
+                                       <button onClick={() => editorService.remove(row.username).then(() => { this.refresh() })} >
+                                           Delete
+                                       </button>
                                    </TableCell>
                                </TableRow>
                            ))}
