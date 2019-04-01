@@ -2,6 +2,7 @@ import React from 'react';
 
 import { userService, authenticationService, editorService } from '@/_services';
 import { Table, TableRow, TableHead, TableBody, TableCell } from "@material-ui/core";
+import {Link} from "react-router-dom";
 
 class EditorManagerPage extends React.Component {
     constructor(props) {
@@ -31,6 +32,7 @@ class EditorManagerPage extends React.Component {
                                <TableCell>Username</TableCell>
                                <TableCell align="right">First Name</TableCell>
                                <TableCell align="right">Last Name</TableCell>
+                               <TableCell align="right"></TableCell>
                            </TableRow>
                        </TableHead>
                        <TableBody>
@@ -39,6 +41,9 @@ class EditorManagerPage extends React.Component {
                                    <TableCell>{row.username}</TableCell>
                                    <TableCell align="right">{row.firstName}</TableCell>
                                    <TableCell align="right">{row.lastName}</TableCell>
+                                   <TableCell align="right">
+                                       <Link to={`/editorForm/${row.username}`} className="nav-item nav-link">Edit</Link>
+                                   </TableCell>
                                </TableRow>
                            ))}
                        </TableBody>

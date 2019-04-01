@@ -11,7 +11,7 @@ import { PositionEditorPage } from '@/PositionEditorPage';
 import { TestManagerPage } from '@/TestManagerPage';
 import { TestEditorPage } from '@/TestEditorPage';
 import {EditorManagerPage} from "@/EditorManagerPage";
-import {EditorCreatePage} from "@/EditorsCreatePage";
+import {EditorFormPage} from "@/EditorsFormPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -49,7 +49,7 @@ class App extends React.Component {
                                 {isAdmin && <Link to="/testManager" className="nav-item nav-link">Test Manager</Link>}
                                 {isAdmin && <Link to="/testEditor" className="nav-item nav-link">Test Editor</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
-                                {isAdmin && <Link to="/editorCreate" className="nav-item nav-link">Create Editor</Link>}
+                                {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
                             </div>
                         </nav>
@@ -64,7 +64,8 @@ class App extends React.Component {
                                     <PrivateRoute path="/testManager" roles={[Role.Admin]} component={TestManagerPage}/>
                                     <PrivateRoute path="/testEditor" roles={[Role.Admin]} component={TestEditorPage}/>
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>
-                                    <PrivateRoute path="/editorCreate" roles={[Role.Admin]} component={EditorCreatePage}/>
+                                    <PrivateRoute exact path="/editorForm" roles={[Role.Admin]} component={EditorFormPage}/>
+                                    <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <Route path="/login" component={LoginPage} />
                                 </div>
                             </div>
