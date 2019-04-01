@@ -32,6 +32,7 @@ class EditorCreatePage extends React.Component {
                         validationSchema={Yup.object().shape({
                             username: Yup.string().required('Username is required'),
                             password: Yup.string().required('Password is required'),
+                            passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
                             firstName: Yup.string().required('First Name is required'),
                             lastName: Yup.string().required('Last Name is required')
                         })}
@@ -60,6 +61,11 @@ class EditorCreatePage extends React.Component {
                                     <label htmlFor="password">Password</label>
                                     <Field name="password" type="password" className={'form-control' + (errors.password && touched.password ? ' is-invalid' : '')} />
                                     <ErrorMessage name="password" component="div" className="invalid-feedback" />
+                                </div>
+                                <div className="form-group">
+                                    <label htmlFor="passwordConfirmation">Repeat Password</label>
+                                    <Field name="passwordConfirmation" type="password" className={'form-control' + (errors.passwordConfirmation && touched.passwordConfirmation ? ' is-invalid' : '')} />
+                                    <ErrorMessage name="passwordConfirmation" component="div" className="invalid-feedback" />
                                 </div>
                                 <div className="form-group">
                                     <label htmlFor="firstName">First Name</label>
