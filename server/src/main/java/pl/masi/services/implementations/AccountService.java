@@ -26,7 +26,7 @@ public class AccountService implements IAccountService {
 
     @Override
     public List<AccountBean> getAll(String permissionName) throws AppException {
-        List<Account> accounts = null;
+        List<Account> accounts;
         if(permissionName == null) {
             accounts = accountRepository.findAll();
         } else {
