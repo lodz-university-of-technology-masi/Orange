@@ -2,6 +2,7 @@ package pl.masi.controllers;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -34,9 +35,9 @@ public class AccountController {
         return accountService.getAccount(username);
     }
 
-    @GetMapping(value = "/list")
-    public List<AccountBean> getAccounts(){
-        return accountService.getAll();
+    @GetMapping(value = "")
+    public List<AccountBean> getAccounts(@Param("permissionName") String permissionName) throws AppException {
+        return accountService.getAll(permissionName);
     }
 
     @PostMapping(value = "/create")

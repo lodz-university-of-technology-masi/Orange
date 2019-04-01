@@ -7,7 +7,7 @@ import pl.masi.exceptions.AppException;
 import java.util.List;
 
 public interface IAccountService {
-    List<AccountBean> getAll();
+    List<AccountBean> getAll(String permissionName) throws AppException;
     AccountBean getAccount(String username) throws AppException;
     Account createAccount(AccountBean accountBean) throws AppException;
     Account updateAccount(AccountBean accountBean) throws AppException;
