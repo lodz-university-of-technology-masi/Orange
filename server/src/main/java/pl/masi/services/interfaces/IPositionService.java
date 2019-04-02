@@ -9,5 +9,5 @@ public interface IPositionService {
     List<Position> getAll();
     Position createPosition(Position position) throws AppException;
     boolean togglePosition(String name, boolean isActive) throws AppException;
-
+    void deletePosition(String name) throws AppException;
 }

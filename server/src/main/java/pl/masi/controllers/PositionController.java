@@ -3,15 +3,7 @@ package pl.masi.controllers;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import pl.masi.entities.Position;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.IPositionService;
@@ -29,7 +21,7 @@ public class PositionController {
     private final IPositionService positionService;
 
     @GetMapping(value = "/list")
-    public List<Position> getPositions(){
+    public List<Position> getPositions() {
         return positionService.getAll();
     }
 
@@ -41,6 +33,11 @@ public class PositionController {
     @PutMapping(value = "/{name}")
     public boolean togglePosition(@PathVariable String name, @RequestParam("active") boolean isActive) throws AppException {
         return positionService.togglePosition(name, isActive);
+    }
+
+    @DeleteMapping(value = "/{name}")
+    public void deletePosition(@PathVariable String name) throws AppException {
+        positionService.deletePosition(name);
     }
 
     @ExceptionHandler({AppException.class})
