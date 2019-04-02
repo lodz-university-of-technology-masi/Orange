@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import pl.masi.enums.QuestionType;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
@@ -21,7 +22,7 @@ import java.util.List;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE)
     @Column(nullable = false, unique = true)
     private Long id;
 
@@ -31,4 +32,8 @@ public class Question {
     @JsonIgnore
     @ManyToMany(mappedBy = "questions")
     private List<Test> tests;
+
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private QuestionType questionType;
 }
