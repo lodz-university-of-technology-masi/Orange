@@ -3,10 +3,7 @@ package pl.masi.entities;
 import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 
 @Entity
@@ -19,11 +16,13 @@ import javax.validation.constraints.NotNull;
 public class Position {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "optimized-sequence")
+    @Column(nullable = false, unique = true)
     private Long id;
 
     @NotNull
     @Length(min = 4, message = "Position name must contain at least 4 characters")
+    @Column(nullable = false, unique = true)
     private String name;
 
     private boolean active;

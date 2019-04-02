@@ -22,7 +22,7 @@ import java.util.List;
 public class Question {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "optimized-sequence")
     @Column(nullable = false, unique = true)
     private Long id;
 

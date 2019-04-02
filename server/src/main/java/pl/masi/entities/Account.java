@@ -27,7 +27,7 @@ import javax.validation.constraints.NotNull;
 public class Account {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.SEQUENCE)
+    @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "optimized-sequence")
     private Long id;
 
     @Column(unique = true)
