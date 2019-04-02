@@ -12,7 +12,8 @@ import javax.persistence.*;
 import java.util.List;
 
 @Entity
-@Getter @Setter
+@Getter
+@Setter
 @ToString
 @NoArgsConstructor
 @AllArgsConstructor
@@ -20,9 +21,12 @@ import java.util.List;
 public class Test {
 
     @Id
-    @GeneratedValue(strategy= GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false, unique = true)
     private Long id;
+
+    @Column(nullable = false, unique = true)
+    private String name;
 
     @ManyToMany
     @JoinTable(

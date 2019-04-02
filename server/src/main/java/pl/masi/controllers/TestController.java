@@ -13,14 +13,14 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequestMapping(value="/test")
+@RequestMapping(value = "/test")
 public class TestController {
 
     @Autowired
     private ITestService testService;
 
     @GetMapping
-    @RequestMapping(value="/all")
+    @RequestMapping(value = "/list")
     public List<Test> getAllTests() {
         return testService.getAllTests();
     }

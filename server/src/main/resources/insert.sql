@@ -24,8 +24,8 @@ INSERT INTO Question(id, content) VALUES (5, 'What is the purpose of creating th
 
 --ALTER SEQUENCE Question_seq RESTART WITH 6;
 
-INSERT INTO Test(id, position_id) VALUES (1, 1);
-INSERT INTO Test(id, position_id) VALUES (2, 3);
+INSERT INTO Test(id, name, position_id) VALUES (1, 'Junior Engineer test', 1);
+INSERT INTO Test(id, name, position_id) VALUES (2, 'Network Engineer test', 3);
 
 --ALTER SEQUENCE Test_seq RESTART WITH 3;
 
