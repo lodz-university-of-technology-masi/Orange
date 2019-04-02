@@ -10,33 +10,21 @@ import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Select from '@material-ui/core/Select';
 import { Redirect } from 'react-router-dom';
+import { positionService, testService } from '@/_services';
 
 class TestManagerPage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            tests: [
-                {id: 1, name: "Easy Test", position:"Junior React Developer" , questions:[{id:1, value: "Are you cool?", answear: "no"}, {id:2, question: "Are you cool?", answear: "no"},{id:3, question: "Are you cool?", answear: "no"}]},
-                {id: 2, name: "Easy Test", position:"Junior React Developer" , questions:[{id:1, value: "Are you cool?", answear: "no"}, {id:2, question: "Are you cool?", answear: "no"},{id:3, question: "Are you cool?", answear: "no"}]},
-                {id: 3, name: "Easy Test", position:"Junior React Developer" , questions:[{id:1, value: "Are you cool?", answear: "no"}, {id:2, question: "Are you cool?", answear: "no"},{id:3, question: "Are you cool?", answear: "no"}]},
-                {id: 4, name: "Easy Test", position:"Junior React Developer" , questions:[{id:1, value: "Are you cool?", answear: "no"}, {id:2, question: "Are you cool?", answear: "no"},{id:3, question: "Are you cool?", answear: "no"}]},
-                {id: 5, name: "Easy Test", position:"Junior React Developer" , questions:[{id:1, value: "Are you cool?", answear: "no"}, {id:2, question: "Are you cool?", answear: "no"},{id:3, question: "Are you cool?", answear: "no"}]},
-            ],
-            positions: [
-                {id:1, name: "Junior React Developer", isActive: true},
-                {id:2, name: "Mid React Developer", isActive: false},
-                {id:3, name: "Senior React Developer", isActive: false},
-                {id:4, name: "Junior Jave Developer", isActive: false},
-                {id:5, name: "Mid Java Developer", isActive: true},
-                {id:6, name: "Senior Java Developer", isActive: false},
-            ]
+            tests: [],
+            positions: []
         };
     }
 
     componentDidMount() {
-        //testService.getAll().then(tests => this.setState({ tests }));
-        //positionService.getAll().then(positions => this.setState({ positions }));
+        testService.getAll().then(tests => this.setState({ tests }));
+        positionService.getAll().then(positions => this.setState({ positions }));
     }
 
     handleChange(positionName){

@@ -9,7 +9,7 @@ export const testService = {
 
 function getAll() {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/test/all`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/test/list`, requestOptions).then(handleResponse);
 }
 
 function getById(id) {

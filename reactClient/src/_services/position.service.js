@@ -4,13 +4,14 @@ import { authHeader, handleResponse } from '@/_helpers';
 export const positionService = {
     getAll,
     getById,
-    addPosition,
-    togglePosition
+    add,
+    toggle,
+    remove
 };
 
 function getAll() {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/position`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/position/list`, requestOptions).then(handleResponse);
 }
 
 function getById(id) {
@@ -18,23 +19,23 @@ function getById(id) {
     return fetch(`${config.apiUrl}/position/${id}`, requestOptions).then(handleResponse);
 }
 
-function addPosition(name, isActive){
+function add(positionObj){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({name, isActive})
+        body: JSON.stringify(positionObj)
     };
-    return fetch(`${config.apiUrl}/position`, requestOptions)
+    return fetch(`${config.apiUrl}/position/create`, requestOptions)
     .then(handleResponse);
-
 }
 
-function togglePosition(name){
-    const requestOptions = {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({name})
-    };
-    return fetch(`${config.apiUrl}/position`, requestOptions)
+function toggle(name, isActive){
+    const requestOptions = { method: 'PUT', headers: authHeader() };
+    return fetch(`${config.apiUrl}/position/${name}?active=${!isActive}`, requestOptions)
     .then(handleResponse);
+}
+
+function remove(name){
+    const requestOptions = { method: 'DELETE', headers: authHeader() };
+    return fetch(`${config.apiUrl}/position/${name}`, requestOptions).then(handleResponse);
 }

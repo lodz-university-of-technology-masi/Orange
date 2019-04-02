@@ -6,7 +6,12 @@ import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
 import Switch from '@material-ui/core/Switch';
-
+import IconButton from '@material-ui/core/IconButton';
+import AddIcon from '@material-ui/icons/Add';
+import TextField from '@material-ui/core/TextField';
+import DeleteIcon from '@material-ui/icons/Delete';
+import Divider from '@material-ui/core/Divider';
+import Typography from '@material-ui/core/Typography';
 import { positionService } from '@/_services';
 
 
@@ -15,43 +20,89 @@ class PositionEditorPage extends React.Component {
         super(props);
 
         this.state = {
-            positions: [
-                {name: "Junior React Developer", isActive: true},
-                {name: "Mid React Developer", isActive: false},
-                {name: "Senior React Developer", isActive: false},
-                {name: "Junior Jave Developer", isActive: false},
-                {name: "Mid Java Developer", isActive: true},
-                {name: "Senior Java Developer", isActive: false},
-            ]
+            positions: [],
+            positionNameText:"",
+            positionNameTextError:false,
         };
     }
 
     componentDidMount() {
-        //positionService.getAll().then(positions => this.setState({ positions }));
+        positionService.getAll().then(positions => this.setState({ positions }));
+    }
+
+    handleTextChange = (event) => {
+        this.setState({
+         positionNameText: event.target.value,
+        });
+      };
+
+    handleToggle = (positionName, isActive) => {
+        var newPositions = this.state.positions;
+        newPositions.find(x=>x.name == positionName).active = !isActive
+        this.setState({positions: newPositions})
+        positionService.toggle(positionName, isActive)
     }
 
     
+    handleRemove = (positionName) => {
+        var newPositions = this.state.positions;
+        var index = newPositions.findIndex(x=>x.name == positionName)
+        delete newPositions[index]
+        this.setState({positions: newPositions})
+        positionService.remove(positionName)
+    }
 
-    handleToggle(positionName) {
-       // positionService.togglePosition(positionName).then(positionService.getAll().then(positions => this.setState({ positions })))
+    handleAdd = () => {
+        if(this.state.positionNameText.length < 5){
+            this.setState({positionNameTextError: false})
+            return
+        } 
+        this.setState({positionNameTextError: true})
+        var position = {name: this.state.positionNameText, active:true}
+        positionService.add(position)
+        var newPositions = this.state.positions
+        newPositions.push(position)
+        this.setState({positions: newPositions})
     }
 
     render() {
-        const { positions } = this.state;
         return (
             <div>
-                    <List subheader={<ListSubheader>Positions</ListSubheader>}>
-                             {positions.map(position =>
+                    <List subheader={<ListSubheader><h3>Positions</h3></ListSubheader>}>
+                             {this.state.positions.map(position =>
                                 <ListItem key={position.name}>
                                     <ListItemText primary={position.name} /> 
                                     <ListItemSecondaryAction>
                                         <Switch
-                                        onChange={this.handleToggle(position.name)}
-                                        checked={position.isActive}
+                                        onChange={() => this.handleToggle(position.name, position.active)}
+                                        checked={position.active}
                                         />
+                                    <IconButton onClick={() =>this.handleRemove(position.name)} aria-label="Delete">
+                                        <DeleteIcon />
+                                    </IconButton>
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             )}
+                            <Divider component="li" />
+                            <li>
+                            <Typography color="textSecondary" variant="caption">
+                            Type name with at least 5 characters.
+                            </Typography>
+                             </li>
+                            <ListItem>
+                                <TextField
+                                    id="standard-dense"
+                                    label="Position Name"
+                                    value={this.state.positionNameText}
+                                    onChange={this.handleTextChange}
+                                    error={this.state.positionNameTextError}
+                                />
+                                <ListItemSecondaryAction>
+                                    <IconButton onClick={() =>this.handleAdd()}>
+                                        <AddIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
                     </List>
             </div>
         );
