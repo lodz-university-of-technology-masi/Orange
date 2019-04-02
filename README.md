@@ -1,3 +1,4 @@
+[![BCH compliance](https://bettercodehub.com/edge/badge/lodz-university-of-technology-masi/Orange?branch=master)](https://bettercodehub.com/)
 <pre>
 Projekt aplikacji webowej do przeprowadzania testów rekrutacyjnych.
 
