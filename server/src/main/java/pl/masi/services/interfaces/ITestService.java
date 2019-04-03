@@ -15,4 +15,6 @@ public interface ITestService {
     void deleteByName(String name) throws AppException;
 
     boolean updateTest(String name, Test test) throws AppException;
+
+    boolean attachPosition(String testName, String positionName) throws AppException;
 }

@@ -8,4 +8,5 @@ import pl.masi.entities.Test;
 public interface TestRepository extends CrudRepository <Test, Long> {
     Test findByName(String name);
     void deleteByName(String name);
+    Test findByPositionName(String name);
 }

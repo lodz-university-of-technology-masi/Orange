@@ -4,20 +4,24 @@ import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DuplicateKeyException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import pl.masi.entities.Position;
+import pl.masi.entities.Test;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.PositionRepository;
+import pl.masi.repositories.TestRepository;
 import pl.masi.services.interfaces.IPositionService;
 
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
 
 @Service
+@Transactional
 @AllArgsConstructor(onConstructor = @__(@Autowired))
 public class PositionService implements IPositionService {
 
     private final PositionRepository positionRepository;
+    private final TestRepository testRepository;
 
     @Override
     public List<Position> getAll() {
@@ -51,6 +55,11 @@ public class PositionService implements IPositionService {
         if (position == null) {
             throw new AppException("POSITION_NOT_FOUND", "Position with given name does not exists");
         }
-        positionRepository.deleteById(position.getId());
+        Test testToUpdate = testRepository.findByPositionName(name);
+        if (testToUpdate != null) {
+            testToUpdate.setPosition(null);
+            testRepository.save(testToUpdate);
+        }
+        positionRepository.deleteByName(position.getName());
     }
 }

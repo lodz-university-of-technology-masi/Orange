@@ -11,4 +11,5 @@ public interface PositionRepository extends CrudRepository<Position, Long> {
 
     List<Position> findAll();
     Position findByName(String name);
+    void deleteByName(String name);
 }

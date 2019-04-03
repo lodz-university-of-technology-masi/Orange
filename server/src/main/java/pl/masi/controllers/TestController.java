@@ -43,6 +43,13 @@ public class TestController {
         return testService.updateTest(name, test);
     }
 
+    @PutMapping(value = "/{testName}")
+    public void attachPosition(
+            @PathVariable String testName,
+            @RequestParam("position") String positionName) throws AppException {
+        testService.attachPosition(testName, positionName);
+    }
+
     @ExceptionHandler({AppException.class})
     public void handleException(AppException appException, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), appException.toString());
