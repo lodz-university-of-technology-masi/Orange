@@ -6,5 +6,6 @@ import pl.masi.entities.Test;
 
 @Repository
 public interface TestRepository extends CrudRepository <Test, Long> {
-
+    Test findByName(String name);
+    void deleteByName(String name);
 }

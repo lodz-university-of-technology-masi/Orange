@@ -8,7 +8,6 @@ import pl.masi.repositories.TestRepository;
 import pl.masi.entities.Test;
 
 import java.util.List;
-import java.util.NoSuchElementException;
 
 @Service
 public class TestService implements ITestService {
@@ -22,12 +21,10 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public Test getById(Long id) throws AppException {
-        Test test;
-        try {
-            test = testRepository.findById(id).get();
-        } catch (NoSuchElementException ex) {
-            throw new AppException("TEST_NOT_FOUND", "Test with given id does not exists");
+    public Test getByName(String name) throws AppException {
+        Test test = testRepository.findByName(name);
+        if (test == null) {
+            throw new AppException("TEST_NOT_FOUND", "Test with given name doesn't exists");
         }
         return test;
     }
@@ -38,17 +35,17 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public void deleteById(Long id) throws AppException {
-        try {
-            testRepository.deleteById(id);
-        } catch (IllegalArgumentException ex) {
-            throw new AppException("TEST_NOT_FOUND", "Test with given id does not exist.");
+    public void deleteByName(String name) throws AppException {
+        Test testToDelete = getByName(name);
+        if (testToDelete == null) {
+            throw new AppException("TEST_NOT_FOUND", "Test with given name doesn't exists");
         }
+        testRepository.deleteByName(testToDelete.getName());
     }
 
     @Override
-    public boolean updateTest(Long id, Test test) throws AppException {
-        test.setId(getById(id).getId());
+    public boolean updateTest(String name, Test test) throws AppException {
+        test.setName(getByName(name).getName());
         return testRepository.save(test) != null;
     }
 }
