@@ -5,6 +5,7 @@ export const testService = {
     getAll,
     getById,
     remove,
+    add,
 };
 
 function getAll() {
@@ -22,3 +23,12 @@ function remove(id){
     return fetch(`${config.apiUrl}/test/${id}`, requestOptions).then(handleResponse);
 }
 
+function add(testObj){
+    const requestOptions = {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(testObj)
+    };
+    return fetch(`${config.apiUrl}/test/create`, requestOptions)
+    .then(handleResponse);
+}
