@@ -26,21 +26,28 @@ public class TestController {
     }
 
     @GetMapping
-    @RequestMapping(value = "/{id}")
-    public Test getTestById(@PathVariable Long id) throws AppException {
-        return testService.getById(id);
+    @RequestMapping(value = "/{name}")
+    public Test getTestByName(@PathVariable String name) throws AppException {
+        return testService.getByName(name);
     }
 
-    @DeleteMapping(value = "/{id}")
-    public void deleteTestById(@PathVariable Long id) throws AppException {
-        testService.deleteById(id);
+    @DeleteMapping(value = "/{name}")
+    public void deleteTestByName(@PathVariable String name) throws AppException {
+        testService.deleteByName(name);
     }
 
-    @PutMapping(value = "/{id}")
+    @PutMapping(value = "/{name}")
     public boolean updateTest(
-            @PathVariable Long id,
+            @PathVariable String name,
             @RequestParam("test") Test test) throws AppException {
-        return testService.updateTest(id, test);
+        return testService.updateTest(name, test);
+    }
+
+    @PutMapping(value = "/{testName}")
+    public void attachPosition(
+            @PathVariable String testName,
+            @RequestParam("position") String positionName) throws AppException {
+        testService.attachPosition(testName, positionName);
     }
 
     @ExceptionHandler({AppException.class})

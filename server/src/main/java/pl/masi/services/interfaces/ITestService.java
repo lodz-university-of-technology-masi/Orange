@@ -8,11 +8,13 @@ public interface ITestService {
 
     boolean add(Test test);
 
-    Test getById(Long id) throws AppException;
+    Test getByName(String name) throws AppException;
 
     List<Test> getAllTests();
 
-    void deleteById(Long id) throws AppException;
+    void deleteByName(String name) throws AppException;
 
-    boolean updateTest(Long id, Test test) throws AppException;
+    boolean updateTest(String name, Test test) throws AppException;
+
+    boolean attachPosition(String testName, String positionName) throws AppException;
 }
