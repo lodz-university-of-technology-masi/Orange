@@ -43,10 +43,10 @@ public class TestController {
         return testService.updateTest(name, test);
     }
 
-    @PutMapping(value = "/{testName}")
+    @PutMapping(value = "/{testName}/{positionName}")
     public void attachPosition(
             @PathVariable String testName,
-            @RequestParam("position") String positionName) throws AppException {
+            @PathVariable String positionName) throws AppException {
         testService.attachPosition(testName, positionName);
     }
 
