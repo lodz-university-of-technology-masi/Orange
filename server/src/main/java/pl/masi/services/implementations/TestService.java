@@ -3,6 +3,7 @@ package pl.masi.services.implementations;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.masi.beans.TestBean;
+import org.springframework.transaction.annotation.Transactional;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.PositionRepository;
 import pl.masi.services.interfaces.ITestService;
@@ -12,6 +13,7 @@ import pl.masi.entities.Test;
 import java.util.List;
 
 @Service
+@Transactional
 public class TestService implements ITestService {
 
     @Autowired
