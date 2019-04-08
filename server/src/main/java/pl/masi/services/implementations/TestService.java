@@ -55,18 +55,20 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public boolean updateTest(String name, Test test) throws AppException {
-        test.setName(getByName(name).getName());
-        return testRepository.save(test) != null;
+    public void updateQuestion(TestBean testBean) {
+        Test testToUpdate = testRepository.findByName(testBean.getTestName());
+        testToUpdate.setQuestions(testBean.getQuestions());
+        testRepository.save(testToUpdate);
     }
 
     @Override
-    public boolean attachPosition(String testName, String positionName) throws AppException {
-        Test testToUpdate = testRepository.findByName(testName);
+    public void updatePosition(TestBean testBean) throws AppException {
+        Test testToUpdate = testRepository.findByName(testBean.getTestName());
         if(testToUpdate.getPosition() != null) {
             throw new AppException("POSITION_ALREADY_ATTACHED", "Test with given name already has its target position.");
         }
-        testToUpdate.setPosition(positionRepository.findByName(positionName));
-        return testRepository.save(testToUpdate) != null;
+        testToUpdate.setPosition(positionRepository.findByName(testBean.getPositionName()));
+        testRepository.save(testToUpdate);
+
     }
 }

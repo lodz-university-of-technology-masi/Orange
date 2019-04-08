@@ -6,6 +6,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import pl.masi.entities.Question;
+
+import java.util.List;
 
 @Getter
 @Setter
@@ -16,4 +19,5 @@ import lombok.ToString;
 public class TestBean {
     private String testName;
     private String positionName;
+    private List<Question> questions;
 }

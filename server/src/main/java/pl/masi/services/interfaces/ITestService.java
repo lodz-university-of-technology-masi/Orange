@@ -15,7 +15,7 @@ public interface ITestService {
 
     void deleteByName(String name) throws AppException;
 
-    boolean updateTest(String name, Test test) throws AppException;
+    void updateQuestion(TestBean testBean);
 
-    boolean attachPosition(String testName, String positionName) throws AppException;
+    void updatePosition(TestBean testBean) throws AppException;
 }
