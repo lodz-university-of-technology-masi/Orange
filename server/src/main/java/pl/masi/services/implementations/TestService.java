@@ -2,6 +2,7 @@ package pl.masi.services.implementations;
 
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import pl.masi.beans.TestBean;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.PositionRepository;
 import pl.masi.services.interfaces.ITestService;
@@ -19,8 +20,13 @@ public class TestService implements ITestService {
     private PositionRepository positionRepository;
 
     @Override
-    public boolean add(Test test) {
-        return testRepository.save(test) != null;
+    public void add(TestBean testBean) {
+        Test newTest = Test.builder()
+                .name(testBean.getTestName())
+                .position(positionRepository.findByName(testBean.getPositionName()))
+                .questions(null)
+                .build();
+        testRepository.save(newTest);
     }
 
     @Override
