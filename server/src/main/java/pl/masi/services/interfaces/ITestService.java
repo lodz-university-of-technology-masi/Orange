@@ -1,4 +1,5 @@
 package pl.masi.services.interfaces;
+import pl.masi.beans.TestBean;
 import pl.masi.entities.Test;
 import pl.masi.exceptions.AppException;
 
@@ -6,7 +7,7 @@ import java.util.List;
 
 public interface ITestService {
 
-    boolean add(Test test);
+    void add(TestBean testBean);
 
     Test getByName(String name) throws AppException;
 

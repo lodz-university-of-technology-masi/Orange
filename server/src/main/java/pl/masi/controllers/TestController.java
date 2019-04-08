@@ -4,6 +4,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import pl.masi.beans.TestBean;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.ITestService;
 import pl.masi.entities.Test;
@@ -18,6 +19,11 @@ public class TestController {
 
     @Autowired
     private ITestService testService;
+
+    @PostMapping
+    public void addTest(@RequestBody TestBean testBean) {
+        testService.add(testBean);
+    }
 
     @GetMapping
     @RequestMapping(value = "/list")
