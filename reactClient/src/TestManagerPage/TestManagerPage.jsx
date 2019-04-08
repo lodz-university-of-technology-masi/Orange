@@ -15,6 +15,8 @@ import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
+import MenuItem from '@material-ui/core/MenuItem';
+
 class TestManagerPage extends React.Component {
     constructor(props) {
         super(props);
@@ -24,6 +26,7 @@ class TestManagerPage extends React.Component {
             positions: null,
             testNameText:"",
             testNameTextError:false,
+            selectedPosition:""
 
         };
     }
@@ -33,13 +36,25 @@ class TestManagerPage extends React.Component {
         positionService.getAll().then(positions => this.setState({ positions }));
     }
 
-    handleChange(positionName){
-
+    handleSelectChange = (event) => {
+        this.setState({
+            selectedPosition: event.target.value,
+           });
      }
 
-     handleRemove(id){
+    handleTextChange = (event) => {
+        this.setState({
+            testNameText: event.target.value,
+        });
+      };
 
-        return;
+     handleRemove(testName){
+         console.log(testName)
+        var newTests = this.state.tests;
+        var index = newTests.findIndex(x=>x.name == testName)
+        delete newTests[index]
+        this.setState({tests: newTests})
+        testService.remove(testName)
      }
 
      handleEdit(id){
@@ -48,27 +63,32 @@ class TestManagerPage extends React.Component {
         return <Redirect to={{ pathname: '/testEditor{id}'}} />
      }
 
-     handleAdd = (positionName) => {
+     handleAdd = () => {
         if(this.state.testNameText.length < 5){
-            this.setState({testNameTextError: false})
+            this.setState({testNameTextError: true})
             return
         } 
-        this.setState({testNameTextError: true})
-        var test = {testName: this.state.testNameText, positionName}
+        console.log(this.state.selectedPosition)
+        this.setState({testNameTextError: false})
+        var test = {testName: this.state.testNameText, positionName: this.state.selectedPosition}
+
         testService.add(test)
+
+
         var newTests = this.state.tests
-        newTests.push({name: this.state.testNameText, positon:{name:positionName}})
+        var testToAdd = {name: this.state.testNameText, position:{name:this.state.selectedPosition}}
+        console.log(testToAdd)
+        newTests.push(testToAdd)
         this.setState({tests: newTests})
     }
 
     render() {
-        const { tests, positions } = this.state;
         return (
             <div>
                     <List subheader={<ListSubheader><h3>Tests</h3></ListSubheader>}>
-                             {tests.map(test =>
-                                <ListItem key={test.id}>
-                                    <ListItemText primary={test.name} secondary={test.position.name} /> 
+                             {this.state.tests && this.state.tests.map(test =>
+                                <ListItem key={test.name}>
+                                    <ListItemText primary={test.name} secondary={test.position && test.position.name} /> 
                                     <ListItemSecondaryAction>
                                     <IconButton onClick={() =>this.handleRemove(test.name)} aria-label="Delete">
                                         <DeleteIcon />
@@ -79,32 +99,36 @@ class TestManagerPage extends React.Component {
                                     </ListItemSecondaryAction>
                                 </ListItem>
                             )}
-                                                        <Divider component="li" />
+                            <Divider component="li" />
                             <li>
-                            <Typography color="textSecondary" variant="caption">
-                            Type name with at least 5 characters.
-                            </Typography>
                              </li>
                             <ListItem>
+                            <div style={{display: 'flex',justifyContent: 'space-between', flexWrap: 'wrap'}}>
                                 <TextField
                                     id="standard-dense"
                                     label="Test Name"
                                     value={this.state.testNameText}
                                     onChange={this.handleTextChange}
                                     error={this.state.testNameTextError}
+                                    style={{marginRight: 18}}
                                 />
                                 {this.state.positions && 
                                 <Select
-                                        defaultValue="Select Position"
-                                        onChange={() => this.handleChange()}
+                                        value={this.state.selectedPosition}
+                                        onChange={this.handleSelectChange}
                                         variant='outlined'
+                                        displayEmpty
                                      >
+                                    <MenuItem value="" disabled>
+                                     Select Position
+                                    </MenuItem>
                                      {this.state.positions.map(position =>
-                                        <option key={position.id} value={position.name}>{position.name}</option>
+                                        <MenuItem key={position.id} value={position.name}>{position.name}</MenuItem>
                                      )
                                      }
                                 </Select>
                                 }
+                            </div>    
                                 <ListItemSecondaryAction>
                                     <IconButton onClick={() =>this.handleAdd()}>
                                         <AddIcon />
