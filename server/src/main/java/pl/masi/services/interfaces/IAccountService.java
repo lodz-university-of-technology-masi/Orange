@@ -12,4 +12,5 @@ public interface IAccountService {
     Account createAccount(AccountBean accountBean) throws AppException;
     Account updateAccount(AccountBean accountBean) throws AppException;
     void deleteAccount(String username) throws AppException;
+    Account registerCandidate(AccountBean accountBean) throws AppException;
 }

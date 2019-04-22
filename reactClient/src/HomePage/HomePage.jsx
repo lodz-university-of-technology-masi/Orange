@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { userService, authenticationService } from '@/_services';
+import {authHeader} from "../_helpers";
 
 class HomePage extends React.Component {
     constructor(props) {
@@ -8,17 +9,11 @@ class HomePage extends React.Component {
 
         this.state = {
             currentUser: authenticationService.currentUserValue,
-            userFromApi: null
         };
     }
 
-    componentDidMount() {
-        const { currentUser } = this.state;
-        userService.getById(currentUser.id).then(userFromApi => this.setState({ userFromApi }));
-    }
-
     render() {
-        const { currentUser, userFromApi } = this.state;
+        const { currentUser } = this.state;
         return (
             <div>
                 <h1>Home</h1>
@@ -27,9 +22,9 @@ class HomePage extends React.Component {
                 <p>This page can be accessed by all authenticated users.</p>
                 <div>
                     Current user from secure api end point:
-                    {userFromApi &&
+                    {currentUser &&
                         <ul>
-                            <li>{userFromApi.firstName} {userFromApi.lastName}</li>
+                            <li>{currentUser.firstName} {currentUser.lastName}</li>
                         </ul>
                     }
                 </div>

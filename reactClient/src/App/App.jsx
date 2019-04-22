@@ -26,12 +26,12 @@ class App extends React.Component {
     componentDidMount() {
         authenticationService.currentUser.subscribe(x => this.setState({
             currentUser: x,
-            isAdmin: x && x.role === Role.Admin
+            isAdmin: x && x.permissionName === Role.Admin
         }));
     }
 
     logout() {
-        authenticationService.logout();
+        authenticationService.logout().then(response => console.log(response));
         history.push('/login');
     }
 

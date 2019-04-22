@@ -22,7 +22,10 @@ function getById(id) {
 function add(positionObj){
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token'),
+        }),
         body: JSON.stringify(positionObj)
     };
     return fetch(`${config.apiUrl}/position/create`, requestOptions)
