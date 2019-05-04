@@ -52,9 +52,9 @@ public class TestController {
         testService.updatePosition(testBean);
     }
 
-    @PutMapping(value = "/updateName")
-    public void updateName(@RequestBody TestBean testBean) throws AppException {
-        testService.updateName(testBean);
+    @PutMapping(value = "/updateName/{oldName}")
+    public void updateName(@PathVariable String oldName, @RequestBody TestBean testBean) throws AppException {
+        testService.updateName(oldName, testBean);
     }
 
     @DeleteMapping(value = "/{testName}/{questionName}")

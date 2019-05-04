@@ -19,7 +19,7 @@ public interface ITestService {
 
     void updatePosition(TestBean testBean) throws AppException;
 
-    void updateName(TestBean testBean) throws AppException;
+    void updateName(String oldName, TestBean testBean) throws AppException;
 
     void deleteQuestion(String testName, String questionName) throws AppException;
 }
