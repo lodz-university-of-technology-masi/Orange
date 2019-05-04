@@ -1,15 +1,17 @@
 package pl.masi.services.interfaces;
+import pl.masi.beans.QuestionBean;
 import pl.masi.entities.Question;
+import pl.masi.exceptions.AppException;
 
-import java.util.Optional;
+import java.util.List;
 
 public interface IQuestionService {
 
-    boolean add(Question question);
+    void add(QuestionBean questionBean);
 
-    Optional<Question> get(Long id);
+    Question getByName(String name) throws AppException;
 
-    boolean update(Question question);
+    List<Question> getAllQuestions();
 
-    void delete(Long id);
+    void deleteByName(String name) throws AppException;
 }

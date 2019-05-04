@@ -7,5 +7,6 @@ import pl.masi.entities.Question;
 
 @Repository
 public interface QuestionRepository extends CrudRepository<Question, Long> {
-
+    Question findByName(String name);
+    void deleteByName(String name);
 }

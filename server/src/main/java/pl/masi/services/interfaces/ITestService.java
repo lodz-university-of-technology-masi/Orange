@@ -15,7 +15,11 @@ public interface ITestService {
 
     void deleteByName(String name) throws AppException;
 
-    void updateQuestion(TestBean testBean);
+    void addQuestion(String testName, String questionName) throws AppException;
 
     void updatePosition(TestBean testBean) throws AppException;
+
+    void updateName(TestBean testBean) throws AppException;
+
+    void deleteQuestion(String testName, String questionName) throws AppException;
 }

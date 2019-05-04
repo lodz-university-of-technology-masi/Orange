@@ -42,14 +42,24 @@ public class TestController {
         testService.deleteByName(name);
     }
 
-    @PutMapping(value = "/updateQuestion")
-    public void updateQuestions(@RequestBody TestBean testBean)  {
-        testService.updateQuestion(testBean);
+    @PutMapping(value = "/{testName}/{questionName}")
+    public void addQuestion(@PathVariable String testName, @PathVariable String questionName) throws AppException {
+        testService.addQuestion(testName, questionName);
     }
 
     @PutMapping(value = "/updatePosition")
     public void updatePosition(@RequestBody TestBean testBean) throws AppException {
         testService.updatePosition(testBean);
+    }
+
+    @PutMapping(value = "/updateName")
+    public void updateName(@RequestBody TestBean testBean) throws AppException {
+        testService.updateName(testBean);
+    }
+
+    @DeleteMapping(value = "/{testName}/{questionName}")
+    public void deleteQuestion(@PathVariable String testName, @PathVariable String questionName) throws AppException {
+        testService.deleteQuestion(testName, questionName);
     }
 
     @ExceptionHandler({AppException.class})
