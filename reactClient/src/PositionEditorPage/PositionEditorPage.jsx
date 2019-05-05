@@ -47,17 +47,17 @@ class PositionEditorPage extends React.Component {
     handleRemove = (positionName) => {
         var newPositions = this.state.positions;
         var index = newPositions.findIndex(x=>x.name == positionName)
-        delete newPositions[index]
+        delete newPositions.splice(index,1)
         this.setState({positions: newPositions})
         positionService.remove(positionName)
     }
 
     handleAdd = () => {
         if(this.state.positionNameText.length < 5){
-            this.setState({positionNameTextError: false})
+            this.setState({positionNameTextError: true})
             return
         } 
-        this.setState({positionNameTextError: true})
+        this.setState({positionNameTextError: false})
         var position = {name: this.state.positionNameText, active:true}
         positionService.add(position)
         var newPositions = this.state.positions
@@ -96,6 +96,7 @@ class PositionEditorPage extends React.Component {
                                     value={this.state.positionNameText}
                                     onChange={this.handleTextChange}
                                     error={this.state.positionNameTextError}
+                                    variant="outlined"
                                 />
                                 <ListItemSecondaryAction>
                                     <IconButton onClick={() =>this.handleAdd()}>

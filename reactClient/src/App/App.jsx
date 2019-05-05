@@ -12,6 +12,7 @@ import { TestManagerPage } from '@/TestManagerPage';
 import { TestEditorPage } from '@/TestEditorPage';
 import {EditorManagerPage} from "@/EditorManagerPage";
 import {EditorFormPage} from "@/EditorsFormPage";
+import {QuestionManagerPage} from "@/QuestionManagerPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -47,7 +48,7 @@ class App extends React.Component {
                                 {isAdmin && <Link to="/admin" className="nav-item nav-link">Admin</Link>}
                                 {isAdmin && <Link to="/positionEditor" className="nav-item nav-link">Positions Manager</Link>}
                                 {isAdmin && <Link to="/testManager" className="nav-item nav-link">Test Manager</Link>}
-                                {isAdmin && <Link to="/testEditor" className="nav-item nav-link">Test Editor</Link>}
+                                {isAdmin && <Link to="/questionManager" className="nav-item nav-link">Question Manager</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
                                 {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
@@ -57,12 +58,13 @@ class App extends React.Component {
                     <div className="jumbotron">
                         <div className="container">
                             <div className="row">
-                                <div className="col-md-6 offset-md-3">
+                                <div className="col-md-8 offset-md-2">
                                     <PrivateRoute exact path="/" component={HomePage} />
                                     <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                                     <PrivateRoute path="/positionEditor" roles={[Role.Admin]} component={PositionEditorPage}/>
+                                    <PrivateRoute path="/questionManager" roles={[Role.Admin]} component={QuestionManagerPage}/>
                                     <PrivateRoute path="/testManager" roles={[Role.Admin]} component={TestManagerPage}/>
-                                    <PrivateRoute path="/testEditor" roles={[Role.Admin]} component={TestEditorPage}/>
+                                    <PrivateRoute path="/testEditor/:testName" roles={[Role.Admin]} component={TestEditorPage}/>
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>
                                     <PrivateRoute exact path="/editorForm" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>

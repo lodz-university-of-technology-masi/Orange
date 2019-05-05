@@ -9,13 +9,14 @@ import DeleteIcon from '@material-ui/icons/Delete';
 import EditIcon from '@material-ui/icons/Edit';
 import IconButton from '@material-ui/core/IconButton';
 import Select from '@material-ui/core/Select';
-import { Redirect } from 'react-router-dom';
+import { Redirect,hashHistory, Link } from 'react-router-dom';
 import { positionService, testService } from '@/_services';
 import AddIcon from '@material-ui/icons/Add';
 import TextField from '@material-ui/core/TextField';
 import Divider from '@material-ui/core/Divider';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
+import OutlinedInput from '@material-ui/core/OutlinedInput';
 
 class TestManagerPage extends React.Component {
     constructor(props) {
@@ -49,19 +50,17 @@ class TestManagerPage extends React.Component {
       };
 
      handleRemove(testName){
-         console.log(testName)
+        console.log(testName)
         var newTests = this.state.tests;
         var index = newTests.findIndex(x=>x.name == testName)
-        delete newTests[index]
+        newTests.splice(index,1)
         this.setState({tests: newTests})
         testService.remove(testName)
      }
 
-     handleEdit(id){
-        // positionService.togglePosition(positionName).then(positionService.getAll().then(positions => this.setState({ positions })))
-        // modife tests position
-        return <Redirect to={{ pathname: '/testEditor{id}'}} />
-     }
+     handleEdit(test){
+        this.props.history.push({pathname: `/testEditor/${test.name}`, query: {test}})
+     } 
 
      handleAdd = () => {
         if(this.state.testNameText.length < 5){
@@ -93,7 +92,7 @@ class TestManagerPage extends React.Component {
                                     <IconButton onClick={() =>this.handleRemove(test.name)} aria-label="Delete">
                                         <DeleteIcon />
                                     </IconButton>
-                                    <IconButton onClick={() =>this.handleEdit(test.name)}>
+                                    <IconButton onClick={() =>this.handleEdit(test)}>
                                         <EditIcon />
                                     </IconButton>
                                     </ListItemSecondaryAction>
@@ -111,12 +110,13 @@ class TestManagerPage extends React.Component {
                                     onChange={this.handleTextChange}
                                     error={this.state.testNameTextError}
                                     style={{marginRight: 18}}
+                                    variant="outlined"
                                 />
                                 {this.state.positions && 
                                 <Select
                                         value={this.state.selectedPosition}
                                         onChange={this.handleSelectChange}
-                                        variant='outlined'
+                                        input={<OutlinedInput labelWidth={0}/>}
                                         displayEmpty
                                      >
                                     <MenuItem value="" disabled>
