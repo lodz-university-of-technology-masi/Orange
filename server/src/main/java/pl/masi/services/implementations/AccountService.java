@@ -7,12 +7,14 @@ import org.springframework.stereotype.Service;
 import pl.masi.beans.AccountBean;
 import pl.masi.entities.Account;
 import pl.masi.entities.Permission;
+import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.AccountRepository;
 import pl.masi.repositories.PermissionRepository;
 import pl.masi.services.interfaces.IAccountService;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -46,15 +48,15 @@ public class AccountService implements IAccountService {
 
     @Override
     public AccountBean getAccount(String username) throws AppException {
-        Account account = accountRepository.findByUsername(username);
-        if (account == null) {
+        Optional<Account> account = accountRepository.findByUsername(username);
+        if (!account.isPresent()) {
             throw new AppException("ACCOUNT_NOT_FOUND", "Account with given username doesn't exists");
         }
         return AccountBean.builder()
-                .username(account.getUsername())
-                .firstName(account.getFirstName())
-                .lastName(account.getLastName())
-                .permissionName(account.getPermission().getPermissionName())
+                .username(account.get().getUsername())
+                .firstName(account.get().getFirstName())
+                .lastName(account.get().getLastName())
+                .permissionName(account.get().getPermission().getPermissionName())
                 .build();
     }
 
@@ -75,27 +77,42 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account updateAccount(AccountBean accountBean) throws AppException {
-        Account accountToUpdate = accountRepository.findByUsername(accountBean.getUsername());
-        if (accountToUpdate == null) {
+        Optional<Account> accountToUpdate = accountRepository.findByUsername(accountBean.getUsername());
+        if (!accountToUpdate.isPresent()) {
             throw new AppException("ACCOUNT_NOT_FOUND", "Account with given username doesn't exists");
         }
-        accountToUpdate.setFirstName(accountBean.getFirstName());
-        accountToUpdate.setLastName(accountBean.getLastName());
-        accountToUpdate.setPermission(permissionRepository.findByPermissionName(accountBean.getPermissionName()));
+        accountToUpdate.get().setFirstName(accountBean.getFirstName());
+        accountToUpdate.get().setLastName(accountBean.getLastName());
+        accountToUpdate.get().setPermission(permissionRepository.findByPermissionName(accountBean.getPermissionName()));
         if (accountBean.getPassword() != null && !accountBean.getPassword().isEmpty()) {
-            accountToUpdate.setPassword(bCryptPasswordEncoder.encode(accountBean.getPassword()));
+            accountToUpdate.get().setPassword(bCryptPasswordEncoder.encode(accountBean.getPassword()));
         }
 
-        return accountRepository.save(accountToUpdate);
+        return accountRepository.save(accountToUpdate.get());
     }
 
     @Override
     public void deleteAccount(String username) throws AppException {
-        Account account = accountRepository.findByUsername(username);
-        if (account == null) {
+        Optional<Account> account = accountRepository.findByUsername(username);
+        if (!account.isPresent()) {
             throw new AppException("ACCOUNT_NOT_FOUND", "Account with given username doesn't exists");
         }
-        accountRepository.delete(account);
+        accountRepository.delete(account.get());
+    }
+
+    @Override
+    public Account registerCandidate(AccountBean accountBean) throws AppException {
+        Permission permission = getPermissionByName(PermissionType.CANDIDATE.name());
+
+        Account accountToSave = Account.builder()
+                .firstName(accountBean.getFirstName())
+                .lastName(accountBean.getLastName())
+                .username(accountBean.getUsername())
+                .password(bCryptPasswordEncoder.encode(accountBean.getPassword()))
+                .permission(permission)
+                .build();
+
+        return accountRepository.save(accountToSave);
     }
 
     private Permission getPermissionByName(String permissionName) throws AppException {

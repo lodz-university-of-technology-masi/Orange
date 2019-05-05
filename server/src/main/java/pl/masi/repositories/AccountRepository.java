@@ -6,10 +6,11 @@ import pl.masi.entities.Account;
 import pl.masi.entities.Permission;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface AccountRepository extends CrudRepository<Account, Long> {
-    Account findByUsername(String username);
+    Optional<Account> findByUsername(String username);
     List<Account> findAll();
     List<Account> findByPermission(Permission permission);
 }

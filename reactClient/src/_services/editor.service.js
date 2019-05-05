@@ -25,7 +25,10 @@ function create(username, password, firstName, lastName) {
 
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token'),
+        }),
         body: JSON.stringify({ username, password, permissionName, firstName, lastName })
     };
 
@@ -42,7 +45,10 @@ function update(username, firstName, lastName) {
 
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token'),
+        }),
         body: JSON.stringify({ username, permissionName, firstName, lastName })
     };
 

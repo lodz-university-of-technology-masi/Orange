@@ -1,7 +1,7 @@
-import { BehaviorSubject } from 'rxjs';
-
 import config from 'config';
-import { handleResponse } from '@/_helpers';
+import { BehaviorSubject } from 'rxjs';
+import {authHeader} from '@/_helpers';
+
 
 const currentUserSubject = new BehaviorSubject(JSON.parse(localStorage.getItem('currentUser')));
 
@@ -19,19 +19,30 @@ function login(username, password) {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch(`${config.apiUrl}/users/authenticate`, requestOptions)
-        .then(handleResponse)
-        .then(user => {
-            // store user details and jwt token in local storage to keep user logged in between page refreshes
-            localStorage.setItem('currentUser', JSON.stringify(user));
-            currentUserSubject.next(user);
-
-            return user;
+    return fetch('http://localhost:8080/login', requestOptions)
+        .then(response => {
+            localStorage.setItem('Token', response.headers.get('Authorization'));
+            return response.json();
+        })
+        .then(data => {
+            localStorage.setItem('currentUser', JSON.stringify(data));
+            currentUserSubject.next(data);
+            return localStorage.getItem('currentUser');
         });
+
+    // store user details and jwt token in local storage to keep user logged in between page refreshes
 }
 
 function logout() {
-    // remove user from local storage to log user out
-    localStorage.removeItem('currentUser');
-    currentUserSubject.next(null);
+    const requestOptions = {
+        method: 'POST',
+        headers: authHeader(),
+    };
+    return fetch(`${config.apiUrl}/logout`, requestOptions)
+        .then(response => {
+            localStorage.setItem('Token', response.headers.get('Authorization'));
+            localStorage.removeItem('Token');
+            localStorage.removeItem('currentUser');
+            currentUserSubject.next(null);
+        })
 }

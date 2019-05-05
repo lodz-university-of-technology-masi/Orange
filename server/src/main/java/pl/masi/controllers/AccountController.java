@@ -5,6 +5,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -31,7 +32,7 @@ public class AccountController {
     private final IAccountService accountService;
 
     @GetMapping(value = "/{username}")
-    public AccountBean getAccount(@PathVariable("username") String username) throws AppException {
+    public AccountBean getAccount(@PathVariable("username") String username, Authentication authentication) throws AppException {
         return accountService.getAccount(username);
     }
 
@@ -43,6 +44,11 @@ public class AccountController {
     @PostMapping(value = "/create")
     public Account createAccount(@RequestBody AccountBean accountBean) throws AppException {
         return  accountService.createAccount(accountBean);
+    }
+
+    @PostMapping(value = "/register")
+    public Account registerCandidate(@RequestBody AccountBean accountBean) throws  AppException {
+        return  accountService.registerCandidate(accountBean);
     }
 
     @PutMapping(value = "/update")

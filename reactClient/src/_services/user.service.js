@@ -3,7 +3,7 @@ import { authHeader, handleResponse } from '@/_helpers';
 
 export const userService = {
     getAll,
-    getById
+    getByUsername
 };
 
 function getAll() {
@@ -11,7 +11,7 @@ function getAll() {
     return fetch(`${config.apiUrl}/users`, requestOptions).then(handleResponse);
 }
 
-function getById(id) {
+function getByUsername(username) {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/users/${id}`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/account/${username}`, requestOptions).then(handleResponse);
 }

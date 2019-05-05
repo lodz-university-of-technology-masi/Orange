@@ -9,15 +9,13 @@ class EditorFormPage extends React.Component {
 
         this.state = {
             currentUser: authenticationService.currentUserValue,
-            userFromApi: null,
             paramsEditorUsername: props.match.params.username,
             editorFromApi: null
         };
     }
 
     componentDidMount() {
-        const { currentUser, paramsEditorUsername } = this.state;
-        userService.getById(currentUser.id).then(userFromApi => this.setState({ userFromApi }));
+        const { paramsEditorUsername } = this.state;
         if(paramsEditorUsername) {
             editorService.getByUsername(paramsEditorUsername).then( editorFromApi => this.setState({editorFromApi}))
         }
