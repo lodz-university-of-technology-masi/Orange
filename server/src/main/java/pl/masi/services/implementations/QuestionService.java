@@ -5,12 +5,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pl.masi.beans.QuestionBean;
 import pl.masi.entities.Test;
+import pl.masi.enums.QuestionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.TestRepository;
 import pl.masi.services.interfaces.IQuestionService;
 import pl.masi.repositories.QuestionRepository;
 import pl.masi.entities.Question;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -59,5 +61,14 @@ public class QuestionService implements IQuestionService {
             }
         }
         questionRepository.deleteByName(questionToDelete.getName());
+    }
+
+    @Override
+    public List<String> getAllQuestionType() {
+        List<String> questionTypes = new ArrayList<>();
+        for (QuestionType type : questionRepository.getAllQuestionType()) {
+            questionTypes.add(type.name());
+        }
+        return questionTypes;
     }
 }

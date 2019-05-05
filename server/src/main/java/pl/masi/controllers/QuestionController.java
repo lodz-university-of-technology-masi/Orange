@@ -30,6 +30,12 @@ public class QuestionController {
     }
 
     @GetMapping
+    @RequestMapping(value = "/listQuestionType")
+    public List<String> getAllQuestionType() {
+        return questionService.getAllQuestionType();
+    }
+
+    @GetMapping
     @RequestMapping(value = "/{name}")
     public Question getQuestionByName(@PathVariable String name) throws AppException {
         return questionService.getByName(name);

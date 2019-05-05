@@ -14,4 +14,6 @@ public interface IQuestionService {
     List<Question> getAllQuestions();
 
     void deleteByName(String name) throws AppException;
+
+    List<String> getAllQuestionType();
 }
