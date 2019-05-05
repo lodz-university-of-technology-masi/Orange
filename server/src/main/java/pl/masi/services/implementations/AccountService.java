@@ -102,7 +102,7 @@ public class AccountService implements IAccountService {
 
     @Override
     public Account registerCandidate(AccountBean accountBean) throws AppException {
-        Permission permission = getPermissionByName(PermissionType.CANDIDATE.name());
+        Permission permission = getPermissionByName(PermissionType.PermissionTypeEnum.CANDIDATE.name());
 
         Account accountToSave = Account.builder()
                 .firstName(accountBean.getFirstName())

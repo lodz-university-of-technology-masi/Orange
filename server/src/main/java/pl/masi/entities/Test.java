@@ -38,4 +38,8 @@ public class Test {
     @ManyToOne
     @JoinColumn
     private Position position;
+
+    @ManyToOne
+    @JoinColumn(name="creator_username", referencedColumnName = "username")
+    private Account creatorUsername;
 }

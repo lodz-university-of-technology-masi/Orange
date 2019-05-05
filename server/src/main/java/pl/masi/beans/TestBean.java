@@ -20,4 +20,5 @@ public class TestBean {
     private String testName;
     private String positionName;
     private List<Question> questions;
+    private String creatorUsername;
 }

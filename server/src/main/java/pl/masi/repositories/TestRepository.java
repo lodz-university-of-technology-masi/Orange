@@ -13,4 +13,5 @@ public interface TestRepository extends CrudRepository <Test, Long> {
     void deleteByName(String name);
     Test findByPositionName(String name);
     List<Test> findByQuestionsName(String name);
+    List<Test> findByCreatorUsernameUsername(String creatorUsername);
 }

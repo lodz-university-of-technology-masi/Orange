@@ -72,7 +72,7 @@ class TestManagerPage extends React.Component {
         } 
         console.log(this.state.selectedPosition)
         this.setState({testNameTextError: false})
-        var test = {testName: this.state.testNameText, positionName: this.state.selectedPosition}
+        var test = {testName: this.state.testNameText, positionName: this.state.selectedPosition, creatorUsername: JSON.parse(localStorage.getItem("currentUser")).username}
 
         testService.add(test)
 

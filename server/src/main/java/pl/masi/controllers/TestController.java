@@ -9,6 +9,7 @@ import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.ITestService;
 import pl.masi.entities.Test;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
@@ -19,6 +20,9 @@ public class TestController {
 
     @Autowired
     private ITestService testService;
+    @Autowired
+    private HttpServletRequest request;
+
 
     @PostMapping
     public void addTest(@RequestBody TestBean testBean) {
@@ -28,7 +32,7 @@ public class TestController {
     @GetMapping
     @RequestMapping(value = "/list")
     public List<Test> getAllTests() {
-        return testService.getAllTests();
+        return testService.getAllTests(request.getHeader("role"));
     }
 
     @GetMapping

@@ -20,14 +20,16 @@ class App extends React.Component {
 
         this.state = {
             currentUser: null,
-            isAdmin: false
+            isAdmin: false,
+            isEditor: false
         };
     }
 
     componentDidMount() {
         authenticationService.currentUser.subscribe(x => this.setState({
             currentUser: x,
-            isAdmin: x && x.permissionName === Role.Admin
+            isAdmin: x && x.permissionName === Role.Admin,
+            isEditor: x && x.permissionName === Role.Editor,
         }));
     }
 
@@ -37,7 +39,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { currentUser, isAdmin } = this.state;
+        const { currentUser, isAdmin, isEditor } = this.state;
         return (
             <Router history={history}>
                 <div>
@@ -47,7 +49,7 @@ class App extends React.Component {
                                 <Link to="/" className="nav-item nav-link">Home</Link>
                                 {isAdmin && <Link to="/admin" className="nav-item nav-link">Admin</Link>}
                                 {isAdmin && <Link to="/positionEditor" className="nav-item nav-link">Positions Manager</Link>}
-                                {isAdmin && <Link to="/testManager" className="nav-item nav-link">Test Manager</Link>}
+                                {(isAdmin || isEditor) && <Link to="/testManager" className="nav-item nav-link">Test Manager</Link>}
                                 {isAdmin && <Link to="/questionManager" className="nav-item nav-link">Question Manager</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
                                 {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
@@ -63,8 +65,8 @@ class App extends React.Component {
                                     <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                                     <PrivateRoute path="/positionEditor" roles={[Role.Admin]} component={PositionEditorPage}/>
                                     <PrivateRoute path="/questionManager" roles={[Role.Admin]} component={QuestionManagerPage}/>
-                                    <PrivateRoute path="/testManager" roles={[Role.Admin]} component={TestManagerPage}/>
-                                    <PrivateRoute path="/testEditor/:testName" roles={[Role.Admin]} component={TestEditorPage}/>
+                                    <PrivateRoute path="/testManager" roles={[Role.Admin, Role.Editor]} component={TestManagerPage}/>
+                                    <PrivateRoute path="/testEditor/:testName" roles={[Role.Admin, Role.Editor]} component={TestEditorPage}/>
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>
                                     <PrivateRoute exact path="/editorForm" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>

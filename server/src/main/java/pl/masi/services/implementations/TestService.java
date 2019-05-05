@@ -1,11 +1,15 @@
 package pl.masi.services.implementations;
 
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.masi.beans.TestBean;
 import org.springframework.transaction.annotation.Transactional;
 import pl.masi.entities.Question;
+import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
+import pl.masi.repositories.AccountRepository;
 import pl.masi.repositories.PositionRepository;
 import pl.masi.repositories.QuestionRepository;
 import pl.masi.services.interfaces.ITestService;
@@ -24,6 +28,8 @@ public class TestService implements ITestService {
     private PositionRepository positionRepository;
     @Autowired
     private QuestionRepository questionRepository;
+    @Autowired
+    private AccountRepository accountRepository;
 
     @Override
     public void add(TestBean testBean) {
@@ -31,6 +37,7 @@ public class TestService implements ITestService {
                 .name(testBean.getTestName())
                 .position(positionRepository.findByName(testBean.getPositionName()))
                 .questions(null)
+                .creatorUsername(accountRepository.findByUsername(testBean.getCreatorUsername()).get())
                 .build();
         testRepository.save(newTest);
     }
@@ -45,8 +52,15 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public List<Test> getAllTests() {
-        return (List<Test>) testRepository.findAll();
+    public List<Test> getAllTests(String header) {
+        JsonObject jsonHeader = new JsonParser().parse(header).getAsJsonObject();
+        String role = jsonHeader.get("permissionName").getAsString();
+        if (role.equals(PermissionType.permissionTypeMap.get(PermissionType.PermissionTypeEnum.EDITOR))) {
+            String username = jsonHeader.get("username").getAsString();
+            return testRepository.findByCreatorUsernameUsername(username);
+        } else {
+            return (List<Test>) testRepository.findAll();
+        }
     }
 
     @Override
@@ -62,7 +76,7 @@ public class TestService implements ITestService {
         if (!testToUpdate.getQuestions().contains(questionToAdd)) {
             testToUpdate.getQuestions().add(questionToAdd);
         } else {
-            throw new AppException("QUESTION_ALREADY_ADDED", "Question with " + questionName + " is already added to the" + testName +".");
+            throw new AppException("QUESTION_ALREADY_ADDED", "Question with " + questionName + " is already added to the" + testName + ".");
         }
         testRepository.save(testToUpdate);
 
@@ -86,10 +100,10 @@ public class TestService implements ITestService {
     public void deleteQuestion(String testName, String questionName) throws AppException {
         Test testToUpdate = getByName(testName);
 
-        if(testToUpdate.getQuestions().contains(questionRepository.findByName(questionName))) {
+        if (testToUpdate.getQuestions().contains(questionRepository.findByName(questionName))) {
             testToUpdate.getQuestions().remove(questionRepository.findByName(questionName));
         } else {
-            throw new AppException("QUESTION_NOT_EXIST", "Question with " + questionName + " is not added to the" + testName +".");
+            throw new AppException("QUESTION_NOT_EXIST", "Question with " + questionName + " is not added to the" + testName + ".");
         }
         testRepository.save(testToUpdate);
     }
