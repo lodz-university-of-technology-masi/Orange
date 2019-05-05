@@ -66,6 +66,9 @@ class TestManagerPage extends React.Component {
         if(this.state.testNameText.length < 5){
             this.setState({testNameTextError: true})
             return
+        }
+        if(this.state.selectedPosition.length<1){
+            return
         } 
         console.log(this.state.selectedPosition)
         this.setState({testNameTextError: false})

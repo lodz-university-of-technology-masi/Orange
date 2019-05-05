@@ -66,7 +66,7 @@ class TestEditorPage extends React.Component {
         newTest.name = this.state.testNameText;
         this.setState({test: newTest})
 
-        testService.updateName(oldName,newTest)
+        testService.updateName(oldName,{testName: newTest.name})
     }  
     
     handleSelectChange = (event) => {
