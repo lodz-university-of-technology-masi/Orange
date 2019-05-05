@@ -46,11 +46,6 @@ public class AccountController {
         return  accountService.createAccount(accountBean);
     }
 
-    @PostMapping(value = "/register")
-    public Account registerCandidate(@RequestBody AccountBean accountBean) throws  AppException {
-        return  accountService.registerCandidate(accountBean);
-    }
-
     @PutMapping(value = "/update")
     public Account updateAccount(@RequestBody AccountBean accountBean) throws AppException {
         return accountService.updateAccount(accountBean);

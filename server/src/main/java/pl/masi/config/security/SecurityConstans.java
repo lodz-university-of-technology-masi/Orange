@@ -9,5 +9,5 @@ public class SecurityConstans {
 
     public static final String LOGOUT_URL = "/logout";
     public static final String LOGIN_URL = "/login";
-    public static final String REGISTER_URL = "/accounts/register";
+    public static final String REGISTER_URL = "/account/create";
 }

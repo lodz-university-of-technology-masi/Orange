@@ -100,21 +100,6 @@ public class AccountService implements IAccountService {
         accountRepository.delete(account.get());
     }
 
-    @Override
-    public Account registerCandidate(AccountBean accountBean) throws AppException {
-        Permission permission = getPermissionByName(PermissionType.PermissionTypeEnum.CANDIDATE.name());
-
-        Account accountToSave = Account.builder()
-                .firstName(accountBean.getFirstName())
-                .lastName(accountBean.getLastName())
-                .username(accountBean.getUsername())
-                .password(bCryptPasswordEncoder.encode(accountBean.getPassword()))
-                .permission(permission)
-                .build();
-
-        return accountRepository.save(accountToSave);
-    }
-
     private Permission getPermissionByName(String permissionName) throws AppException {
         Permission result = permissionRepository.findByPermissionName(permissionName);
         if(result == null) {

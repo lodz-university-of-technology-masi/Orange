@@ -7,6 +7,7 @@ import { PrivateRoute } from '@/_components';
 import { HomePage } from '@/HomePage';
 import { AdminPage } from '@/AdminPage';
 import { LoginPage } from '@/LoginPage';
+import { RegistrationPage } from '@/RegistrationPage';
 import { PositionEditorPage } from '@/PositionEditorPage';
 import { TestManagerPage } from '@/TestManagerPage';
 import { TestEditorPage } from '@/TestEditorPage';
@@ -71,6 +72,7 @@ class App extends React.Component {
                                     <PrivateRoute exact path="/editorForm" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <Route path="/login" component={LoginPage} />
+                                    <Route path="/registerAccount" component={RegistrationPage} />
                                 </div>
                             </div>
                         </div>
