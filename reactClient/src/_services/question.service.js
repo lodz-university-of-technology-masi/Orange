@@ -3,10 +3,10 @@ import { authHeader, handleResponse } from '@/_helpers';
 
 export const questionService = {
     getAll,
+    getAllTypes,
     get,
     remove,
     add,
-    attachPosition
 };
 
 function getAll() {
@@ -16,26 +16,26 @@ function getAll() {
 
 function get(name) {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/test/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/question/${name}`, requestOptions).then(handleResponse);
 }
+
+function getAllTypes() {
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`${config.apiUrl}/question/listQuestionType`, requestOptions).then(handleResponse);
+}
+
 
 function remove(name){
     const requestOptions = { method: 'DELETE', headers: authHeader() };
-    return fetch(`${config.apiUrl}/test/${name}`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/question/${name}`, requestOptions).then(handleResponse);
 }
 
-function add(testObj){
+function add(obj){
     const requestOptions = {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(testObj)
+        body: JSON.stringify(obj)
     };
-    return fetch(`${config.apiUrl}/test`, requestOptions)
-    .then(handleResponse);
-}
-
-function attachPosition(testName, positonName){
-    const requestOptions = { method: 'PUT', headers: authHeader() };
-    return fetch(`${config.apiUrl}/test/attach/${testName}?position=${positonName}`, requestOptions)
+    return fetch(`${config.apiUrl}/question`, requestOptions)
     .then(handleResponse);
 }

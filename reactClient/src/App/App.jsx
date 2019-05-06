@@ -51,7 +51,7 @@ class App extends React.Component {
                                 {isAdmin && <Link to="/admin" className="nav-item nav-link">Admin</Link>}
                                 {isAdmin && <Link to="/positionEditor" className="nav-item nav-link">Positions Manager</Link>}
                                 {(isAdmin || isEditor) && <Link to="/testManager" className="nav-item nav-link">Test Manager</Link>}
-                                {isAdmin && <Link to="/questionManager" className="nav-item nav-link">Question Manager</Link>}
+                                {(isAdmin || isEditor) && <Link to="/questionManager" className="nav-item nav-link">Question Manager</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
                                 {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
@@ -65,7 +65,7 @@ class App extends React.Component {
                                     <PrivateRoute exact path="/" component={HomePage} />
                                     <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                                     <PrivateRoute path="/positionEditor" roles={[Role.Admin]} component={PositionEditorPage}/>
-                                    <PrivateRoute path="/questionManager" roles={[Role.Admin]} component={QuestionManagerPage}/>
+                                    <PrivateRoute path="/questionManager" roles={[Role.Admin, Role.Editor]} component={QuestionManagerPage}/>
                                     <PrivateRoute path="/testManager" roles={[Role.Admin, Role.Editor]} component={TestManagerPage}/>
                                     <PrivateRoute path="/testEditor/:testName" roles={[Role.Admin, Role.Editor]} component={TestEditorPage}/>
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>

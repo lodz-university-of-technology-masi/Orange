@@ -87,7 +87,7 @@ class TestManagerPage extends React.Component {
     render() {
         return (
             <div>
-                    <List subheader={<ListSubheader><h3>Tests</h3></ListSubheader>}>
+                    <List subheader={<ListSubheader  disableSticky><h3>Tests</h3></ListSubheader>}>
                              {this.state.tests && this.state.tests.map(test =>
                                 <ListItem key={test.name}>
                                     <ListItemText primary={test.name} secondary={test.position && test.position.name} /> 

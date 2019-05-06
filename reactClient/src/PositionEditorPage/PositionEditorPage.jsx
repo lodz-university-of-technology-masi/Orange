@@ -68,7 +68,7 @@ class PositionEditorPage extends React.Component {
     render() {
         return (
             <div>
-                    <List subheader={<ListSubheader><h3>Positions</h3></ListSubheader>}>
+                    <List subheader={<ListSubheader  disableSticky><h3>Positions</h3></ListSubheader>}>
                              {this.state.positions.map(position =>
                                 <ListItem key={position.name}>
                                     <ListItemText primary={position.name} /> 
