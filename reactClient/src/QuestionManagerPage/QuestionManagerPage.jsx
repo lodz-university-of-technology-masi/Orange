@@ -8,6 +8,7 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Switch from '@material-ui/core/Switch';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
+import EditIcon from '@material-ui/icons/Edit';
 import TextField from '@material-ui/core/TextField';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Divider from '@material-ui/core/Divider';
@@ -57,6 +58,10 @@ class QuestionManagerPage extends React.Component {
         questionService.remove(name)
     }
 
+    handleEdit(question){
+        this.props.history.push({pathname: `/questionEditor/${question.name}`, query: {question}})
+    }
+
     handleAdd = () => {
         if(this.state.contentText.length < 5){
             this.setState({contentTextError: true})
@@ -83,6 +88,9 @@ class QuestionManagerPage extends React.Component {
                             <ListItemSecondaryAction>
                             <IconButton onClick={() =>this.handleRemove(qst.name)} aria-label="Delete">
                                 <DeleteIcon />
+                            </IconButton>
+                            <IconButton onClick={() =>this.handleEdit(qst)}>
+                                <EditIcon />
                             </IconButton>
                             </ListItemSecondaryAction>
                         </ListItem>

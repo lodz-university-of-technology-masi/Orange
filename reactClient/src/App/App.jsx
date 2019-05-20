@@ -14,6 +14,7 @@ import { TestEditorPage } from '@/TestEditorPage';
 import {EditorManagerPage} from "@/EditorManagerPage";
 import {EditorFormPage} from "@/EditorsFormPage";
 import {QuestionManagerPage} from "@/QuestionManagerPage";
+import {QuestionEditorPage} from "@/QuestionEditorPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -66,6 +67,7 @@ class App extends React.Component {
                                     <PrivateRoute path="/admin" roles={[Role.Admin]} component={AdminPage} />
                                     <PrivateRoute path="/positionEditor" roles={[Role.Admin]} component={PositionEditorPage}/>
                                     <PrivateRoute path="/questionManager" roles={[Role.Admin, Role.Editor]} component={QuestionManagerPage}/>
+                                    <PrivateRoute path="/questionEditor/:questionName" roles={[Role.Admin, Role.Editor]} component={QuestionEditorPage}/>
                                     <PrivateRoute path="/testManager" roles={[Role.Admin, Role.Editor]} component={TestManagerPage}/>
                                     <PrivateRoute path="/testEditor/:testName" roles={[Role.Admin, Role.Editor]} component={TestEditorPage}/>
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>
