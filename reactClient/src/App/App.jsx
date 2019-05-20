@@ -15,6 +15,7 @@ import {EditorManagerPage} from "@/EditorManagerPage";
 import {EditorFormPage} from "@/EditorsFormPage";
 import {QuestionManagerPage} from "@/QuestionManagerPage";
 import {QuestionEditorPage} from "@/QuestionEditorPage";
+import {LanguageManagerPage} from "@/LanguageManagerPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -53,6 +54,7 @@ class App extends React.Component {
                                 {isAdmin && <Link to="/positionEditor" className="nav-item nav-link">Positions Manager</Link>}
                                 {(isAdmin || isEditor) && <Link to="/testManager" className="nav-item nav-link">Test Manager</Link>}
                                 {(isAdmin || isEditor) && <Link to="/questionManager" className="nav-item nav-link">Question Manager</Link>}
+                                {(isAdmin || isEditor) && <Link to="/languageManager" className="nav-item nav-link">Language Manager</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
                                 {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
@@ -68,6 +70,7 @@ class App extends React.Component {
                                     <PrivateRoute path="/positionEditor" roles={[Role.Admin]} component={PositionEditorPage}/>
                                     <PrivateRoute path="/questionManager" roles={[Role.Admin, Role.Editor]} component={QuestionManagerPage}/>
                                     <PrivateRoute path="/questionEditor/:questionName" roles={[Role.Admin, Role.Editor]} component={QuestionEditorPage}/>
+                                    <PrivateRoute path="/languageManager" roles={[Role.Admin, Role.Editor]} component={LanguageManagerPage}/>
                                     <PrivateRoute path="/testManager" roles={[Role.Admin, Role.Editor]} component={TestManagerPage}/>
                                     <PrivateRoute path="/testEditor/:testName" roles={[Role.Admin, Role.Editor]} component={TestEditorPage}/>
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>
