@@ -31,23 +31,39 @@ class QuestionEditorPage extends React.Component {
     componentDidMount() {
         if(!this.props.location.query){
             questionService.get(this.props.match.params.questionName).then(
-                question => this.setState({ question })
+                question => {
+                    this.setQuestion(question);
+                }
             );
         } else{
-            this.setState({question: this.props.location.query.question});
+            const question = this.props.location.query.question;
+            this.setQuestion(question);
         }
+    }
+
+    setQuestion = (question) => {
         languageService.getAll().then(allLanguages => {
             const newAccessibleLanguages = [];
             var newSelectedLanguage = null;
             allLanguages.forEach(l => {
-                newAccessibleLanguages.push(l);
+                var shouldAdd = true;
+                if (question.questionTranslations) {
+                    question.questionTranslations.forEach(qt => {
+                        if (qt.languageName === l.name) {
+                            shouldAdd = false;
+                        }
+                    });
+                }
+                if (shouldAdd) {
+                    newAccessibleLanguages.push(l);
+                }
             });
             if (newAccessibleLanguages.length > 0) {
                 newSelectedLanguage = newAccessibleLanguages[0].name;
             }
-            this.setState({ allLanguages, newSelectedLanguage, newAccessibleLanguages })
-        })
-    }
+            this.setState({ question, allLanguages, newSelectedLanguage, newAccessibleLanguages })
+        }
+    )};
 
 
     handleNewTextChange = (event) => {
@@ -95,12 +111,28 @@ class QuestionEditorPage extends React.Component {
                                 variant="outlined"
                             />
                         </ListItem>
-                        <ListItem>
-                            <Typography component="h2" variant="display3" gutterBottom
-                                        style={{fontSize: '1rem'}}>
-                                Translations
-                            </Typography>
-                        </ListItem>
+
+                        { question.questionTranslations && question.questionTranslations.length > 1 &&
+                            <ListItem>
+                                <Typography component="h2" variant="display3" gutterBottom
+                                            style={{fontSize: '1rem'}}>
+                                    Translations
+                                </Typography>
+                            </ListItem>
+                        }
+
+                        { question.questionTranslations && question.questionTranslations.map(qt =>
+                              <ListItem key={`translation-${qt.languageName}`}>
+                                  <TextField
+                                      label={`Question in  ${qt.languageName}`}
+                                      value={qt.content}
+                                      disabled
+                                      multiline
+                                      style={{width: '100%'}}
+                                      variant="outlined"
+                                  />
+                              </ListItem>
+                        )}
 
                         {newAccessibleLanguages.length > 0 &&
                             <ListItem>
