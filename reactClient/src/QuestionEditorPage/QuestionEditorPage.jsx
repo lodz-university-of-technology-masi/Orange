@@ -3,6 +3,15 @@ import {questionService} from "@/_services";
 import Typography from '@material-ui/core/Typography';
 import TextField from "@material-ui/core/TextField";
 import Grid from "@material-ui/core/Grid";
+import ListItem from "@material-ui/core/ListItem";
+import Select from "@material-ui/core/Select";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
+import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
+import IconButton from "@material-ui/core/IconButton";
+import AddIcon from '@material-ui/icons/Add';
+import List from "@material-ui/core/List";
+import ListSubheader from "@material-ui/core/ListSubheader";
 
 class QuestionEditorPage extends React.Component {
     constructor(props) {
@@ -10,8 +19,10 @@ class QuestionEditorPage extends React.Component {
 
         this.state = {
             question: null,
-            isChanged: false,
-            isSubmitting: false,
+            newContentText: null,
+            newContentTextError: null,
+            newSelectedLanguage: null,
+            newAccessibleLanguages: [],
         };
     }
 
@@ -25,47 +36,88 @@ class QuestionEditorPage extends React.Component {
         }
     }
 
-    onSubmit() {
-    }
+
+    handleNewTextChange = (event) => {
+        this.setState({
+            newContentText: event.target.value,
+        });
+    };
+
+    handleNewSelectChange = (event) => {
+        this.setState({
+            newSelectedLanguage: event.target.value,
+        });
+    };
+
+    handleAdd = () => {
+        console.log('handle add')
+    };
 
     render() {
-        const {question, isSubmitting, isChanged} = this.state;
+        const {question,
+            newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages} = this.state;
         return (
             <div>
                 {(question) &&
-                    <div>
-                        <Grid container>
-                            <Grid item xs>
+                    <div><List subheader={<ListSubheader disableSticky><h3>{question.name}</h3></ListSubheader>}>
+                        <ListItem>
+                            <TextField
+                                label="Question in english"
+                                value={question.content}
+                                disabled
+                                multiline
+                                style={{width: '100%'}}
+                                variant="outlined"
+                            />
+                        </ListItem>
+                        <ListItem>
+                            <Typography component="h2" variant="display3" gutterBottom
+                                        style={{fontSize: '1rem'}}>
+                                Translations
+                            </Typography>
+                        </ListItem>
+
+                        {newAccessibleLanguages.length > 0 &&
+                            <ListItem>
                                 <Typography component="h2" variant="display3" gutterBottom
-                                            style={{fontSize: '1.75rem', marginBottom: '30px'}}>
-                                    {question.name}
+                                            style={{fontSize: '1rem'}}>
+                                    Add Translation
                                 </Typography>
-                            </Grid>
-                            {(isChanged) &&
-                                <Grid item xs style={{textAlign: 'right'}}>
-                                    <button type="submit" className="btn btn-primary"
-                                            disabled={isSubmitting}>
-                                        Submit changes
-                                    </button>
-                                    {/*{isSubmitting &&*/}
-                                    {/*<img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />*/}
-                                    {/*}*/}
-                                </Grid>
-                            }
-                        </Grid>
-                        <TextField
-                            label="Question in english"
-                            value={question.content}
-                            disabled
-                            multiline
-                            style={{width: '100%'}}
-                            variant="outlined"
-                        />
-                        <Typography component="h2" variant="display3" gutterBottom
-                                    style={{fontSize: '1rem', marginTop: '20px', marginBottom: '20px'}}>
-                            Translations
-                        </Typography>
-                    </div>
+                            </ListItem>
+                        }
+                        { newAccessibleLanguages.length > 0 &&
+                            <ListItem>
+                                <TextField
+                                    id="standard-dense"
+                                    label="Question Content"
+                                    value={newContentText}
+                                    onChange={this.handleTextChange}
+                                    error={newContentTextError}
+                                    style={{marginRight: 18}}
+                                    variant="outlined"
+                                />
+                                <Select
+                                    value={newSelectedLanguage}
+                                    onChange={this.handleNewSelectChange}
+                                    input={<OutlinedInput labelWidth={0}/>}
+                                    style={{width: '30%'}}
+                                    displayEmpty
+                                >
+                                    <MenuItem value="" disabled>
+                                        Select Question Type
+                                    </MenuItem>
+                                    {newAccessibleLanguages.map(l =>
+                                        <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
+                                    )}
+                                </Select>
+                                <ListItemSecondaryAction>
+                                    <IconButton onClick={() =>this.handleAdd()}>
+                                        <AddIcon />
+                                    </IconButton>
+                                </ListItemSecondaryAction>
+                            </ListItem>
+                        }
+                    </List></div>
 
                 }
             </div>
