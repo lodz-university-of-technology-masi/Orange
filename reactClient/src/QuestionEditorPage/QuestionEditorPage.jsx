@@ -93,8 +93,11 @@ class QuestionEditorPage extends React.Component {
         };
 
         questionTranslationService.add(newTranslation).then(res => {
+            if (!question.questionTranslations) {
+                question.questionTranslations = [];
+            }
             question.questionTranslations.push(newTranslation);
-            this.setState({ question });
+            this.setQuestion(question);
         })
     };
 
