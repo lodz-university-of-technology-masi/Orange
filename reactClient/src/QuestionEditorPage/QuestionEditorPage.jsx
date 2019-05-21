@@ -2,7 +2,6 @@ import React from 'react';
 import {questionService} from "@/_services";
 import Typography from '@material-ui/core/Typography';
 import TextField from "@material-ui/core/TextField";
-import Grid from "@material-ui/core/Grid";
 import ListItem from "@material-ui/core/ListItem";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
@@ -12,6 +11,8 @@ import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
 import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
+import {languageService} from "@/_services/language.service";
+import {questionTranslationService} from "@/_services/questionTranslation.service";
 
 class QuestionEditorPage extends React.Component {
     constructor(props) {
@@ -19,8 +20,9 @@ class QuestionEditorPage extends React.Component {
 
         this.state = {
             question: null,
-            newContentText: null,
-            newContentTextError: null,
+            allLanguages: [],
+            newContentText: '',
+            newContentTextError: false,
             newSelectedLanguage: null,
             newAccessibleLanguages: [],
         };
@@ -34,6 +36,17 @@ class QuestionEditorPage extends React.Component {
         } else{
             this.setState({question: this.props.location.query.question});
         }
+        languageService.getAll().then(allLanguages => {
+            const newAccessibleLanguages = [];
+            var newSelectedLanguage = null;
+            allLanguages.forEach(l => {
+                newAccessibleLanguages.push(l);
+            });
+            if (newAccessibleLanguages.length > 0) {
+                newSelectedLanguage = newAccessibleLanguages[0].name;
+            }
+            this.setState({ allLanguages, newSelectedLanguage, newAccessibleLanguages })
+        })
     }
 
 
@@ -50,7 +63,19 @@ class QuestionEditorPage extends React.Component {
     };
 
     handleAdd = () => {
-        console.log('handle add')
+        const { question, newContentText, newSelectedLanguage } = this.state;
+
+        if (newContentText.length < 5) {
+            this.setState({newContentTextError: true});
+            return;
+        }
+
+        questionTranslationService.add(
+            {content: newContentText,
+                languageName: newSelectedLanguage,
+                questionName: question.name }).then(res => {
+            console.log('successfully added')
+        })
     };
 
     render() {
@@ -91,7 +116,7 @@ class QuestionEditorPage extends React.Component {
                                     id="standard-dense"
                                     label="Question Content"
                                     value={newContentText}
-                                    onChange={this.handleTextChange}
+                                    onChange={this.handleNewTextChange}
                                     error={newContentTextError}
                                     style={{marginRight: 18}}
                                     variant="outlined"
