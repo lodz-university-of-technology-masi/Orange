@@ -10,5 +10,6 @@ import lombok.*;
 @Builder
 public class QuestionTranslationBean {
     private String content;
+    private String questionName;
     private String languageName;
 }

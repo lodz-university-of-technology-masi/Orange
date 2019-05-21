@@ -9,6 +9,6 @@ import java.util.List;
 @Repository
 public interface LanguageRepository extends CrudRepository<Language, Long> {
     List<Language> findAll();
-    void findByName(String name);
+    Language findByName(String name);
     void deleteByName(String name);
 }
