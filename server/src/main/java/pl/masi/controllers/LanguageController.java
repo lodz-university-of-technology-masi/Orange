@@ -28,7 +28,7 @@ public class LanguageController {
 
     private final ILanguageService languageService;
 
-    @GetMapping(value = "/list", consumes = "application/json", produces = "application/json")
+    @GetMapping(value = "/list", produces = "application/json")
     public List<LanguageBean> getLanguages() throws AppException {
         return languageService.getAll().stream().map(language -> LanguageBean.builder()
                 .name(language.getName())
@@ -45,7 +45,7 @@ public class LanguageController {
                 .build();
     }
 
-    @DeleteMapping(value = "/{name}", consumes = "application/json")
+    @DeleteMapping(value = "/delete/{name}", consumes = "application/json")
     public void deletePosition(@PathVariable String name) throws AppException {
         languageService.deleteLanguage(name);
     }

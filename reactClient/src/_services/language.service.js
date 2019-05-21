@@ -9,7 +9,7 @@ export const languageService = {
 
 function getAll() {
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/language`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/language/list`, requestOptions).then(handleResponse);
 }
 
 function create(name) {

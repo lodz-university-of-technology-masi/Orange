@@ -26,6 +26,11 @@ class LanguageManagerPage extends React.Component {
     }
 
     componentDidMount() {
+        languageService.getAll().then( ls => {
+            const languages = [];
+            ls.forEach(l => languages.push({ name: l.name }))
+            this.setState({languages})
+        } )
     }
 
     handleTextChange = (event) => {
@@ -67,7 +72,7 @@ class LanguageManagerPage extends React.Component {
                     </ListItem>
 
                     { languages.map(language =>
-                        <ListItem>
+                        <ListItem key={`custom-lang-${language.name}`}>
                             <ListItemText primary={language.name}/>
                         </ListItem>
                     )}
