@@ -45,7 +45,7 @@ public class LanguageController {
                 .build();
     }
 
-    @DeleteMapping(value = "/delete/{name}", consumes = "application/json")
+    @DeleteMapping(value = "/delete/{name}")
     public void deletePosition(@PathVariable String name) throws AppException {
         languageService.deleteLanguage(name);
     }

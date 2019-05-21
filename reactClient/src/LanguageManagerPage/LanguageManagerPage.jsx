@@ -12,6 +12,7 @@ import ListItemSecondaryAction from "@material-ui/core/ListItemSecondaryAction";
 import IconButton from "@material-ui/core/IconButton";
 import AddIcon from '@material-ui/icons/Add';
 import {languageService} from "@/_services/language.service";
+import DeleteIcon from '@material-ui/icons/Delete';
 
 
 class LanguageManagerPage extends React.Component {
@@ -61,6 +62,21 @@ class LanguageManagerPage extends React.Component {
         )
     };
 
+    handleRemove = (languageName) => {
+        languageService.remove(languageName).then( response => {
+            const { languages } = this.state;
+            var i = 0;
+            while(i < languages.length) {
+                if (languages[i].name === languageName) {
+                    languages.splice(i, 1);
+                    break;
+                }
+                i++;
+            }
+            this.setState({ languages });
+        })
+    };
+
     render() {
         const { languageNameText, languageNameTextError, languageAddPending, languages } = this.state;
         return (
@@ -74,6 +90,9 @@ class LanguageManagerPage extends React.Component {
                     { languages.map(language =>
                         <ListItem key={`custom-lang-${language.name}`}>
                             <ListItemText primary={language.name}/>
+                            <IconButton onClick={() =>this.handleRemove(language.name)} aria-label="Delete">
+                                <DeleteIcon />
+                            </IconButton>
                         </ListItem>
                     )}
 
