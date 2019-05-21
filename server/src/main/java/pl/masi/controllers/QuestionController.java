@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import pl.masi.beans.QuestionBean;
+import pl.masi.beans.QuestionTranslationBean;
 import pl.masi.entities.Question;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.IQuestionService;
@@ -11,6 +12,7 @@ import pl.masi.services.interfaces.IQuestionService;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/question")
@@ -37,8 +39,18 @@ public class QuestionController {
 
     @GetMapping
     @RequestMapping(value = "/{name}")
-    public Question getQuestionByName(@PathVariable String name) throws AppException {
-        return questionService.getByName(name);
+    public QuestionBean getQuestionByName(@PathVariable String name) throws AppException {
+        Question question = questionService.getByName(name);
+        return QuestionBean.builder()
+                .name(question.getName())
+                .content(question.getContent())
+                .questionType(question.getQuestionType())
+                .questionTranslations(question.getQuestionTranslations().stream().map(qt ->
+                        QuestionTranslationBean.builder()
+                                .languageName(qt.getLanguage().getName())
+                                .content(qt.getContent())
+                                .build()).collect(Collectors.toList()))
+                .build();
     }
 
     @DeleteMapping(value = "/{name}")

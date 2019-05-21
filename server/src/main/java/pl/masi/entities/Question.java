@@ -37,6 +37,10 @@ public class Question {
     @ManyToMany(mappedBy = "questions")
     private List<Test> tests;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "question")
+    private List<QuestionTranslation> questionTranslations;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     private QuestionType questionType;
