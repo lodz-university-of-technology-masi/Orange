@@ -116,7 +116,7 @@ class QuestionEditorPage extends React.Component {
                             />
                         </ListItem>
 
-                        { question.questionTranslations && question.questionTranslations.length > 1 &&
+                        { question.questionTranslations && question.questionTranslations.length > 0 &&
                             <ListItem>
                                 <Typography component="h2" variant="display3" gutterBottom
                                             style={{fontSize: '1rem'}}>
