@@ -5,6 +5,9 @@ import {ErrorMessage, Field, Form, Formik} from "formik";
 import * as Yup from "yup";
 import {authenticationService, currentUserSubject} from "@/_services";
 import {userService} from "@/_services/user.service";
+import DialogTitle from "@material-ui/core/DialogTitle";
+import Dialog from "@material-ui/core/Dialog";
+import Button from "@material-ui/core/Button";
 
 class AccountEditorPage extends React.Component {
     constructor(props) {
@@ -13,6 +16,7 @@ class AccountEditorPage extends React.Component {
         this.state = {
             languages: [],
             selectedLanguage: '',
+            success: false,
             user: null,
         };
     };
@@ -36,12 +40,16 @@ class AccountEditorPage extends React.Component {
         });
     }
 
-    onChangeSelectedLanguage = (event) => {
+    handleChangeSelectedLanguage = (event) => {
         this.setState({selectedLanguage: event.target.value})
     };
 
+    handleCloseSuccessModal = () => {
+        this.setState({success: false})
+    };
+
     render() {
-        const { languages, user, selectedLanguage } = this.state;
+        const { languages, user, selectedLanguage, success } = this.state;
 
         return (
             <div>
@@ -64,8 +72,9 @@ class AccountEditorPage extends React.Component {
                         userService.updateAccount(user.username, user.permissionName,
                                                     firstName, lastName, selectedLanguage).then(
                             u => {
+                                setSubmitting(false);
                                 localStorage.setItem('currentUser', JSON.stringify(u));
-                                this.setState({user: u})
+                                this.setState({user: u, success: true})
                             },
                             error => {
                                 setSubmitting(false);
@@ -91,7 +100,7 @@ class AccountEditorPage extends React.Component {
                                 <label htmlFor="preferredLanguageName">Preferred Language</label>
                                 <select name="preferredLanguageName" className='form-control'
                                         style={{width: '100%'}} value={selectedLanguage}
-                                        onChange={this.onChangeSelectedLanguage}
+                                        onChange={this.handleChangeSelectedLanguage}
                                 >
                                     <option value="" disabled>
                                         Select Preferred Language
@@ -115,6 +124,10 @@ class AccountEditorPage extends React.Component {
                     )}
                 />
                 }
+                <Dialog open={success} onClose={this.handleCloseSuccessModal} aria-labelledby="success-dialog">
+                    <DialogTitle>Success!</DialogTitle>
+                    <Button onClick={this.handleCloseSuccessModal}>OK!</Button>
+                </Dialog>
             </div>
         );
     }
