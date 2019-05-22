@@ -17,7 +17,7 @@ function getByUsername(username) {
     return fetch(`${config.apiUrl}/account/${username}`, requestOptions).then(handleResponse);
 }
 
-function createCandidateAccount(username, password, firstName, lastName) {
+function createCandidateAccount(username, password, firstName, lastName, preferredLanguageName) {
 
     const permissionName = 'CANDIDATE';
 
@@ -27,7 +27,7 @@ function createCandidateAccount(username, password, firstName, lastName) {
             'Content-Type': 'application/json',
             // 'Authorization': localStorage.getItem('Token'),
         }),
-        body: JSON.stringify({ username, password, permissionName, firstName, lastName })
+        body: JSON.stringify({ username, password, permissionName, firstName, lastName, preferredLanguageName })
 
     };
     console.log(requestOptions);

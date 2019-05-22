@@ -2,6 +2,12 @@ import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { userService, authenticationService } from '@/_services';
 import * as Yup from "yup";
+import TextField from "@material-ui/core/TextField";
+import Select from "@material-ui/core/Select";
+import OutlinedInput from "@material-ui/core/OutlinedInput";
+import MenuItem from "@material-ui/core/MenuItem";
+import ListItem from "@material-ui/core/ListItem";
+import {languageService} from "@/_services/language.service";
 
 class RegistrationPage extends React.Component {
     constructor(props) {
@@ -10,10 +16,22 @@ class RegistrationPage extends React.Component {
         this.state = {
             currentUser: authenticationService.currentUserValue,
             paramsEditorUsername: props.match.params.username,
+            languages: [],
+            selectedLanguageName: null,
         };
     }
 
+    componentDidMount() {
+        languageService.getAll().then(res => {
+            if (res && res.length > 0) {
+                this.setState({ languages: res, selectedLanguage: res[0].name })
+            }
+        });
+    }
+
     render() {
+
+        const { languages, selectedLanguage } = this.state;
 
         return (
             <div>
@@ -24,19 +42,23 @@ class RegistrationPage extends React.Component {
                         username: '',
                         password: '',
                         firstName: '',
-                        lastName:  ''
+                        lastName:  '',
+                        preferredLanguageName: selectedLanguage,
                     }}
                     validationSchema={Yup.object().shape({
                         username: Yup.string().required('Username is required'),
                         password: Yup.string().required('Password is required'),
                         passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
                         firstName: Yup.string().required('First Name is required'),
-                        lastName: Yup.string().required('Last Name is required')
+                        lastName: Yup.string().required('Last Name is required'),
+                        preferredLanguageName: Yup.string(),
                     })}
-                    onSubmit={({ username, password, firstName, lastName }, { setStatus, setSubmitting }) => {
+                    onSubmit={({ username, password, firstName, lastName, preferredLanguageName },
+                               { setStatus, setSubmitting }) => {
                         setStatus();
 
-                        const onSubmit = userService.createCandidateAccount(username, password, firstName, lastName);
+                        const onSubmit = userService.createCandidateAccount(username, password, firstName,
+                                                                            lastName, preferredLanguageName);
 
                         onSubmit.then(
                             () => {
@@ -75,6 +97,22 @@ class RegistrationPage extends React.Component {
                                 <Field name="lastName" className={'form-control' + (errors.lastName && touched.lastName ? ' is-invalid' : '')} />
                                 <ErrorMessage name="lastName" component="div" className="invalid-feedback" />
                             </div>
+
+
+                            <div className="form-group">
+                                <label htmlFor="preferredLanguageName">Preferred Language</label>
+                                <select id="preferredLanguageName" name="preferredLanguageName" className='form-control'
+                                    style={{width: '100%'}}
+                                >
+                                    <option value="" disabled>
+                                        Select Preferred Language
+                                    </option>
+                                    {languages.map(l =>
+                                        <option key={l.name} value={l.name}>{l.name}</option>
+                                    )}
+                                </select>
+                            </div>
+
                             <div className="form-group">
                                 <button type="submit" className="btn btn-primary" disabled={isSubmitting}>{'Register'}</button>
                                 {isSubmitting &&
