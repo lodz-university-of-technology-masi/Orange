@@ -28,7 +28,7 @@ class QuestionEditorPage extends React.Component {
             newSelectedLanguage: null,
             newAccessibleLanguages: [],
             editEnglishBase: false,
-            currentlyEditedName: null,
+            editedTranslationLangName: null,
         };
     }
 
@@ -108,7 +108,7 @@ class QuestionEditorPage extends React.Component {
     handleEnglishBaseChange = (event) => {
         const { question } = this.state;
         question.content = event.target.value;
-        this.setState({ question });
+        this.setQuestion(question);
     };
 
     handleEditEnglishBase = () => {
@@ -122,10 +122,29 @@ class QuestionEditorPage extends React.Component {
         });
     };
 
+    handleTranslationChange = (event, translation) => {
+        const { question } = this.state;
+        question.questionTranslations.forEach(qt => {
+            if(qt.languageName === translation.languageName) {
+                qt.content = event.target.value;
+            }
+        });
+        this.setQuestion(question);
+    };
+
+    handleEditTranslation = (translation) => {
+        this.setState({ editedTranslationLangName: translation.languageName });
+    };
+
+    handleSubmitEditTranslation = (translation) => {
+        this.setState({ editedTranslationLangName: null });
+    };
+
     render() {
-        const {question, editEnglishBase,
+        const {question, editEnglishBase, editedTranslationLangName,
             newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages,
              } = this.state;
+        const sthEdited = (editEnglishBase || editedTranslationLangName !== null);
         return (
             <div>
                 {(question) &&
@@ -140,7 +159,7 @@ class QuestionEditorPage extends React.Component {
                                 style={{width: '100%'}}
                                 variant="outlined"
                             />
-                            { !editEnglishBase &&
+                            { !editEnglishBase && !sthEdited &&
                                 <IconButton onClick={() =>this.handleEditEnglishBase()}>
                                     <EditIcon />
                                 </IconButton>
@@ -166,11 +185,22 @@ class QuestionEditorPage extends React.Component {
                                   <TextField
                                       label={`Question in  ${qt.languageName}`}
                                       value={qt.content}
-                                      disabled
+                                      disabled={editedTranslationLangName !== qt.languageName}
                                       multiline
+                                      onChange={e => this.handleTranslationChange(e, qt)}
                                       style={{width: '100%'}}
                                       variant="outlined"
                                   />
+                                  { editedTranslationLangName !== qt.languageName && !sthEdited &&
+                                  <IconButton onClick={() =>this.handleEditTranslation(qt)}>
+                                      <EditIcon />
+                                  </IconButton>
+                                  }
+                                  { editedTranslationLangName === qt.languageName &&
+                                  <IconButton onClick={() =>this.handleSubmitEditTranslation(qt)}>
+                                      <DoneIcon />
+                                  </IconButton>
+                                  }
                               </ListItem>
                         )}
 
