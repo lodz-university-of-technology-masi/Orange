@@ -30,8 +30,6 @@ class AccountEditorPage extends React.Component {
 
             if (user) {
                 for(let i = 0; i < languages.length; i++) {
-                    console.log(languages[i].name)
-                    console.log(user.preferredLanguageName)
                     if (languages[i].name === user.preferredLanguageName && user.preferredLanguageName !== null) {
                         selectedLanguage = user.preferredLanguageName;
                         break;
