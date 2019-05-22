@@ -7,6 +7,7 @@ export const questionService = {
     get,
     remove,
     add,
+    update,
 };
 
 function getAll() {
@@ -33,9 +34,25 @@ function remove(name){
 function add(obj){
     const requestOptions = {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token')
+        },
         body: JSON.stringify(obj)
     };
     return fetch(`${config.apiUrl}/question`, requestOptions)
-    .then(handleResponse);
+        .then(handleResponse);
+}
+
+function update(obj){
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token')
+        },
+        body: JSON.stringify(obj)
+    };
+    return fetch(`${config.apiUrl}/question`, requestOptions)
+        .then(handleResponse);
 }

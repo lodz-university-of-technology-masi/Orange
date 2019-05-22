@@ -53,6 +53,11 @@ public class QuestionController {
                 .build();
     }
 
+    @PutMapping
+    public void update(@RequestBody QuestionBean questionBean) throws AppException {
+        questionService.update(questionBean);
+    }
+
     @DeleteMapping(value = "/{name}")
     public void deleteQuestionByName(@PathVariable String name) throws AppException {
         questionService.deleteByName(name);

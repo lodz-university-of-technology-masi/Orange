@@ -13,6 +13,8 @@ import List from "@material-ui/core/List";
 import ListSubheader from "@material-ui/core/ListSubheader";
 import {languageService} from "@/_services/language.service";
 import {questionTranslationService} from "@/_services/questionTranslation.service";
+import EditIcon from '@material-ui/icons/Edit';
+import DoneIcon from '@material-ui/icons/Done';
 
 class QuestionEditorPage extends React.Component {
     constructor(props) {
@@ -25,6 +27,8 @@ class QuestionEditorPage extends React.Component {
             newContentTextError: false,
             newSelectedLanguage: null,
             newAccessibleLanguages: [],
+            editEnglishBase: false,
+            currentlyEditedName: null,
         };
     }
 
@@ -101,9 +105,27 @@ class QuestionEditorPage extends React.Component {
         })
     };
 
+    handleEnglishBaseChange = (event) => {
+        const { question } = this.state;
+        question.content = event.target.value;
+        this.setState({ question });
+    };
+
+    handleEditEnglishBase = () => {
+        this.setState({editEnglishBase: true})
+    };
+
+    handleSubmitEditEnglishBase = () => {
+        const { question } = this.state;
+        questionService.update({name: question.name, content: question.content}).then(res => {
+            this.setState({editEnglishBase: false})
+        });
+    };
+
     render() {
-        const {question,
-            newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages} = this.state;
+        const {question, editEnglishBase,
+            newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages,
+             } = this.state;
         return (
             <div>
                 {(question) &&
@@ -112,11 +134,22 @@ class QuestionEditorPage extends React.Component {
                             <TextField
                                 label="Question in english"
                                 value={question.content}
-                                disabled
+                                disabled={!editEnglishBase}
+                                onChange={this.handleEnglishBaseChange}
                                 multiline
                                 style={{width: '100%'}}
                                 variant="outlined"
                             />
+                            { !editEnglishBase &&
+                                <IconButton onClick={() =>this.handleEditEnglishBase()}>
+                                    <EditIcon />
+                                </IconButton>
+                            }
+                            { editEnglishBase &&
+                                <IconButton onClick={() =>this.handleSubmitEditEnglishBase()}>
+                                    <DoneIcon />
+                                </IconButton>
+                            }
                         </ListItem>
 
                         { question.questionTranslations && question.questionTranslations.length > 0 &&
