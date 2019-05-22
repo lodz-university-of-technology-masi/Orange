@@ -19,4 +19,5 @@ public class AccountBean {
     private String firstName;
     private String lastName;
     private String permissionName;
+    private String preferredLanguageName;
 }
