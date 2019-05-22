@@ -54,7 +54,7 @@ public class AccountController {
                 .firstName(acc.getFirstName())
                 .lastName(acc.getLastName())
                 .permissionName(acc.getPermission().getPermissionName())
-                .preferredLanguageName(acc.getPermission().getPermissionName())
+                .preferredLanguageName(acc.getPreferredLanguage().getName())
                 .build();
     }
 
