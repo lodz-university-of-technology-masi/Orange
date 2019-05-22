@@ -46,9 +46,16 @@ public class AccountController {
         return  accountService.createAccount(accountBean);
     }
 
-    @PutMapping(value = "/update")
-    public Account updateAccount(@RequestBody AccountBean accountBean) throws AppException {
-        return accountService.updateAccount(accountBean);
+    @PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
+    public AccountBean updateAccount(@RequestBody AccountBean accountBean) throws AppException {
+        Account acc = accountService.updateAccount(accountBean);
+        return AccountBean.builder()
+                .username(acc.getUsername())
+                .firstName(acc.getFirstName())
+                .lastName(acc.getLastName())
+                .permissionName(acc.getPermission().getPermissionName())
+                .preferredLanguageName(acc.getPermission().getPermissionName())
+                .build();
     }
 
     @DeleteMapping(value = "/delete/{username}")

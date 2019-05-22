@@ -25,7 +25,6 @@ function login(username, password) {
             return response.json();
         })
         .then(data => {
-            console.log(data);
             localStorage.setItem('currentUser', JSON.stringify(data));
             currentUserSubject.next(data);
             return localStorage.getItem('currentUser');

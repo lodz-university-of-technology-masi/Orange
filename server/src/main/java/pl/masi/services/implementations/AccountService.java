@@ -60,6 +60,7 @@ public class AccountService implements IAccountService {
                 .firstName(account.get().getFirstName())
                 .lastName(account.get().getLastName())
                 .permissionName(account.get().getPermission().getPermissionName())
+                .preferredLanguageName(account.get().getPreferredLanguage().getName())
                 .build();
     }
 

@@ -81,6 +81,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
                             .firstName(account.getFirstName())
                             .lastName(account.getLastName())
                             .permissionName(account.getPermission().getPermissionName())
+                            .preferredLanguageName(account.getPreferredLanguage().getName())
                             .username(account.getUsername())
                             .build()
             ));

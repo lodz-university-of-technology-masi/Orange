@@ -16,6 +16,7 @@ import {EditorFormPage} from "@/EditorsFormPage";
 import {QuestionManagerPage} from "@/QuestionManagerPage";
 import {QuestionEditorPage} from "@/QuestionEditorPage";
 import {LanguageManagerPage} from "@/LanguageManagerPage";
+import {AccountEditorPage} from "@/AccountEditorPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -24,7 +25,8 @@ class App extends React.Component {
         this.state = {
             currentUser: null,
             isAdmin: false,
-            isEditor: false
+            isEditor: false,
+            isUser: false,
         };
     }
 
@@ -33,6 +35,7 @@ class App extends React.Component {
             currentUser: x,
             isAdmin: x && x.permissionName === Role.Admin,
             isEditor: x && x.permissionName === Role.Editor,
+            isUser: x && x.permissionName === Role.User,
         }));
     }
 
@@ -42,7 +45,7 @@ class App extends React.Component {
     }
 
     render() {
-        const { currentUser, isAdmin, isEditor } = this.state;
+        const { currentUser, isAdmin, isEditor, isUser } = this.state;
         return (
             <Router history={history}>
                 <div>
@@ -57,6 +60,7 @@ class App extends React.Component {
                                 {(isAdmin || isEditor) && <Link to="/languageManager" className="nav-item nav-link">Language Manager</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
                                 {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
+                                {isUser && <Link to="/accountEditor" className="nav-item nav-link">Account Editor</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
                             </div>
                         </nav>
@@ -76,6 +80,7 @@ class App extends React.Component {
                                     <PrivateRoute path="/editorManager" roles={[Role.Admin]} component={EditorManagerPage}/>
                                     <PrivateRoute exact path="/editorForm" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>
+                                    <PrivateRoute path="/accountEditor" roles={[Role.User]} component={AccountEditorPage}/>
                                     <Route path="/login" component={LoginPage} />
                                     <Route path="/registerAccount" component={RegistrationPage} />
                                 </div>
