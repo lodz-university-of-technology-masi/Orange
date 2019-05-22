@@ -137,7 +137,11 @@ class QuestionEditorPage extends React.Component {
     };
 
     handleSubmitEditTranslation = (translation) => {
-        this.setState({ editedTranslationLangName: null });
+        const { question } = this.state;
+        translation.questionName = question.name;
+         questionTranslationService.update(translation).then(res => {
+            this.setState({ editedTranslationLangName: null });
+        });
     };
 
     render() {

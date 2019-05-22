@@ -30,6 +30,16 @@ public class QuestionTranslationController {
         questionTranslationService.add(qt);
     }
 
+    @PutMapping
+    public void updateQuestionTranslation(@RequestBody QuestionTranslationBean qtb) {
+        QuestionTranslation qt = QuestionTranslation.builder()
+                                    .content(qtb.getContent())
+                                    .language(Language.builder().name(qtb.getLanguageName()).build())
+                                    .question(Question.builder().name(qtb.getQuestionName()).build())
+                                    .build();
+        questionTranslationService.update(qt);
+    }
+
     @ExceptionHandler({AppException.class})
     public void handleException(AppException appException, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), appException.toString());

@@ -43,4 +43,13 @@ public class QuestionTranslationService implements IQuestionTranslationService {
         questionTranslationRepository.save(questionTranslation);
     }
 
+    @Override
+    public void update(QuestionTranslation questionTranslation) {
+        Language language = languageRepository.findByName(questionTranslation.getLanguage().getName());
+        Question question = questionRepository.findByName(questionTranslation.getQuestion().getName());
+        QuestionTranslation updatedQT = questionTranslationRepository.findByQuestionAndLanguage(question, language);
+        updatedQT.setContent(questionTranslation.getContent());
+        questionTranslationRepository.save(updatedQT);
+    }
+
 }
