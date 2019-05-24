@@ -85,6 +85,9 @@ class TestSelectionPage extends React.Component {
                             </select>
                         </div>
 
+                        <div className="form-group">
+                            <button className="btn btn-primary" disabled={selectedTestName === ''}>{'Fill Test!'}</button>
+                        </div>
 
                     </div>
                 }
