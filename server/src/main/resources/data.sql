@@ -13,7 +13,7 @@ INSERT INTO Position(id, name, active) VALUES (3, 'Network Engineer', true);
 -- password: password
 INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (1, 'candidate','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS','firstName','lastName',3);
 INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (2, 'moderator','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS','firstName','lastName',1);
-INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (3, 'editor','password','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS','lastName',2);
+INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (3, 'editor','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS', 'firstName', 'lastName',2);
 
 --ALTER SEQUENCE Account_seq RESTART WITH 7;
 
