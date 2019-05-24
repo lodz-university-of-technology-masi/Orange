@@ -21,7 +21,7 @@ public class PositionController {
 
     private final IPositionService positionService;
 
-    @GetMapping(value = "/list")
+    @GetMapping(value = "/list", produces = "application/json")
     public List<Position> getPositions() {
         return positionService.getAll();
     }
