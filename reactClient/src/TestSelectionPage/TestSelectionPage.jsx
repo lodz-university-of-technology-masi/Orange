@@ -1,11 +1,5 @@
 import React from 'react';
 import {positionService, testService} from "@/_services";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import MenuItem from "@material-ui/core/MenuItem";
-import {Form} from "formik";
-import FormControl from "@material-ui/core/FormControl";
-import InputLabel from "@material-ui/core/InputLabel";
 
 class TestSelectionPage extends React.Component {
     constructor(props) {
@@ -36,6 +30,11 @@ class TestSelectionPage extends React.Component {
 
     handleTestSelectChange = (event) => {
         this.setState({selectedTestName: event.target.value})
+    };
+
+    handleTestFillClick = () => {
+        const { selectedTestName } = this.state;
+        this.props.history.push({pathname: `/test/${selectedTestName}`})
     };
 
     render() {
@@ -86,7 +85,10 @@ class TestSelectionPage extends React.Component {
                         </div>
 
                         <div className="form-group">
-                            <button className="btn btn-primary" disabled={selectedTestName === ''}>{'Fill Test!'}</button>
+                            <button className="btn btn-primary" disabled={selectedTestName === ''}
+                                    onClick={this.handleTestFillClick}>
+                                {'Fill Test!'}
+                            </button>
                         </div>
 
                     </div>

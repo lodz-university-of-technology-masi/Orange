@@ -18,6 +18,7 @@ import {QuestionEditorPage} from "@/QuestionEditorPage";
 import {LanguageManagerPage} from "@/LanguageManagerPage";
 import {AccountEditorPage} from "@/AccountEditorPage";
 import {TestSelectionPage} from "@/TestSelectionPage";
+import {TestPage} from "@/TestPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -84,6 +85,7 @@ class App extends React.Component {
                                     <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/accountEditor" roles={[Role.User]} component={AccountEditorPage}/>
                                     <PrivateRoute path="/testSelection" roles={[Role.User]} component={TestSelectionPage}/>
+                                    <PrivateRoute path="/test/:testName" roles={[Role.User]} component={TestPage}/>
                                     <Route path="/login" component={LoginPage} />
                                     <Route path="/registerAccount" component={RegistrationPage} />
                                 </div>
@@ -96,4 +98,4 @@ class App extends React.Component {
     }
 }
 
-export { App }; 
+export { App };
