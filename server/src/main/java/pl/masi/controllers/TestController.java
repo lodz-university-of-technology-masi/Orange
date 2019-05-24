@@ -33,8 +33,6 @@ public class TestController {
     @GetMapping
     @RequestMapping(value = "/list")
     public List<Test> getAllTests(@Param("positionName") String positionName) {
-        System.out.println("selll");
-        System.out.println(positionName);
         return testService.getAllTests(request.getHeader("role"), positionName);
     }
 
