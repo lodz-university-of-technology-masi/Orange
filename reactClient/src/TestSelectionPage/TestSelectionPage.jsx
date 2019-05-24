@@ -22,20 +22,24 @@ class TestSelectionPage extends React.Component {
     componentDidMount() {
         positionService.getAll().then( positions => {
             if (positions.length > 1) {
-                this.setState({positions, selectedPositionName: positions[0].name} )
+                this.setState({positions} )
             }
-        });
-        testService.getAll('Network Engineer').then( tests => {
-            console.log(tests)
         });
     }
 
     handlePositionSelectChange = (event) => {
-        this.setState({selectedPositionName: event.target.value})
+        const selectedPositionName = event.target.value;
+        testService.getAll(event.target.value).then( tests => {
+            this.setState({tests, selectedPositionName, selectedTestName: ''})
+        });
+    };
+
+    handleTestSelectChange = (event) => {
+        this.setState({selectedTestName: event.target.value})
     };
 
     render() {
-        const { positions, selectedPositionName } = this.state;
+        const { positions, selectedPositionName, tests, selectedTestName } = this.state;
         return (
             <div>
                 <h2>Apply and Fill Test!</h2>
@@ -51,13 +55,37 @@ class TestSelectionPage extends React.Component {
                                 className='form-control'
                             >
                                 <option value="" disabled>
-                                    Select Question Type
+                                    Select Position
                                 </option>
                                 { positions.map(pos =>
                                     <option key={`Position ${pos.name}`} value={pos.name}>{pos.name}</option>
                                 )}
                             </select>
                         </div>
+
+                        <div hidden={ !(selectedPositionName !== '' && tests && tests.length === 0) }>
+                            Given position has no tests assigned to it.
+                        </div>
+
+                        <div className="form-group" style={{marginTop: '1rem'}} >
+                            <label>Select Test</label>
+                            <select
+                                value={selectedTestName}
+                                onChange={this.handleTestSelectChange}
+                                style={{width: '100%'}}
+                                className='form-control'
+                                disabled={tests && tests.length === 0}
+                            >
+                                <option value="" disabled>
+                                    Select Test
+                                </option>
+                                { tests.map(test =>
+                                    <option key={`Test ${test.name}`} value={test.name}>{test.name}</option>
+                                )}
+                            </select>
+                        </div>
+
+
                     </div>
                 }
             </div>
