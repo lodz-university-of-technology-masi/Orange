@@ -1,5 +1,5 @@
 import React from 'react';
-import {positionService} from "@/_services";
+import {positionService, testService} from "@/_services";
 import Select from "@material-ui/core/Select";
 import OutlinedInput from "@material-ui/core/OutlinedInput";
 import MenuItem from "@material-ui/core/MenuItem";
@@ -14,6 +14,8 @@ class TestSelectionPage extends React.Component {
         this.state = {
             positions: [],
             selectedPositionName: '',
+            tests: [],
+            selectedTestName: '',
         };
     }
 
@@ -22,7 +24,10 @@ class TestSelectionPage extends React.Component {
             if (positions.length > 1) {
                 this.setState({positions, selectedPositionName: positions[0].name} )
             }
-        })
+        });
+        testService.getAll('Network Engineer').then( tests => {
+            console.log(tests)
+        });
     }
 
     handlePositionSelectChange = (event) => {
@@ -37,14 +42,13 @@ class TestSelectionPage extends React.Component {
                 {
                     positions && positions.length > 0 &&
                     <div>
-                        <FormControl style={{marginTop: '1rem', width: '100%'}}>
-                            <InputLabel htmlFor="age-native-simple">Select Position</InputLabel>
-                            <Select
-                                native
+                        <div className="form-group" style={{marginTop: '2rem'}}>
+                            <label>Select Position</label>
+                            <select
                                 value={selectedPositionName}
                                 onChange={this.handlePositionSelectChange}
-                                input={<OutlinedInput labelWidth={0} style={{width: '100%'}}/>}
-                                displayEmpty
+                                style={{width: '100%'}}
+                                className='form-control'
                             >
                                 <option value="" disabled>
                                     Select Question Type
@@ -52,8 +56,8 @@ class TestSelectionPage extends React.Component {
                                 { positions.map(pos =>
                                     <option key={`Position ${pos.name}`} value={pos.name}>{pos.name}</option>
                                 )}
-                            </Select>
-                        </FormControl>
+                            </select>
+                        </div>
                     </div>
                 }
             </div>

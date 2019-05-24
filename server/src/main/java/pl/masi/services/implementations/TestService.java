@@ -1,5 +1,6 @@
 package pl.masi.services.implementations;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import org.springframework.stereotype.Service;
@@ -52,9 +53,12 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public List<Test> getAllTests(String header) {
+    public List<Test> getAllTests(String header, String positionName) {
         JsonObject jsonHeader = new JsonParser().parse(header).getAsJsonObject();
         String role = jsonHeader.get("permissionName").getAsString();
+        if (positionName != null) {
+            return testRepository.findByPositionName(positionName);
+        }
         if (role.equals(PermissionType.permissionTypeMap.get(PermissionType.PermissionTypeEnum.EDITOR))) {
             String username = jsonHeader.get("username").getAsString();
             return testRepository.findByCreatorUsernameUsername(username);

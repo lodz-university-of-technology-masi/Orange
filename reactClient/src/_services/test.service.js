@@ -12,9 +12,12 @@ export const testService = {
     updateName
 };
 
-function getAll() {
+function getAll(positionName) {
+    if (positionName) {
+        positionName = `?positionName=${positionName}`
+    }
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/test/list`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/test/list${positionName}`, requestOptions).then(handleResponse);
 }
 
 function get(name) {

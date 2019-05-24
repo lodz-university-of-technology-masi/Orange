@@ -55,10 +55,9 @@ public class PositionService implements IPositionService {
         if (position == null) {
             throw new AppException("POSITION_NOT_FOUND", "Position with given name does not exists");
         }
-        Test testToUpdate = testRepository.findByPositionName(name);
-        if (testToUpdate != null) {
-            testToUpdate.setPosition(null);
-            testRepository.save(testToUpdate);
+        List<Test> testsToUpdate = testRepository.findByPositionName(name);
+        if (testsToUpdate.size() > 0) {
+            testsToUpdate.forEach(t -> { t.setPosition(null); testRepository.save(t);} );
         }
         positionRepository.deleteByName(position.getName());
     }

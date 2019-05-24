@@ -12,7 +12,7 @@ public interface ITestService {
 
     Test getByName(String name) throws AppException;
 
-    List<Test> getAllTests(String header);
+    List<Test> getAllTests(String header, String positionName);
 
     void deleteByName(String name) throws AppException;
 

@@ -1,5 +1,6 @@
 package pl.masi.controllers;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,8 +32,10 @@ public class TestController {
 
     @GetMapping
     @RequestMapping(value = "/list")
-    public List<Test> getAllTests() {
-        return testService.getAllTests(request.getHeader("role"));
+    public List<Test> getAllTests(@Param("positionName") String positionName) {
+        System.out.println("selll");
+        System.out.println(positionName);
+        return testService.getAllTests(request.getHeader("role"), positionName);
     }
 
     @GetMapping
