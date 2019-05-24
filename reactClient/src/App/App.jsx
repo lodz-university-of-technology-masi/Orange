@@ -17,6 +17,7 @@ import {QuestionManagerPage} from "@/QuestionManagerPage";
 import {QuestionEditorPage} from "@/QuestionEditorPage";
 import {LanguageManagerPage} from "@/LanguageManagerPage";
 import {AccountEditorPage} from "@/AccountEditorPage";
+import {TestSelectionPage} from "@/TestSelectionPage";
 
 class App extends React.Component {
     constructor(props) {
@@ -60,6 +61,7 @@ class App extends React.Component {
                                 {(isAdmin || isEditor) && <Link to="/languageManager" className="nav-item nav-link">Language Manager</Link>}
                                 {isAdmin && <Link to="/editorManager" className="nav-item nav-link">Editor Manager</Link>}
                                 {isAdmin && <Link to="/editorForm" className="nav-item nav-link">Create Editor</Link>}
+                                {isUser && <Link to="/testSelection" className="nav-item nav-link">Apply and Fill Test!</Link>}
                                 {isUser && <Link to="/accountEditor" className="nav-item nav-link">Account Editor</Link>}
                                 <a onClick={this.logout} className="nav-item nav-link">Logout</a>
                             </div>
@@ -81,6 +83,7 @@ class App extends React.Component {
                                     <PrivateRoute exact path="/editorForm" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/editorForm/:username" roles={[Role.Admin]} component={EditorFormPage}/>
                                     <PrivateRoute path="/accountEditor" roles={[Role.User]} component={AccountEditorPage}/>
+                                    <PrivateRoute path="/testSelection" roles={[Role.User]} component={TestSelectionPage}/>
                                     <Route path="/login" component={LoginPage} />
                                     <Route path="/registerAccount" component={RegistrationPage} />
                                 </div>

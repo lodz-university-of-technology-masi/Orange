@@ -46,8 +46,6 @@ class QuestionManagerPage extends React.Component {
         this.setState({
             selectedQuestionType: event.target.value,
            });
-           console.log(this.state.selectedQuestionType)
-
      }
 
     handleRemove = (name) => {
