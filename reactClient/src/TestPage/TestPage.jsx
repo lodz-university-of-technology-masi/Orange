@@ -26,7 +26,14 @@ class TestPage extends React.Component {
                     { test && test.questions.map(q =>
                         <div className="form-group" key={q.name}>
                             <label htmlFor={q.name}>{q.content}</label>
-                            <input name={q.name} className='form-control' />
+                            {
+                                q.questionType === 'NUMERICAL' &&
+                                <input type="number" name={q.name} className='form-control' />
+                            }
+                            {
+                                (q.questionType === 'OPEN' || q.questionType === 'CHOICE') &&
+                                <input name={q.name} className='form-control' />
+                            }
                         </div>)
                     }
                     <button type="submit" className="btn btn-primary" onClick={this.handleSubmit}>
