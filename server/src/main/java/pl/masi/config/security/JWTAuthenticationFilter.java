@@ -15,6 +15,7 @@ import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import pl.masi.beans.AccountBean;
 import pl.masi.entities.Account;
+import pl.masi.entities.Language;
 import pl.masi.repositories.AccountRepository;
 
 import javax.servlet.FilterChain;
@@ -76,11 +77,14 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         if(accountOptional.isPresent()){
             Account account = accountOptional.get();
             response.setContentType("application/json");
+            Language language = account.getPreferredLanguage();
+            String languageName = language != null ? language.getName() : null;
             response.getWriter().write(new Gson().toJson(
                     AccountBean.builder()
                             .firstName(account.getFirstName())
                             .lastName(account.getLastName())
                             .permissionName(account.getPermission().getPermissionName())
+                            .preferredLanguageName(languageName)
                             .username(account.getUsername())
                             .build()
             ));
