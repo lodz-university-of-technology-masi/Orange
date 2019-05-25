@@ -1,12 +1,16 @@
 import React from 'react';
 import {testService} from "@/_services";
 import {testResolutionService} from "@/_services/testResolution.service";
+import DialogTitle from "@material-ui/core/es/DialogTitle/DialogTitle";
+import Button from "@material-ui/core/es/Button/Button";
+import Dialog from "@material-ui/core/es/Dialog/Dialog";
 
 class TestPage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            success: false,
             test: null,
             testResolution: null,
         };
@@ -42,12 +46,17 @@ class TestPage extends React.Component {
         evt.preventDefault();
         const { testResolution } = this.state;
         testResolutionService.add(testResolution).then(res => {
-            console.log('added!')
+            this.setState({success: true});
         })
     };
 
+    handleCloseSuccessModal = () => {
+        this.setState({success: false});
+        this.props.history.push('/');
+    };
+
     render() {
-        const { test } = this.state;
+        const { test, success } = this.state;
         return (
             <div>
                 <h2>{this.props.match.params.testName}</h2>
@@ -71,6 +80,10 @@ class TestPage extends React.Component {
                         {'Submit!'}
                     </button>
                 </form>
+                <Dialog open={success} onClose={this.handleCloseSuccessModal} aria-labelledby="success-dialog">
+                    <DialogTitle>Success!</DialogTitle>
+                    <Button onClick={this.handleCloseSuccessModal}>OK!</Button>
+                </Dialog>
             </div>
         );
     }
