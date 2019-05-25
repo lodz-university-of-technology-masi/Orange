@@ -1,5 +1,6 @@
 import React from 'react';
 import {testService} from "@/_services";
+import {testResolutionService} from "@/_services/testResolution.service";
 
 class TestPage extends React.Component {
     constructor(props) {
@@ -7,14 +8,42 @@ class TestPage extends React.Component {
 
         this.state = {
             test: null,
+            testResolution: null,
         };
     }
 
     componentDidMount() {
-        testService.get(this.props.match.params.testName).then(test => this.setState({test}))
+        testService.get(this.props.match.params.testName).then(test => {
+            const user = JSON.parse(localStorage.getItem('currentUser'));
+            const questionAnswers = [];
+            test.questions.map(q => {
+                questionAnswers.push({questionName: q.name, content: ''})
+            });
+            const testResolution = {
+                testName: test.name,
+                username: user.username,
+                questionAnswers
+            };
+            this.setState({test, testResolution})
+        })
     }
 
-    handleSubmit = () => {
+    handleQuestionAnswerChanged = (questionName, value) => {
+        let { testResolution } = this.state;
+        for(let i = 0; i < testResolution.questionAnswers.length; i++) {
+            if (testResolution.questionAnswers[i].questionName === questionName) {
+                testResolution.questionAnswers[i].content = value;
+            }
+        }
+        this.setState({testResolution})
+    };
+
+    handleSubmit = (evt) => {
+        evt.preventDefault();
+        const { testResolution } = this.state;
+        testResolutionService.add(testResolution).then(res => {
+            console.log('added!')
+        })
     };
 
     render() {
@@ -28,11 +57,13 @@ class TestPage extends React.Component {
                             <label htmlFor={q.name}>{q.content}</label>
                             {
                                 q.questionType === 'NUMERICAL' &&
-                                <input type="number" name={q.name} className='form-control' />
+                                <input name={q.name} onChange={(evt) => this.handleQuestionAnswerChanged(q.name, evt.target.value)}
+                                       className='form-control' type="number" />
                             }
                             {
                                 (q.questionType === 'OPEN' || q.questionType === 'CHOICE') &&
-                                <input name={q.name} className='form-control' />
+                                <input name={q.name}  onChange={(evt) => this.handleQuestionAnswerChanged(q.name, evt.target.value)}
+                                       className='form-control' />
                             }
                         </div>)
                     }
