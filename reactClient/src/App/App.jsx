@@ -17,6 +17,7 @@ import {QuestionManagerPage} from "@/QuestionManagerPage";
 import {QuestionEditorPage} from "@/QuestionEditorPage";
 import {LanguageManagerPage} from "@/LanguageManagerPage";
 import {AccountEditorPage} from "@/AccountEditorPage";
+import { ContextMenu, handleContextMenu } from "@/ContextMenu";
 
 class App extends React.Component {
     constructor(props) {
@@ -28,6 +29,8 @@ class App extends React.Component {
             isEditor: false,
             isUser: false,
         };
+        this.handleContextMenu = handleContextMenu.bind(this);
+
     }
 
     componentDidMount() {
@@ -48,7 +51,8 @@ class App extends React.Component {
         const { currentUser, isAdmin, isEditor, isUser } = this.state;
         return (
             <Router history={history}>
-                <div>
+                <div onContextMenu={this.handleContextMenu}>
+                    <ContextMenu selection={window.getSelection().toString()}/>
                     {currentUser &&
                         <nav className="navbar navbar-expand navbar-dark bg-dark">
                             <div className="navbar-nav">
