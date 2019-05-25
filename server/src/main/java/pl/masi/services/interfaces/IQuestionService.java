@@ -13,6 +13,8 @@ public interface IQuestionService {
 
     List<Question> getAllQuestions();
 
+    void update(QuestionBean questionBean) throws AppException;
+
     void deleteByName(String name) throws AppException;
 
     List<String> getAllQuestionType();
