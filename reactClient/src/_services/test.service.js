@@ -15,7 +15,9 @@ export const testService = {
 
 function getAll(positionName) {
     if (positionName) {
-        positionName = `?positionName=${positionName}`
+        positionName = `?positionName=${positionName}`;
+    } else {
+        positionName = '';
     }
     const requestOptions = { method: 'GET', headers: authHeader() };
     return fetch(`${config.apiUrl}/test/list${positionName}`, requestOptions).then(handleResponse);
