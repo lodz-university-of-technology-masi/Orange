@@ -1,9 +1,9 @@
 import React from 'react';
-import {Menu, Item, contextMenu} from 'react-contexify';
+import {Menu, Item, contextMenu, Separator} from 'react-contexify';
 import 'react-contexify/dist/ReactContexify.min.css';
 import {menuService} from '@/_services';
 
-const onClick = ({props}) => {
+const handleSynonymSearch = ({props}) => {
     if (props.selection !== "") {
         menuService.findSynonyms(props.selection)
             .then(result => {
@@ -29,8 +29,9 @@ const handleWikiSearch = ({props}) => {
 export const ContextMenu = () => (
 
     <Menu id='menu_id'>
-        <Item onClick={onClick}>Search synonym to selected word </Item>
-        <Item onClick={handleWikiSearch}>Wiki Search</Item>
+        <Item onClick={handleSynonymSearch}>Search synonym to selected word </Item>
+        <Separator/>
+        <Item onClick={handleWikiSearch}>Search wikipedia for selected word</Item>
     </Menu>
 );
 
