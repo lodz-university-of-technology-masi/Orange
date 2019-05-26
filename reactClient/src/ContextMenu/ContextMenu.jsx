@@ -7,7 +7,7 @@ const onClick = ({props}) => {
     if (props.selection !== "") {
         menuService.findSynonyms(props.selection)
             .then(result => {
-                let synonyms = "";
+                let synonyms = "The synonyms to " + props.selection + ":\n" ;
                 result.response.forEach(function (meaning, idx) {
                     synonyms += idx + 1 + ". " + meaning.list.synonyms + "\n\n";
                 });
