@@ -17,17 +17,22 @@ class RegistrationPage extends React.Component {
             currentUser: authenticationService.currentUserValue,
             paramsEditorUsername: props.match.params.username,
             languages: [],
-            selectedLanguageName: null,
+            selectedLanguage: 'English',
         };
     }
 
     componentDidMount() {
         languageService.getAll().then(res => {
             if (res && res.length > 0) {
-                this.setState({ languages: res, selectedLanguage: res[0].name })
+                this.setState({ languages: res })
             }
         });
     }
+
+    handleChangeSelectedLanguage = (event) => {
+        const selectedLanguage = event.target.value;
+        this.setState({selectedLanguage})
+    };
 
     render() {
 
@@ -43,7 +48,6 @@ class RegistrationPage extends React.Component {
                         password: '',
                         firstName: '',
                         lastName:  '',
-                        preferredLanguageName: selectedLanguage,
                     }}
                     validationSchema={Yup.object().shape({
                         username: Yup.string().required('Username is required'),
@@ -51,15 +55,16 @@ class RegistrationPage extends React.Component {
                         passwordConfirmation: Yup.string().oneOf([Yup.ref('password'), null], 'Passwords must match'),
                         firstName: Yup.string().required('First Name is required'),
                         lastName: Yup.string().required('Last Name is required'),
-                        preferredLanguageName: Yup.string(),
                     })}
-                    onSubmit={({ username, password, firstName, lastName, preferredLanguageName },
+                    onSubmit={({ username, password, firstName, lastName },
                                { setStatus, setSubmitting }) => {
+                        let { selectedLanguage } = this.state;
                         setStatus();
-
+                        if (selectedLanguage === 'English') {
+                            selectedLanguage = null;
+                        }
                         const onSubmit = userService.createCandidateAccount(username, password, firstName,
-                                                                            lastName, preferredLanguageName);
-
+                                                                            lastName, selectedLanguage);
                         onSubmit.then(
                             () => {
                                 this.props.history.push("/login");
@@ -102,13 +107,16 @@ class RegistrationPage extends React.Component {
                             <div className="form-group">
                                 <label htmlFor="preferredLanguageName">Preferred Language</label>
                                 <select id="preferredLanguageName" name="preferredLanguageName" className='form-control'
-                                    style={{width: '100%'}}
+                                    style={{width: '100%'}} value={selectedLanguage} onChange={this.handleChangeSelectedLanguage}
                                 >
                                     <option value="" disabled>
                                         Select Preferred Language
                                     </option>
+                                    <option key='default-language' value="English">
+                                        English
+                                    </option>
                                     {languages.map(l =>
-                                        <option key={l.name} value={l.name}>{l.name}</option>
+                                        <option key={`language${l.name}`} value={l.name}>{l.name}</option>
                                     )}
                                 </select>
                             </div>

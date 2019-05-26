@@ -71,7 +71,7 @@ public class AccountService implements IAccountService {
         // nulled preferred language represents default (English) language
         Language preferredLanguage = null;
         if (accountBean.getPreferredLanguageName() != null && !accountBean.getPreferredLanguageName().isEmpty()) {
-            preferredLanguage = gePreferredtLanguageByName(accountBean.getPreferredLanguageName());
+            preferredLanguage = getPreferredtLanguageByName(accountBean.getPreferredLanguageName());
         }
 
         Account accountToSave = Account.builder()
@@ -96,7 +96,7 @@ public class AccountService implements IAccountService {
         accountToUpdate.get().setLastName(accountBean.getLastName());
         accountToUpdate.get().setPermission(permissionRepository.findByPermissionName(accountBean.getPermissionName()));
         if (accountBean.getPreferredLanguageName() != null && !accountBean.getPreferredLanguageName().isEmpty()) {
-            accountToUpdate.get().setPreferredLanguage(gePreferredtLanguageByName(accountBean.getPreferredLanguageName()));
+            accountToUpdate.get().setPreferredLanguage(getPreferredtLanguageByName(accountBean.getPreferredLanguageName()));
         } else {
             // nulled preferred language represents default (English) language
             accountToUpdate.get().setPreferredLanguage(null);
@@ -125,7 +125,7 @@ public class AccountService implements IAccountService {
         return result;
     }
 
-    private Language gePreferredtLanguageByName(String languageName) throws AppException {
+    private Language getPreferredtLanguageByName(String languageName) throws AppException {
         Language result = languageRepository.findByName(languageName);
         if(result == null) {
             throw new AppException("LANGUAGE_NOT_FOUND", "Language with given name doesn't exists");
