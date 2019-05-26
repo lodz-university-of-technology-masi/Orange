@@ -50,7 +50,6 @@ class TestManagerPage extends React.Component {
       };
 
      handleRemove(testName){
-        console.log(testName)
         var newTests = this.state.tests;
         var index = newTests.findIndex(x=>x.name == testName)
         newTests.splice(index,1)
@@ -69,8 +68,7 @@ class TestManagerPage extends React.Component {
         }
         if(this.state.selectedPosition.length<1){
             return
-        } 
-        console.log(this.state.selectedPosition)
+        }
         this.setState({testNameTextError: false})
         var test = {testName: this.state.testNameText, positionName: this.state.selectedPosition, creatorUsername: JSON.parse(localStorage.getItem("currentUser")).username}
 

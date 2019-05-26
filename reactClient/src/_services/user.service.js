@@ -4,7 +4,8 @@ import { authHeader, handleResponse } from '@/_helpers';
 export const userService = {
     getAll,
     getByUsername,
-    createCandidateAccount
+    createCandidateAccount,
+    updateAccount,
 };
 
 function getAll() {
@@ -17,7 +18,7 @@ function getByUsername(username) {
     return fetch(`${config.apiUrl}/account/${username}`, requestOptions).then(handleResponse);
 }
 
-function createCandidateAccount(username, password, firstName, lastName) {
+function createCandidateAccount(username, password, firstName, lastName, preferredLanguageName) {
 
     const permissionName = 'CANDIDATE';
 
@@ -27,11 +28,29 @@ function createCandidateAccount(username, password, firstName, lastName) {
             'Content-Type': 'application/json',
             // 'Authorization': localStorage.getItem('Token'),
         }),
-        body: JSON.stringify({ username, password, permissionName, firstName, lastName })
+        body: JSON.stringify({ username, password, permissionName, firstName, lastName, preferredLanguageName })
 
     };
-    console.log(requestOptions);
     return fetch(`${config.apiUrl}/account/create`, requestOptions)
+        .then(handleResponse)
+        .then(user => {
+            return user;
+        });
+}
+
+
+function updateAccount(username, permissionName, firstName, lastName, preferredLanguageName) {
+
+    const requestOptions = {
+        method: 'PUT',
+        headers: new Headers({
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token'),
+        }),
+        body: JSON.stringify({ username, permissionName, firstName, lastName, preferredLanguageName })
+
+    };
+    return fetch(`${config.apiUrl}/account/update`, requestOptions)
         .then(handleResponse)
         .then(user => {
             return user;

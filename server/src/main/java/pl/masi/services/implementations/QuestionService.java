@@ -50,6 +50,13 @@ public class QuestionService implements IQuestionService {
     }
 
     @Override
+    public void update(QuestionBean questionBean) throws AppException {
+        Question question = getByName(questionBean.getName());
+        question.setContent(questionBean.getContent());
+        questionRepository.save(question);
+    }
+
+    @Override
     public void deleteByName(String name) throws AppException {
         Question questionToDelete = getByName(name);
         List<Test> testsToUpdate = testRepository.findByQuestionsName(name);

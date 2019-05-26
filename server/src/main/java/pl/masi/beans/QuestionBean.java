@@ -6,6 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import pl.masi.entities.QuestionTranslation;
 import pl.masi.entities.Test;
 import pl.masi.enums.QuestionType;
 
@@ -21,5 +22,6 @@ public class QuestionBean {
     private String name;
     private String content;
     private List<Test> tests;
+    private List<QuestionTranslationBean> questionTranslations;
     private QuestionType questionType;
 }

@@ -51,4 +51,8 @@ public class Account implements Serializable {
     @ManyToOne
     @JoinColumn
     private Permission permission;
+
+    @ManyToOne
+    @JoinColumn
+    private Language preferredLanguage;
 }

@@ -6,10 +6,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import pl.masi.beans.AccountBean;
 import pl.masi.entities.Account;
+import pl.masi.entities.Language;
 import pl.masi.entities.Permission;
 import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.AccountRepository;
+import pl.masi.repositories.LanguageRepository;
 import pl.masi.repositories.PermissionRepository;
 import pl.masi.services.interfaces.IAccountService;
 
@@ -23,6 +25,7 @@ public class AccountService implements IAccountService {
 
     private final AccountRepository accountRepository;
     private final PermissionRepository permissionRepository;
+    private final LanguageRepository languageRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
 
@@ -57,12 +60,17 @@ public class AccountService implements IAccountService {
                 .firstName(account.get().getFirstName())
                 .lastName(account.get().getLastName())
                 .permissionName(account.get().getPermission().getPermissionName())
+                .preferredLanguageName(account.get().getPreferredLanguage().getName())
                 .build();
     }
 
     @Override
     public Account createAccount(AccountBean accountBean) throws AppException {
         Permission permission = getPermissionByName(accountBean.getPermissionName());
+        Language preferredLanguage = null;
+        if (accountBean.getPreferredLanguageName() != null && !accountBean.getPreferredLanguageName().isEmpty()) {
+            preferredLanguage = getLanguageByName(accountBean.getPreferredLanguageName());
+        }
 
         Account accountToSave = Account.builder()
                 .firstName(accountBean.getFirstName())
@@ -70,6 +78,7 @@ public class AccountService implements IAccountService {
                 .username(accountBean.getUsername())
                 .password(bCryptPasswordEncoder.encode(accountBean.getPassword()))
                 .permission(permission)
+                .preferredLanguage(preferredLanguage)
                 .build();
 
         return accountRepository.save(accountToSave);
@@ -84,6 +93,9 @@ public class AccountService implements IAccountService {
         accountToUpdate.get().setFirstName(accountBean.getFirstName());
         accountToUpdate.get().setLastName(accountBean.getLastName());
         accountToUpdate.get().setPermission(permissionRepository.findByPermissionName(accountBean.getPermissionName()));
+        if (accountBean.getPreferredLanguageName() != null && !accountBean.getPreferredLanguageName().isEmpty()) {
+            accountToUpdate.get().setPreferredLanguage(getLanguageByName(accountBean.getPreferredLanguageName()));
+        }
         if (accountBean.getPassword() != null && !accountBean.getPassword().isEmpty()) {
             accountToUpdate.get().setPassword(bCryptPasswordEncoder.encode(accountBean.getPassword()));
         }
@@ -104,6 +116,14 @@ public class AccountService implements IAccountService {
         Permission result = permissionRepository.findByPermissionName(permissionName);
         if(result == null) {
             throw new AppException("PERMISSION_NOT_FOUND", "Permission with given name doesn't exists");
+        }
+        return result;
+    }
+
+    private Language getLanguageByName(String languageName) throws AppException {
+        Language result = languageRepository.findByName(languageName);
+        if(result == null) {
+            throw new AppException("LANGUAGE_NOT_FOUND", "Language with given name doesn't exists");
         }
         return result;
     }

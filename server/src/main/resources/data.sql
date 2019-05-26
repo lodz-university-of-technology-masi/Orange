@@ -10,19 +10,20 @@ INSERT INTO Position(id, name, active) VALUES (3, 'Network Engineer', true);
 
 --ALTER SEQUENCE Position_seq RESTART WITH 4;
 
-INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (1, 'candidate','password','firstName','lastName',3);
-INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (2, 'moderator','password','firstName','lastName',1);
-INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (3, 'editor','password','firstName','lastName',2);
+-- password: password
+INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (1, 'candidate','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS','firstName','lastName',3);
+INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (2, 'moderator','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS','firstName','lastName',1);
+INSERT INTO Account(id, username, password, first_name, last_name, permission_id) VALUES (3, 'editor','password','$2a$10$Fzg3T4YiOP4ij3NeqCZoue0Ff6TXlRX.i//V6E6fXBkH0NzqSC4JS','lastName',2);
 
 --ALTER SEQUENCE Account_seq RESTART WITH 7;
 
-INSERT INTO Question(id, name, content, question_type) VALUES (1, 'Q1', 'Explain the recurrence hidden behind recurrent neural network cells.', 'OPEN');
-INSERT INTO Question(id, name, content, question_type) VALUES (2, 'Q2', 'What will be the output of printing typeof(typeof(int)) in JavaScript?', 'OPEN');
-INSERT INTO Question(id, name, content, question_type) VALUES (3, 'Q3', 'Explain the memory overhead of polymorphism in C++.', 'OPEN');
-INSERT INTO Question(id, name, content, question_type) VALUES (4, 'Q4', 'What is the purpose of creating the StringBuilder object?','OPEN');
-INSERT INTO Question(id, name, content, question_type) VALUES (5, 'Q5', 'What is the purpose of creating the network namespaces (netns)?','OPEN');
-INSERT INTO Question(id, name, content, question_type) VALUES (6, 'Q6', 'What will be the output of printing the res variable int8_t res=2&1;?','NUMERICAL');
-INSERT INTO Question(id, name, content, question_type) VALUES (7, 'Q7', 'Python is statically or dynamically typed?','CHOICE');
+INSERT INTO Question(id, content, question_type, name) VALUES (1, 'Explain the recurrence hidden behind recurrent neural network cells.', 'OPEN', 'Recurrence');
+INSERT INTO Question(id, content, question_type, name) VALUES (2, 'What will be the output of printing typeof(typeof(int)) in JavaScript?', 'OPEN', 'Typeof');
+INSERT INTO Question(id, content, question_type, name) VALUES (3, 'Explain the memory overhead of polymorphism in C++.', 'OPEN', 'Polymorphism');
+INSERT INTO Question(id, content, question_type, name) VALUES (4, 'What is the purpose of creating the StringBuilder object?','OPEN', 'StringBuilder');
+INSERT INTO Question(id, content, question_type, name) VALUES (5, 'What is the purpose of creating the network namespaces (netns)?','OPEN', 'Netns');
+INSERT INTO Question(id, content, question_type, name) VALUES (6, 'What will be the output of printing the res variable int8_t res=2&1;?','NUMERICAL', 'Expression');
+INSERT INTO Question(id, content, question_type, name) VALUES (7, 'Python is statically or dynamically typed?','CHOICE', 'Python');
 
 --ALTER SEQUENCE Question_seq RESTART WITH 6;
 
