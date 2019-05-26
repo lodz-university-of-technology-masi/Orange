@@ -2,11 +2,6 @@ import React from 'react';
 import { Formik, Field, Form, ErrorMessage } from 'formik';
 import { userService, authenticationService } from '@/_services';
 import * as Yup from "yup";
-import TextField from "@material-ui/core/TextField";
-import Select from "@material-ui/core/Select";
-import OutlinedInput from "@material-ui/core/OutlinedInput";
-import MenuItem from "@material-ui/core/MenuItem";
-import ListItem from "@material-ui/core/ListItem";
 import {languageService} from "@/_services/language.service";
 
 class RegistrationPage extends React.Component {
