@@ -82,7 +82,7 @@ class QuestionManagerPage extends React.Component {
             <List subheader={<ListSubheader disableSticky><h3>Questions</h3></ListSubheader>}>
                      {this.state.questions.map(qst =>
                         <ListItem key={qst.name}>
-                            <ListItemText primary={qst.content} secondary={qst.questionType} /> 
+                            <ListItemText primary={qst.content} secondary={qst.questionType} />
                             <ListItemSecondaryAction>
                             <IconButton onClick={() =>this.handleRemove(qst.name)} aria-label="Delete">
                                 <DeleteIcon />

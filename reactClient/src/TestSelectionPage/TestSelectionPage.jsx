@@ -1,11 +1,12 @@
 import React from 'react';
-import {positionService, testService} from "@/_services";
+import {positionService, testService, userService} from "@/_services";
 
 class TestSelectionPage extends React.Component {
     constructor(props) {
         super(props);
 
         this.state = {
+            preferredLanguageName: '',
             positions: [],
             selectedPositionName: '',
             tests: [],
@@ -19,6 +20,11 @@ class TestSelectionPage extends React.Component {
                 this.setState({positions} )
             }
         });
+
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        userService.getByUsername(user.username).then(u => {
+            this.setState({preferredLanguageName: user.preferredLanguageName})
+        })
     }
 
     handlePositionSelectChange = (event) => {
@@ -29,7 +35,12 @@ class TestSelectionPage extends React.Component {
     };
 
     handleTestSelectChange = (event) => {
-        this.setState({selectedTestName: event.target.value})
+        const { preferredLanguageName } = this.state;
+        const selectedTestName = event.target.value;
+        testService.getTranslated(selectedTestName, preferredLanguageName).then(test => {
+            console.log(test);
+        });
+        this.setState({selectedTestName})
     };
 
     handleTestFillClick = () => {

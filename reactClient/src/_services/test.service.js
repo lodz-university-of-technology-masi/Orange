@@ -4,6 +4,7 @@ import { authHeader, handleResponse } from '@/_helpers';
 export const testService = {
     getAll,
     get,
+    getTranslated,
     remove,
     add,
     updatePosition,
@@ -23,6 +24,12 @@ function getAll(positionName) {
 function get(name) {
     const requestOptions = { method: 'GET', headers: authHeader() };
     return fetch(`${config.apiUrl}/test/${name}`, requestOptions).then(handleResponse);
+}
+
+function getTranslated(name, preferredLanguageName) {
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`${config.apiUrl}/test/translated/${name}?preferredLanguageName=${preferredLanguageName}`,
+        requestOptions).then(handleResponse);
 }
 
 function remove(name){

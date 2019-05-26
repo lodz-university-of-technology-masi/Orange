@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.masi.beans.TestBean;
+import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.ITestService;
 import pl.masi.entities.Test;
@@ -40,6 +41,13 @@ public class TestController {
     @RequestMapping(value = "/{name}")
     public Test getTestByName(@PathVariable String name) throws AppException {
         return testService.getByName(name);
+    }
+
+    @GetMapping
+    @RequestMapping(value = "/translated/{name}")
+    public TranslatedTestBean getTranslatedTestByName(@Param("preferredLanguageName") String preferredLanguageName,
+                                                      @PathVariable String name) throws AppException {
+        return testService.getTranslatedTest(name, preferredLanguageName);
     }
 
     @DeleteMapping(value = "/{name}")

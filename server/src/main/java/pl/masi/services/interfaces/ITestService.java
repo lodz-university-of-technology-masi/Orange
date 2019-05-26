@@ -1,6 +1,7 @@
 package pl.masi.services.interfaces;
 
 import pl.masi.beans.TestBean;
+import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.entities.Test;
 import pl.masi.exceptions.AppException;
 
@@ -11,6 +12,8 @@ public interface ITestService {
     void add(TestBean testBean);
 
     Test getByName(String name) throws AppException;
+
+    TranslatedTestBean getTranslatedTest(String name, String preferredLanguageName) throws AppException;
 
     List<Test> getAllTests(String header, String positionName);
 
