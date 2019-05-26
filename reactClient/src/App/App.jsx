@@ -46,7 +46,7 @@ class App extends React.Component {
         history.push('/login');
     }
 
-    render() {
+    render(){
         const { currentUser, isAdmin, isEditor, isUser } = this.state;
         return (
             <Router history={history}>

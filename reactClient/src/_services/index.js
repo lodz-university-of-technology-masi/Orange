@@ -4,4 +4,4 @@ export * from './position.service';
 export * from './test.service';
 export * from './editor.service';
 export * from './question.service';
-export * from './synonym.service';
+export * from './menu.service';
