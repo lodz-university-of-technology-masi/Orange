@@ -36,12 +36,16 @@ class AccountEditorPage extends React.Component {
                     }
                 }
             }
+            if (!selectedLanguage) {
+                selectedLanguage = 'English';
+            }
             this.setState({languages, user, selectedLanguage })
         });
     }
 
     handleChangeSelectedLanguage = (event) => {
-        this.setState({selectedLanguage: event.target.value})
+        const selectedLanguage = event.target.value;
+        this.setState({selectedLanguage})
     };
 
     handleCloseSuccessModal = () => {
@@ -67,8 +71,11 @@ class AccountEditorPage extends React.Component {
                     })}
                     onSubmit={({ firstName, lastName },
                                { setStatus, setSubmitting }) => {
-                        const { selectedLanguage } = this.state;
+                        let { selectedLanguage } = this.state;
                         setStatus();
+                        if (selectedLanguage === 'English') {
+                            selectedLanguage = null;
+                        }
                         userService.updateAccount(user.username, user.permissionName,
                                                     firstName, lastName, selectedLanguage).then(
                             u => {
@@ -105,8 +112,11 @@ class AccountEditorPage extends React.Component {
                                     <option value="" disabled>
                                         Select Preferred Language
                                     </option>
+                                    <option key='default-language' value="English">
+                                        English
+                                    </option>
                                     {languages.map(l =>
-                                        <option key={l.name} value={l.name}>{l.name}</option>
+                                        <option key={`language${l.name}`} value={l.name}>{l.name}</option>
                                     )}
                                 </select>
                             </div>

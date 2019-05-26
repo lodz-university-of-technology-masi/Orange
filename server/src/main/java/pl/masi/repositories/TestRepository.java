@@ -11,7 +11,7 @@ import java.util.List;
 public interface TestRepository extends CrudRepository <Test, Long> {
     Test findByName(String name);
     void deleteByName(String name);
-    Test findByPositionName(String name);
     List<Test> findByQuestionsName(String name);
     List<Test> findByCreatorUsernameUsername(String creatorUsername);
+    List<Test> findByPositionName(String name);
 }

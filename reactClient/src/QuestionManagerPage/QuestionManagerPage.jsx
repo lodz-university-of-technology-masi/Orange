@@ -46,8 +46,6 @@ class QuestionManagerPage extends React.Component {
         this.setState({
             selectedQuestionType: event.target.value,
            });
-           console.log(this.state.selectedQuestionType)
-
      }
 
     handleRemove = (name) => {
@@ -59,14 +57,14 @@ class QuestionManagerPage extends React.Component {
     }
 
     handleEdit(question){
-        this.props.history.push({pathname: `/questionEditor/${question.name}`, query: {question}})
+        this.props.history.push({pathname: `/questionEditor/${question.name}`})
     }
 
     handleAdd = () => {
         if(this.state.contentText.length < 5){
             this.setState({contentTextError: true})
             return
-        } 
+        }
         if(this.state.selectedQuestionType.length<1){
             return
         }
@@ -84,7 +82,7 @@ class QuestionManagerPage extends React.Component {
             <List subheader={<ListSubheader disableSticky><h3>Questions</h3></ListSubheader>}>
                      {this.state.questions.map(qst =>
                         <ListItem key={qst.name}>
-                            <ListItemText primary={qst.content} secondary={qst.questionType} /> 
+                            <ListItemText primary={qst.content} secondary={qst.questionType} />
                             <ListItemSecondaryAction>
                             <IconButton onClick={() =>this.handleRemove(qst.name)} aria-label="Delete">
                                 <DeleteIcon />
@@ -111,7 +109,7 @@ class QuestionManagerPage extends React.Component {
                             style={{marginRight: 18}}
                             variant="outlined"
                         />
-                         {this.state.qstTypes && 
+                         {this.state.qstTypes &&
                                 <Select
                                         value={this.state.selectedQuestionType}
                                         onChange={this.handleSelectChange}

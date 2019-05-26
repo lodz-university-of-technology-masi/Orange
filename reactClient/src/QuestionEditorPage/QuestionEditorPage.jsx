@@ -33,16 +33,11 @@ class QuestionEditorPage extends React.Component {
     }
 
     componentDidMount() {
-        if(!this.props.location.query){
-            questionService.get(this.props.match.params.questionName).then(
-                question => {
-                    this.setQuestion(question);
-                }
-            );
-        } else{
-            const question = this.props.location.query.question;
-            this.setQuestion(question);
-        }
+        questionService.get(this.props.match.params.questionName).then(
+            question => {
+                this.setQuestion(question);
+            }
+        );
     }
 
     setQuestion = (question) => {

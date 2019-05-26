@@ -29,6 +29,9 @@ public class LanguageService implements ILanguageService {
     @Override
     public Language createLanguage(Language language) throws AppException {
         try {
+            if (language.getName().equals("English")) {
+                throw new DuplicateKeyException("Tried to create language with name reserved for default (English) language");
+            }
             return languageRepository.save(language);
         } catch (DuplicateKeyException e) {
             throw new AppException("LANGUAGE_DUPLICATE_NAME", "Language with given name already exists");

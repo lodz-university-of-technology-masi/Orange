@@ -59,7 +59,7 @@ class TestManagerPage extends React.Component {
 
      handleEdit(test){
         this.props.history.push({pathname: `/testEditor/${test.name}`, query: {test}})
-     } 
+     }
 
      handleAdd = () => {
         if(this.state.testNameText.length < 5){
@@ -77,7 +77,6 @@ class TestManagerPage extends React.Component {
 
         var newTests = this.state.tests
         var testToAdd = {name: this.state.testNameText, position:{name:this.state.selectedPosition}}
-        console.log(testToAdd)
         newTests.push(testToAdd)
         this.setState({tests: newTests})
     }
@@ -88,7 +87,7 @@ class TestManagerPage extends React.Component {
                     <List subheader={<ListSubheader  disableSticky><h3>Tests</h3></ListSubheader>}>
                              {this.state.tests && this.state.tests.map(test =>
                                 <ListItem key={test.name}>
-                                    <ListItemText primary={test.name} secondary={test.position && test.position.name} /> 
+                                    <ListItemText primary={test.name} secondary={test.position && test.position.name} />
                                     <ListItemSecondaryAction>
                                     <IconButton onClick={() =>this.handleRemove(test.name)} aria-label="Delete">
                                         <DeleteIcon />
@@ -113,7 +112,7 @@ class TestManagerPage extends React.Component {
                                     style={{marginRight: 18}}
                                     variant="outlined"
                                 />
-                                {this.state.positions && 
+                                {this.state.positions &&
                                 <Select
                                         value={this.state.selectedPosition}
                                         onChange={this.handleSelectChange}
@@ -129,7 +128,7 @@ class TestManagerPage extends React.Component {
                                      }
                                 </Select>
                                 }
-                            </div>    
+                            </div>
                                 <ListItemSecondaryAction>
                                     <IconButton onClick={() =>this.handleAdd()}>
                                         <AddIcon />
