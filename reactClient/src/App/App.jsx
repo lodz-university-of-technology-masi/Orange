@@ -30,7 +30,6 @@ class App extends React.Component {
             isUser: false,
         };
         this.handleContextMenu = handleContextMenu.bind(this);
-
     }
 
     componentDidMount() {
@@ -52,7 +51,7 @@ class App extends React.Component {
         return (
             <Router history={history}>
                 <div onContextMenu={this.handleContextMenu}>
-                    <ContextMenu selection={window.getSelection().toString()}/>
+                    <ContextMenu/>
                     {currentUser &&
                         <nav className="navbar navbar-expand navbar-dark bg-dark">
                             <div className="navbar-nav">
