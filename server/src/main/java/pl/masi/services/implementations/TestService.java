@@ -75,6 +75,7 @@ public class TestService implements ITestService {
                             .name(q.getName())
                             .original(q.getContent())
                             .translation(translation[0])
+                            .questionType(q.getQuestionType().toString())
                             .build());
         });
         return TranslatedTestBean.builder()

@@ -14,4 +14,5 @@ public class TranslatedQuestionBean {
     private String name;
     private String original;
     private String translation;
+    private String questionType;
 }
