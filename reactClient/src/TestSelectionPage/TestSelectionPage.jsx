@@ -11,6 +11,7 @@ class TestSelectionPage extends React.Component {
             selectedPositionName: '',
             tests: [],
             selectedTestName: '',
+            isTestTranslationAccessible: false,
         };
     }
 
@@ -38,7 +39,13 @@ class TestSelectionPage extends React.Component {
         const { preferredLanguageName } = this.state;
         const selectedTestName = event.target.value;
         testService.getTranslated(selectedTestName, preferredLanguageName).then(test => {
-            console.log(test);
+            let isTestTranslationAccessible = false;
+            test.translatedQuestions.forEach(tq => {
+                if (preferredLanguageName !== null && tq.translation === null) {
+                    isTestTranslationAccessible = true;
+                }
+            });
+            this.setState({isTestTranslationAccessible})
         });
         this.setState({selectedTestName})
     };
@@ -49,7 +56,7 @@ class TestSelectionPage extends React.Component {
     };
 
     render() {
-        const { positions, selectedPositionName, tests, selectedTestName } = this.state;
+        const { positions, selectedPositionName, tests, selectedTestName, isTestTranslationAccessible } = this.state;
         return (
             <div>
                 <h2>Apply and Fill Test!</h2>
@@ -95,7 +102,12 @@ class TestSelectionPage extends React.Component {
                             </select>
                         </div>
 
-                        <div className="form-group">
+                        <div hidden={ selectedTestName === '' || !isTestTranslationAccessible }
+                             style={{marginBottom: '1rem'}}>
+                            Warning: given test is not fully translated to Your preferred language.
+                        </div>
+
+                        <div className="form-group" >
                             <button className="btn btn-primary" disabled={selectedTestName === ''}
                                     onClick={this.handleTestFillClick}>
                                 {'Fill Test!'}
