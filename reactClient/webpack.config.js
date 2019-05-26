@@ -36,7 +36,9 @@ module.exports = {
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'http://localhost:8080'
+            apiUrl: 'http://localhost:8080',
+            synonymDictUrl:'http://thesaurus.altervista.org/thesaurus/v1',
+            wikiUrl:'https://en.wikipedia.org/'
         })
     },
     
