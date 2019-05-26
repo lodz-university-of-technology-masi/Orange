@@ -8,7 +8,6 @@ import pl.masi.beans.AccountBean;
 import pl.masi.entities.Account;
 import pl.masi.entities.Language;
 import pl.masi.entities.Permission;
-import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.AccountRepository;
 import pl.masi.repositories.LanguageRepository;
@@ -69,9 +68,10 @@ public class AccountService implements IAccountService {
     @Override
     public Account createAccount(AccountBean accountBean) throws AppException {
         Permission permission = getPermissionByName(accountBean.getPermissionName());
+        // nulled preferred language represents default (English) language
         Language preferredLanguage = null;
         if (accountBean.getPreferredLanguageName() != null && !accountBean.getPreferredLanguageName().isEmpty()) {
-            preferredLanguage = getLanguageByName(accountBean.getPreferredLanguageName());
+            preferredLanguage = gePreferredtLanguageByName(accountBean.getPreferredLanguageName());
         }
 
         Account accountToSave = Account.builder()
@@ -96,7 +96,10 @@ public class AccountService implements IAccountService {
         accountToUpdate.get().setLastName(accountBean.getLastName());
         accountToUpdate.get().setPermission(permissionRepository.findByPermissionName(accountBean.getPermissionName()));
         if (accountBean.getPreferredLanguageName() != null && !accountBean.getPreferredLanguageName().isEmpty()) {
-            accountToUpdate.get().setPreferredLanguage(getLanguageByName(accountBean.getPreferredLanguageName()));
+            accountToUpdate.get().setPreferredLanguage(gePreferredtLanguageByName(accountBean.getPreferredLanguageName()));
+        } else {
+            // nulled preferred language represents default (English) language
+            accountToUpdate.get().setPreferredLanguage(null);
         }
         if (accountBean.getPassword() != null && !accountBean.getPassword().isEmpty()) {
             accountToUpdate.get().setPassword(bCryptPasswordEncoder.encode(accountBean.getPassword()));
@@ -122,7 +125,7 @@ public class AccountService implements IAccountService {
         return result;
     }
 
-    private Language getLanguageByName(String languageName) throws AppException {
+    private Language gePreferredtLanguageByName(String languageName) throws AppException {
         Language result = languageRepository.findByName(languageName);
         if(result == null) {
             throw new AppException("LANGUAGE_NOT_FOUND", "Language with given name doesn't exists");
