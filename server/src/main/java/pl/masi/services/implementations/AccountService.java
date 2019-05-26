@@ -55,12 +55,14 @@ public class AccountService implements IAccountService {
         if (!account.isPresent()) {
             throw new AppException("ACCOUNT_NOT_FOUND", "Account with given username doesn't exists");
         }
+        Language preferredLanguage = account.get().getPreferredLanguage();
+        String preferredLanguageName = preferredLanguage != null ? preferredLanguage.getName() : null;
         return AccountBean.builder()
                 .username(account.get().getUsername())
                 .firstName(account.get().getFirstName())
                 .lastName(account.get().getLastName())
                 .permissionName(account.get().getPermission().getPermissionName())
-                .preferredLanguageName(account.get().getPreferredLanguage().getName())
+                .preferredLanguageName(preferredLanguageName)
                 .build();
     }
 
