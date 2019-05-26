@@ -57,14 +57,14 @@ class QuestionManagerPage extends React.Component {
     }
 
     handleEdit(question){
-        this.props.history.push({pathname: `/questionEditor/${question.name}`, query: {question}})
+        this.props.history.push({pathname: `/questionEditor/${question.name}`})
     }
 
     handleAdd = () => {
         if(this.state.contentText.length < 5){
             this.setState({contentTextError: true})
             return
-        } 
+        }
         if(this.state.selectedQuestionType.length<1){
             return
         }
@@ -109,7 +109,7 @@ class QuestionManagerPage extends React.Component {
                             style={{marginRight: 18}}
                             variant="outlined"
                         />
-                         {this.state.qstTypes && 
+                         {this.state.qstTypes &&
                                 <Select
                                         value={this.state.selectedQuestionType}
                                         onChange={this.handleSelectChange}
