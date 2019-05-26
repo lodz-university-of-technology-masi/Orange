@@ -50,8 +50,8 @@ class App extends React.Component {
         const { currentUser, isAdmin, isEditor, isUser } = this.state;
         return (
             <Router history={history}>
-                <div onContextMenu={this.handleContextMenu}>
-                    <ContextMenu/>
+                <div onContextMenu={isEditor ? this.handleContextMenu : null}>
+                    {isEditor && <ContextMenu/>}
                     {currentUser &&
                         <nav className="navbar navbar-expand navbar-dark bg-dark">
                             <div className="navbar-nav">
