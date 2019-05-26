@@ -10,7 +10,7 @@ class TestSelectionPage extends React.Component {
             positions: [],
             selectedPositionName: '',
             tests: [],
-            selectedTestName: '',
+            selectedTest: null,
             isTestTranslationAccessible: false,
         };
     }
@@ -31,32 +31,31 @@ class TestSelectionPage extends React.Component {
     handlePositionSelectChange = (event) => {
         const selectedPositionName = event.target.value;
         testService.getAll(event.target.value).then( tests => {
-            this.setState({tests, selectedPositionName, selectedTestName: ''})
+            this.setState({tests, selectedPositionName, selectedTest: null})
         });
     };
 
     handleTestSelectChange = (event) => {
         const { preferredLanguageName } = this.state;
         const selectedTestName = event.target.value;
-        testService.getTranslated(selectedTestName, preferredLanguageName).then(test => {
+        testService.getTranslated(selectedTestName, preferredLanguageName).then(selectedTest => {
             let isTestTranslationAccessible = false;
-            test.translatedQuestions.forEach(tq => {
+            selectedTest.translatedQuestions.forEach(tq => {
                 if (preferredLanguageName !== null && tq.translation === null) {
                     isTestTranslationAccessible = true;
                 }
             });
-            this.setState({isTestTranslationAccessible})
+            this.setState({selectedTest, isTestTranslationAccessible})
         });
-        this.setState({selectedTestName})
     };
 
     handleTestFillClick = () => {
-        const { selectedTestName } = this.state;
-        this.props.history.push({pathname: `/test/${selectedTestName}`})
+        const { selectedTest } = this.state;
+        this.props.history.push({pathname: `/test/${selectedTest.testName}`, query: {test: selectedTest}})
     };
 
     render() {
-        const { positions, selectedPositionName, tests, selectedTestName, isTestTranslationAccessible } = this.state;
+        const { positions, selectedPositionName, tests, selectedTest, isTestTranslationAccessible } = this.state;
         return (
             <div>
                 <h2>Apply and Fill Test!</h2>
@@ -87,7 +86,7 @@ class TestSelectionPage extends React.Component {
                         <div className="form-group" style={{marginTop: '1rem'}} >
                             <label>Select Test</label>
                             <select
-                                value={selectedTestName}
+                                value={selectedTest ? selectedTest.testName : ''}
                                 onChange={this.handleTestSelectChange}
                                 style={{width: '100%'}}
                                 className='form-control'
@@ -102,13 +101,13 @@ class TestSelectionPage extends React.Component {
                             </select>
                         </div>
 
-                        <div hidden={ selectedTestName === '' || !isTestTranslationAccessible }
+                        <div hidden={ selectedTest === null || !isTestTranslationAccessible }
                              style={{marginBottom: '1rem'}}>
                             Warning: given test is not fully translated to Your preferred language.
                         </div>
 
                         <div className="form-group" >
-                            <button className="btn btn-primary" disabled={selectedTestName === ''}
+                            <button className="btn btn-primary" disabled={selectedTest === null}
                                     onClick={this.handleTestFillClick}>
                                 {'Fill Test!'}
                             </button>

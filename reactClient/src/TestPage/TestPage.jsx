@@ -13,23 +13,32 @@ class TestPage extends React.Component {
             success: false,
             test: null,
             testResolution: null,
+            preferredLanguageName: null,
         };
     }
 
     componentDidMount() {
-        testService.get(this.props.match.params.testName).then(test => {
-            const user = JSON.parse(localStorage.getItem('currentUser'));
-            const questionAnswers = [];
-            test.questions.map(q => {
-                questionAnswers.push({questionName: q.name, content: ''})
-            });
-            const testResolution = {
-                testName: test.name,
-                username: user.username,
-                questionAnswers
-            };
-            this.setState({test, testResolution})
-        })
+        const user = JSON.parse(localStorage.getItem('currentUser'));
+        if(this.props.location.query){
+            this.initialSetup(this.props.location.query.test, user);
+        } else {
+            testService.getTranslated(this.props.match.params.testName, user.preferredLanguageName).then(test =>
+                this.initialSetup(test, user)
+            );
+        }
+    }
+
+    initialSetup(test, user) {
+        const questionAnswers = [];
+        test.translatedQuestions.map(q => {
+            questionAnswers.push({questionName: q.name, content: ''})
+        });
+        const testResolution = {
+            testName: test.name,
+            username: user.username,
+            questionAnswers
+        };
+        this.setState({test, testResolution, preferredLanguageName: user.preferredLanguageName})
     }
 
     handleQuestionAnswerChanged = (questionName, value) => {
@@ -55,15 +64,23 @@ class TestPage extends React.Component {
         this.props.history.push('/');
     };
 
+    getQuestionLabel = (originalText, translation) => {
+        const {preferredLanguageName} = this.state;
+        if (preferredLanguageName && translation) {
+            return translation;
+        }
+        return originalText;
+    };
+
     render() {
         const { test, success } = this.state;
         return (
             <div>
                 <h2>{this.props.match.params.testName}</h2>
                 <form style={{marginTop: '2rem'}}>
-                    { test && test.questions.map(q =>
+                    { test && test.translatedQuestions.map(q =>
                         <div className="form-group" key={q.name}>
-                            <label htmlFor={q.name}>{q.content}</label>
+                            <label htmlFor={q.name}>{this.getQuestionLabel(q.original, q.translation)}</label>
                             {
                                 q.questionType === 'NUMERICAL' &&
                                 <input name={q.name} onChange={(evt) => this.handleQuestionAnswerChanged(q.name, evt.target.value)}
