@@ -67,7 +67,10 @@ function deleteQuestion(testName, questionName){
 function updateName(oldName,testObj){
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token')
+        },
         body: JSON.stringify(testObj)
     };
     return fetch(`${config.apiUrl}/test/updateName/${oldName}`, requestOptions)
@@ -77,7 +80,10 @@ function updateName(oldName,testObj){
 function updatePosition(testObj){
     const requestOptions = {
         method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token')
+        },
         body: JSON.stringify(testObj)
     };
     return fetch(`${config.apiUrl}/test/updatePosition`, requestOptions)

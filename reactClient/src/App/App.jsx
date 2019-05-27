@@ -19,6 +19,7 @@ import {LanguageManagerPage} from "@/LanguageManagerPage";
 import {AccountEditorPage} from "@/AccountEditorPage";
 import {TestSelectionPage} from "@/TestSelectionPage";
 import {TestPage} from "@/TestPage";
+import { ContextMenu, handleContextMenu } from "@/ContextMenu";
 
 class App extends React.Component {
     constructor(props) {
@@ -30,6 +31,7 @@ class App extends React.Component {
             isEditor: false,
             isUser: false,
         };
+        this.handleContextMenu = handleContextMenu.bind(this);
     }
 
     componentDidMount() {
@@ -46,11 +48,12 @@ class App extends React.Component {
         history.push('/login');
     }
 
-    render() {
+    render(){
         const { currentUser, isAdmin, isEditor, isUser } = this.state;
         return (
             <Router history={history}>
-                <div>
+                <div onContextMenu={isEditor ? this.handleContextMenu : null}>
+                    {isEditor && <ContextMenu/>}
                     {currentUser &&
                         <nav className="navbar navbar-expand navbar-dark bg-dark">
                             <div className="navbar-nav">
