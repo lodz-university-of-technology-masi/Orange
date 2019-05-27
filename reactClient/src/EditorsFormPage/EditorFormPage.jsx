@@ -10,22 +10,27 @@ class EditorFormPage extends React.Component {
         this.state = {
             currentUser: authenticationService.currentUserValue,
             paramsEditorUsername: props.match.params.username,
-            editorFromApi: null
+            editorFromApi: null,
+            showForm: false
         };
     }
 
     componentDidMount() {
         const { paramsEditorUsername } = this.state;
         if(paramsEditorUsername) {
-            editorService.getByUsername(paramsEditorUsername).then( editorFromApi => this.setState({editorFromApi}))
+            editorService.getByUsername(paramsEditorUsername).then( editorFromApi =>
+                this.setState({editorFromApi,showForm: true})
+            )
+        } else {
+            this.setState({showForm: true})
         }
     }
 
     render() {
-        const { editorFromApi } = this.state;
+        const { editorFromApi, showForm } = this.state;
 
         return (
-            <div>
+            <div hidden={!showForm}>
                 <h2>{editorFromApi ? editorFromApi.username : 'Create Editor'}</h2>
                 <Formik
                     enableReinitialize={true}

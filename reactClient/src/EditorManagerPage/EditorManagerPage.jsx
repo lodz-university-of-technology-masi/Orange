@@ -1,8 +1,14 @@
 import React from 'react';
 
 import { userService, authenticationService, editorService } from '@/_services';
-import { Table, TableRow, TableHead, TableBody, TableCell } from "@material-ui/core";
-import {Link} from "react-router-dom";
+import ListItemText from "@material-ui/core/es/ListItemText/ListItemText";
+import ListItem from "@material-ui/core/es/ListItem/ListItem";
+import List from "@material-ui/core/es/List/List";
+import IconButton from "@material-ui/core/es/IconButton/IconButton";
+import ListItemSecondaryAction from "@material-ui/core/es/ListItemSecondaryAction/ListItemSecondaryAction";
+import EditIcon from '@material-ui/icons/Edit';
+import DeleteIcon from '@material-ui/icons/Delete';
+import ListSubheader from "@material-ui/core/es/ListSubheader/ListSubheader";
 
 class EditorManagerPage extends React.Component {
     constructor(props) {
@@ -23,39 +29,37 @@ class EditorManagerPage extends React.Component {
         editorService.getAll().then( editorsFromApi => this.setState({ editorsFromApi }));
     }
 
+    handleEdit = (username) => {
+        this.props.history.push(`/editorForm/${username}`);
+    };
+
+    handleRemove = (username) => {
+        editorService.remove(username).then(() => { this.refresh() })
+    };
+
     render() {
         const { editorsFromApi } = this.state;
 
             if (editorsFromApi !== null) {
                 return (
-                   <Table>
-                       <TableHead>
-                           <TableRow>
-                               <TableCell>Username</TableCell>
-                               <TableCell align="right">First Name</TableCell>
-                               <TableCell align="right">Last Name</TableCell>
-                               <TableCell/>
-                               <TableCell/>
-                           </TableRow>
-                       </TableHead>
-                       <TableBody>
-                           {editorsFromApi.map((row, index) => (
-                               <TableRow key={ "editorTableCell" + index }>
-                                   <TableCell>{row.username}</TableCell>
-                                   <TableCell align="right">{row.firstName}</TableCell>
-                                   <TableCell align="right">{row.lastName}</TableCell>
-                                   <TableCell align="right">
-                                       <Link to={`/editorForm/${row.username}`} className="nav-item nav-link">Edit</Link>
-                                   </TableCell>
-                                   <TableCell align="right">
-                                       <button onClick={() => editorService.remove(row.username).then(() => { this.refresh() })} >
-                                           Delete
-                                       </button>
-                                   </TableCell>
-                               </TableRow>
-                           ))}
-                       </TableBody>
-                   </Table>
+                    <div>
+                        <List subheader={<ListSubheader disableSticky><h3>Editors</h3></ListSubheader>}>
+                            {editorsFromApi.map((editor) => (
+                                <ListItem key={`Editor${editor.username}`}>
+                                    <ListItemText primary={editor.username}
+                                                  secondary={`${editor.firstName} ${editor.lastName}`} />
+                                    <ListItemSecondaryAction>
+                                        <IconButton onClick={() =>this.handleEdit(editor.username)}>
+                                            <EditIcon />
+                                        </IconButton>
+                                        <IconButton onClick={() =>this.handleRemove(editor.username)}>
+                                            <DeleteIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                            ))}
+                        </List>
+                    </div>
                 )
             } else {
                return null
