@@ -1,10 +1,12 @@
 package pl.masi.controllers;
 
+import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import pl.masi.beans.TestBean;
+import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.ITestService;
 import pl.masi.entities.Test;
@@ -31,14 +33,21 @@ public class TestController {
 
     @GetMapping
     @RequestMapping(value = "/list")
-    public List<Test> getAllTests() {
-        return testService.getAllTests(request.getHeader("role"));
+    public List<Test> getAllTests(@Param("positionName") String positionName) {
+        return testService.getAllTests(request.getHeader("role"), positionName);
     }
 
     @GetMapping
     @RequestMapping(value = "/{name}")
     public Test getTestByName(@PathVariable String name) throws AppException {
         return testService.getByName(name);
+    }
+
+    @GetMapping
+    @RequestMapping(value = "/translated/{name}")
+    public TranslatedTestBean getTranslatedTestByName(@Param("preferredLanguageName") String preferredLanguageName,
+                                                      @PathVariable String name) throws AppException {
+        return testService.getTranslatedTest(name, preferredLanguageName);
     }
 
     @DeleteMapping(value = "/{name}")

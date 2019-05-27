@@ -23,6 +23,7 @@ class LanguageManagerPage extends React.Component {
             languageNameText: '',
             languageNameTextError: false,
             languageAddPending: false,
+            error: '',
         };
     }
 
@@ -38,6 +39,7 @@ class LanguageManagerPage extends React.Component {
         this.setState({
             languageNameText: event.target.value,
             languageNameTextError: false,
+            error: false,
         });
     };
 
@@ -57,28 +59,36 @@ class LanguageManagerPage extends React.Component {
                     languages: languages,
                     languageNameText: '',
                     languageAddPending: false,
+                    error: false,
                 })
+            },
+            error => {
+                this.setState({languageAddPending: false, error})
             }
         )
     };
 
     handleRemove = (languageName) => {
-        languageService.remove(languageName).then( response => {
-            const { languages } = this.state;
-            var i = 0;
-            while(i < languages.length) {
-                if (languages[i].name === languageName) {
-                    languages.splice(i, 1);
-                    break;
+        languageService.remove(languageName).then(
+            response => {
+                const { languages } = this.state;
+                var i = 0;
+                while(i < languages.length) {
+                    if (languages[i].name === languageName) {
+                        languages.splice(i, 1);
+                        break;
+                    }
+                    i++;
                 }
-                i++;
-            }
-            this.setState({ languages });
-        })
+                this.setState({ languages, error: false });
+            },
+            error => {
+                this.setState(({ error }))
+            })
     };
 
     render() {
-        const { languageNameText, languageNameTextError, languageAddPending, languages } = this.state;
+        const { languageNameText, languageNameTextError, languageAddPending, languages, error } = this.state;
         return (
             <div>
                 <List subheader={<ListSubheader disableSticky><h3>Languages</h3></ListSubheader>}>
@@ -117,6 +127,11 @@ class LanguageManagerPage extends React.Component {
                     </ListItem>}
                     {languageAddPending &&
                     <img src="data:image/gif;base64,R0lGODlhEAAQAPIAAP///wAAAMLCwkJCQgAAAGJiYoKCgpKSkiH/C05FVFNDQVBFMi4wAwEAAAAh/hpDcmVhdGVkIHdpdGggYWpheGxvYWQuaW5mbwAh+QQJCgAAACwAAAAAEAAQAAADMwi63P4wyklrE2MIOggZnAdOmGYJRbExwroUmcG2LmDEwnHQLVsYOd2mBzkYDAdKa+dIAAAh+QQJCgAAACwAAAAAEAAQAAADNAi63P5OjCEgG4QMu7DmikRxQlFUYDEZIGBMRVsaqHwctXXf7WEYB4Ag1xjihkMZsiUkKhIAIfkECQoAAAAsAAAAABAAEAAAAzYIujIjK8pByJDMlFYvBoVjHA70GU7xSUJhmKtwHPAKzLO9HMaoKwJZ7Rf8AYPDDzKpZBqfvwQAIfkECQoAAAAsAAAAABAAEAAAAzMIumIlK8oyhpHsnFZfhYumCYUhDAQxRIdhHBGqRoKw0R8DYlJd8z0fMDgsGo/IpHI5TAAAIfkECQoAAAAsAAAAABAAEAAAAzIIunInK0rnZBTwGPNMgQwmdsNgXGJUlIWEuR5oWUIpz8pAEAMe6TwfwyYsGo/IpFKSAAAh+QQJCgAAACwAAAAAEAAQAAADMwi6IMKQORfjdOe82p4wGccc4CEuQradylesojEMBgsUc2G7sDX3lQGBMLAJibufbSlKAAAh+QQJCgAAACwAAAAAEAAQAAADMgi63P7wCRHZnFVdmgHu2nFwlWCI3WGc3TSWhUFGxTAUkGCbtgENBMJAEJsxgMLWzpEAACH5BAkKAAAALAAAAAAQABAAAAMyCLrc/jDKSatlQtScKdceCAjDII7HcQ4EMTCpyrCuUBjCYRgHVtqlAiB1YhiCnlsRkAAAOwAAAAAAAAAAAA==" />
+                    }
+                    { error &&
+                        <div style={{color: 'red'}}>
+                            {error}
+                        </div>
                     }
 
                 </List>

@@ -4,6 +4,7 @@ import { authHeader, handleResponse } from '@/_helpers';
 export const testService = {
     getAll,
     get,
+    getTranslated,
     remove,
     add,
     updatePosition,
@@ -12,14 +13,25 @@ export const testService = {
     updateName
 };
 
-function getAll() {
+function getAll(positionName) {
+    if (positionName) {
+        positionName = `?positionName=${positionName}`;
+    } else {
+        positionName = '';
+    }
     const requestOptions = { method: 'GET', headers: authHeader() };
-    return fetch(`${config.apiUrl}/test/list`, requestOptions).then(handleResponse);
+    return fetch(`${config.apiUrl}/test/list${positionName}`, requestOptions).then(handleResponse);
 }
 
 function get(name) {
     const requestOptions = { method: 'GET', headers: authHeader() };
     return fetch(`${config.apiUrl}/test/${name}`, requestOptions).then(handleResponse);
+}
+
+function getTranslated(name, preferredLanguageName) {
+    const requestOptions = { method: 'GET', headers: authHeader() };
+    return fetch(`${config.apiUrl}/test/translated/${name}?preferredLanguageName=${preferredLanguageName}`,
+        requestOptions).then(handleResponse);
 }
 
 function remove(name){

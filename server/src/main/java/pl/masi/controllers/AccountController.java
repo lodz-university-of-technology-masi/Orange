@@ -49,12 +49,13 @@ public class AccountController {
     @PutMapping(value = "/update", consumes = "application/json", produces = "application/json")
     public AccountBean updateAccount(@RequestBody AccountBean accountBean) throws AppException {
         Account acc = accountService.updateAccount(accountBean);
+        String preferredLanguage = acc.getPreferredLanguage() != null ? acc.getPreferredLanguage().getName() : null;
         return AccountBean.builder()
                 .username(acc.getUsername())
                 .firstName(acc.getFirstName())
                 .lastName(acc.getLastName())
                 .permissionName(acc.getPermission().getPermissionName())
-                .preferredLanguageName(acc.getPreferredLanguage().getName())
+                .preferredLanguageName(preferredLanguage)
                 .build();
     }
 

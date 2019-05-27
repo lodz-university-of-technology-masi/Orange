@@ -1,11 +1,15 @@
 package pl.masi.services.implementations;
 
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import org.hibernate.sql.ordering.antlr.TranslationContext;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.masi.beans.TestBean;
 import org.springframework.transaction.annotation.Transactional;
+import pl.masi.beans.alternative.TranslatedQuestionBean;
+import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.entities.Question;
 import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
@@ -16,6 +20,7 @@ import pl.masi.services.interfaces.ITestService;
 import pl.masi.repositories.TestRepository;
 import pl.masi.entities.Test;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -52,9 +57,42 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public List<Test> getAllTests(String header) {
+    public TranslatedTestBean getTranslatedTest(String name, String preferredLanguageName) throws AppException {
+        Test test = testRepository.findByName(name);
+        if (test == null) {
+            throw new AppException("TEST_NOT_FOUND", "Test with " + name + " name doesn't exists");
+        }
+        List<TranslatedQuestionBean> translatedQuestions = new ArrayList<TranslatedQuestionBean>();
+        test.getQuestions().forEach(q -> {
+            String[] translation = new String[1];
+            q.getQuestionTranslations().forEach(qt -> {
+                if (qt.getLanguage().getName().equals(preferredLanguageName)) {
+                    translation[0] = qt.getContent();
+                }
+            });
+            translatedQuestions.add(
+                    TranslatedQuestionBean.builder()
+                            .name(q.getName())
+                            .original(q.getContent())
+                            .translation(translation[0])
+                            .questionType(q.getQuestionType().toString())
+                            .build());
+        });
+        return TranslatedTestBean.builder()
+                .testName(test.getName())
+                .positionName(test.getPosition().getName())
+                .languageName(preferredLanguageName)
+                .translatedQuestions(translatedQuestions)
+                .build();
+    }
+
+    @Override
+    public List<Test> getAllTests(String header, String positionName) {
         JsonObject jsonHeader = new JsonParser().parse(header).getAsJsonObject();
         String role = jsonHeader.get("permissionName").getAsString();
+        if (positionName != null) {
+            return testRepository.findByPositionName(positionName);
+        }
         if (role.equals(PermissionType.permissionTypeMap.get(PermissionType.PermissionTypeEnum.EDITOR))) {
             String username = jsonHeader.get("username").getAsString();
             return testRepository.findByCreatorUsernameUsername(username);
