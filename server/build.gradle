@@ -29,6 +29,7 @@ dependencies {
 	compile"org.springframework.boot:spring-boot-starter-security"
 	compile"io.jsonwebtoken:jjwt:0.7.0"
 	compile('com.google.code.gson:gson:2.8.2')
+	compile 'com.google.cloud:google-cloud-translate:1.74.0'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly("org.projectlombok:lombok:1.16.18")
