@@ -34,7 +34,7 @@ class TestPage extends React.Component {
             questionAnswers.push({questionName: q.name, content: ''})
         });
         const testResolution = {
-            testName: test.name,
+            testName: test.testName,
             username: user.username,
             questionAnswers
         };
