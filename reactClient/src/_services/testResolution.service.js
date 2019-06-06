@@ -5,7 +5,8 @@ export const testResolutionService = {
     add,
     getAllResolvedTests,
     getTestResolutionById,
-    getAllResolvedTestsByTestName
+    getAllResolvedTestsByTestName,
+    updateTestResolution
 };
 
 function add(testObj){
@@ -37,3 +38,17 @@ function getTestResolutionById(id) {
     return fetch(`${config.apiUrl}/testResolution/list/${id}`, requestOptions).then(handleResponse);
 }
 
+function updateTestResolution(testResolutionObj){
+    const requestOptions = {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': localStorage.getItem('Token')
+        },
+        body: JSON.stringify(testResolutionObj)
+
+    };
+    console.log(testResolutionObj);
+    return fetch(`${config.apiUrl}/testResolution/update`, requestOptions)
+        .then(handleResponse);
+}

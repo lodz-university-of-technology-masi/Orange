@@ -15,4 +15,5 @@ public class TestResolutionBean {
     private String username;
     private String date;
     private List<QuestionAnswerBean> questionAnswers;
+    private Boolean isChecked;
 }

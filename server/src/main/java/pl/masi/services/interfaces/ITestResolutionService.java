@@ -13,4 +13,5 @@ public interface ITestResolutionService {
     List<TestResolution> getAllResolvedTests(String header);
     TestResolution getTestResolutionById(Long id);
     List<TestResolution> getTestResolutionsByTestName(String header, String testName);
+    void updateTestResolution(TestResolutionBean testResolutionBean);
 }

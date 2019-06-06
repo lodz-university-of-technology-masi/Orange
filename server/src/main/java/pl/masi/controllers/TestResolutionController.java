@@ -47,6 +47,12 @@ public class TestResolutionController {
         return testResolutionService.getTestResolutionsByTestName(request.getHeader("role"), testName);
     }
 
+    @PutMapping
+    @RequestMapping(value = "/update")
+    public void updateTestResolution(@RequestBody TestResolutionBean testResolutionBean) {
+        testResolutionService.updateTestResolution(testResolutionBean);
+    }
+
     @ExceptionHandler({Exception.class})
     public void handleException(AppException appException, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), appException.toString());

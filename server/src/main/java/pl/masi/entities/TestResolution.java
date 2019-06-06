@@ -36,4 +36,6 @@ public class TestResolution implements Serializable {
     private Account account;
 
     private Date date;
+
+    private Boolean isChecked;
 }

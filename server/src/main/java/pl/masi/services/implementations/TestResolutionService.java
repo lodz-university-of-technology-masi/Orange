@@ -45,6 +45,7 @@ public class TestResolutionService implements ITestResolutionService {
                 .test(test)
                 .account(account)
                 .date(new Date())
+                .isChecked(false)
                 .build();
         testResolutionBean.getQuestionAnswers().forEach(qab -> {
             Question q = questionRepository.findByName(qab.getQuestionName());
@@ -61,7 +62,7 @@ public class TestResolutionService implements ITestResolutionService {
         String role = jsonHeader.get("permissionName").getAsString();
         if (role.equals(PermissionType.permissionTypeMap.get(PermissionType.PermissionTypeEnum.EDITOR))) {
             String username = jsonHeader.get("username").getAsString();
-            return testResolutionRepository.findTestResolutionsByTestCreatorUsernameUsername(username);
+            return testResolutionRepository.findTestResolutionsByTestCreatorUsernameUsernameAndIsCheckedFalse(username);
         } else {
             return testResolutionRepository.findAll();
         }
@@ -82,5 +83,13 @@ public class TestResolutionService implements ITestResolutionService {
         } else {
             return testResolutionRepository.findAll();
         }
+    }
+
+    @Override
+    public void updateTestResolution(TestResolutionBean testResolutionBean) {
+        TestResolution testResolutionToUpdate = testResolutionRepository.findByAccountUsernameAndTestName(
+                testResolutionBean.getUsername(), testResolutionBean.getTestName());
+        testResolutionToUpdate.setIsChecked(true);
+        testResolutionRepository.save(testResolutionToUpdate);
     }
 }

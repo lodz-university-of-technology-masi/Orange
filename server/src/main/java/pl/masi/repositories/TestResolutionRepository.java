@@ -10,8 +10,8 @@ import java.util.List;
 @Repository
 public interface TestResolutionRepository extends CrudRepository<TestResolution, Long> {
     List<TestResolution> findAll();
-    List<TestResolution> findTestResolutionsByTestCreatorUsernameUsername(String username);
+    List<TestResolution> findTestResolutionsByTestCreatorUsernameUsernameAndIsCheckedFalse(String username);
     TestResolution findTestResolutionById(Long id);
     List<TestResolution> findTestResolutionsByTestCreatorUsernameUsernameAndTestName(String username, String testName);
-    List<TestResolution> findByAccountUsernameAndTestName(String accountName, String testName);
+    TestResolution findByAccountUsernameAndTestName(String accountName, String testName);
 }

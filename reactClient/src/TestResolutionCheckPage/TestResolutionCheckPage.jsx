@@ -40,6 +40,15 @@ class TestResolutionCheckPage extends React.Component {
         return answer;
     }
 
+    handleSubmit(){
+        testResolutionService.updateTestResolution({
+            testName:this.state.testResolution.test.name,
+            username:this.state.testResolution.account.username,
+            isChecked:true});
+
+        this.props.history.push({pathname: `/testManager`})
+    }
+
     render() {
         const {testResolution, questionAnswers} = this.state;
         console.log(testResolution);
@@ -79,7 +88,7 @@ class TestResolutionCheckPage extends React.Component {
                         )}
                         <ListItem style={{'justifyContent':'center'}}>
                         <Button
-                            onClick={() => {console.log("submitted")}}
+                            onClick={() => this.handleSubmit()}
                             size="medium"
                             variant="contained"
                             color="default">
