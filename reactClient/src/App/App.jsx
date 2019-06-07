@@ -20,7 +20,8 @@ import {AccountEditorPage} from "@/AccountEditorPage";
 import {TestSelectionPage} from "@/TestSelectionPage";
 import {TestPage} from "@/TestPage";
 import { ContextMenu, handleContextMenu } from "@/ContextMenu";
-
+import { TestResolutionManagerPage } from "@/TestResolutionManagerPage";
+import { TestResolutionCheckPage } from "@/TestResolutionCheckPage";
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -89,6 +90,8 @@ class App extends React.Component {
                                     <PrivateRoute path="/accountEditor" roles={[Role.User]} component={AccountEditorPage}/>
                                     <PrivateRoute path="/testSelection" roles={[Role.User]} component={TestSelectionPage}/>
                                     <PrivateRoute path="/test/:testName" roles={[Role.User]} component={TestPage}/>
+                                    <PrivateRoute path="/testResolutions/:testName" roles={[Role.Editor]} component={TestResolutionManagerPage}/>
+                                    <PrivateRoute path="/testCheck/:testResolutionId" roles={[Role.Editor]} component={TestResolutionCheckPage}/>
                                     <Route path="/login" component={LoginPage} />
                                     <Route path="/registerAccount" component={RegistrationPage} />
                                 </div>

@@ -1,9 +1,11 @@
 import React from 'react';
-import { positionService, testService, questionService} from '@/_services';
+import { positionService, testService, questionService, languageService} from '@/_services';
 import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import Select from '@material-ui/core/Select';
 import TextField from '@material-ui/core/TextField';
+import FormControl from '@material-ui/core/FormControl';
+import InputLabel from '@material-ui/core/InputLabel';
 import AddIcon from '@material-ui/icons/Add';
 import IconButton from '@material-ui/core/IconButton';
 import DeleteIcon from '@material-ui/icons/Delete';
@@ -16,6 +18,9 @@ import ListSubheader from '@material-ui/core/ListSubheader';
 import Divider from '@material-ui/core/Divider';
 import Button from '@material-ui/core/Button';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
+import Dialog from "@material-ui/core/Dialog";
+import DialogTitle from "@material-ui/core/DialogTitle";
+
 
 class TestEditorPage extends React.Component {
     constructor(props) {
@@ -26,14 +31,18 @@ class TestEditorPage extends React.Component {
             test: null,
             question: null,
             selectedQuestion:"",
-            testNameText: "",
+            targetTranslation: "",
+            targetTranslationError:false,
+            accessibleLanguages:[],
             selectedPosition:false,
+            translatedSuccessfully:false
         };
     }
 
     componentDidMount() {
         positionService.getAll().then(positions => this.setState({ positions }));
         questionService.getAll().then(questions => this.setState({ questions }));
+        languageService.getAll().then(languages => this.setState({ accessibleLanguages:languages } ));
         //if page is reloaded we lose passed object so we have to call api again.
         if(!this.props.location.query){
             testService.get(this.props.match.params.testName).then(test => this.setState({ test }));
@@ -44,7 +53,8 @@ class TestEditorPage extends React.Component {
 
     handleTextChange = (event) => {
         this.setState({
-            testNameText: event.target.value,
+            targetTranslationError:false,
+            targetTranslation: event.target.value,
         });
       };
 
@@ -54,27 +64,14 @@ class TestEditorPage extends React.Component {
         newTest.questions.splice(index,1);
         this.setState({test: newTest})
         testService.deleteQuestion(newTest.name, name)
-    }  
-    handleSaveName(){
-        if(this.state.testNameText.length < 5){
-            this.setState({testNameTextError: true})
-            return
-        } 
-        this.setState({testNameTextError: false})
-        var oldName = this.state.test.name;
-        var newTest = this.state.test;
-        newTest.name = this.state.testNameText;
-        this.setState({test: newTest})
+    }
 
-        testService.updateName(oldName,{testName: newTest.name})
-    }  
-    
     handleSelectChange = (event) => {
         this.setState({
             selectedPosition: event.target.value,
            });
            console.log({testName: this.state.test.name, positionName: this.state.selectedPosition})
-           testService.updatePosition({testName: this.state.test.name, positionName: this.state.selectedPosition})   
+           testService.updatePosition({testName: this.state.test.name, positionName: this.state.selectedPosition})
 
      }
 
@@ -99,34 +96,39 @@ class TestEditorPage extends React.Component {
         testService.addQuestion(this.state.test.name, this.state.selectedQuestion.name)
     }
 
+
+    handleTranslateTest = () => {
+        const {targetTranslation} = this.state;
+        if (targetTranslation !== "") {
+            testService.translate(this.state.test.name, targetTranslation);
+            this.setState({translatedSuccessfully:true})
+        } else {
+            this.setState({targetTranslationError:true});
+        }
+    };
+    handleCloseSuccessModal = () => {
+        this.setState({translatedSuccessfully: false})
+    };
+
     render() {
-        const {positions, test} = this.state;
+        const {positions, test, accessibleLanguages, targetTranslation, targetTranslationError, translatedSuccessfully} = this.state;
         return (
             <div>
-                {(positions && test) && 
+                {(positions && test) &&
                     <div>
                     <Typography component="h3" variant="display3" gutterBottom>
                         {test.name}
                     </Typography>
-                    <div style={{display: 'flex',justifyContent: 'space-between', flexWrap: 'wrap'}}>
-                        <TextField
-                                        id="standard-dense"
-                                        label="New Test Name"
-                                        value={this.state.testNameText}
-                                        onChange={this.handleTextChange}
-                                        error={this.state.testNameTextError}
-                                        variant="outlined"
-                                        style={{marginRight: 5}}
-                        />
-                        <Button onClick={() =>this.handleSaveName()} variant="contained" size="small" style={{marginRight:50}}>
-                            <SaveIcon/>
-                            Save Name
-                        </Button>
-                        <Select
+
+
+                        <FormControl variant="outlined">
+                            <InputLabel  >Position</InputLabel>
+                            <Select
                                 value={this.state.selectedPosition || test.position.name}
                                 name="New Test Name"
                                 onChange={this.handleSelectChange}
-                                input={<OutlinedInput labelWidth={0}/>}
+                                input={<OutlinedInput  labelWidth={60}/>}
+                                style={{marginBottom:10}}
                                 displayEmpty
                             >
                             <MenuItem value="" disabled>
@@ -137,12 +139,36 @@ class TestEditorPage extends React.Component {
                             )
                             }
                         </Select>
-                        </div>
+                        </FormControl>
+                        <div style={{display: 'flex', flexWrap: 'wrap'}}>
+                        <Select
+                            value={targetTranslation}
+                            onChange={this.handleTextChange}
+                            input={<OutlinedInput labelWidth={0}/>}
+                            style={{width: '35%', marginRight:30}}
+                            error={targetTranslationError}
+                            displayEmpty
+                        >
+                            <MenuItem value="" disabled>
+                                Select target test translation
+                            </MenuItem>
+                            {accessibleLanguages.map(l =>
+                                <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
+                            )}
+                        </Select>
+                        <Button
+                            onClick={() =>this.handleTranslateTest()}
+                            size="small"
+                            variant="contained"
+                            color="default">
+                            Translate
+                        </Button>
+                    </div>
                         <Divider style={{marginBottom:20, marginTop:20}}/>
                         <List subheader={<ListSubheader><h3>Questions</h3></ListSubheader>}>
                             {test.questions.map(qst =>
                             <ListItem key={qst.name}>
-                                <ListItemText primary={qst.content} secondary={qst.questionType} /> 
+                                <ListItemText primary={qst.content} secondary={qst.questionType} />
                                 <ListItemSecondaryAction>
                                 <IconButton onClick={() =>this.handleRemove(qst.name)} aria-label="Delete">
                                     <DeleteIcon />
@@ -152,7 +178,7 @@ class TestEditorPage extends React.Component {
                             )}
                         </List>
                         <Divider style={{marginBottom:20, marginTop:20}}/>
-                        {this.state.questions && 
+                        {this.state.questions &&
                         <div>
                                 <Select
                                         value={this.state.selectedQuestion}
@@ -180,6 +206,10 @@ class TestEditorPage extends React.Component {
                         }
                     </div>
                 }
+                <Dialog open={translatedSuccessfully} onClose={this.handleCloseSuccessModal} aria-labelledby="success-dialog">
+                    <DialogTitle>Successfully translated!</DialogTitle>
+                    <Button onClick={this.handleCloseSuccessModal}>OK!</Button>
+                </Dialog>
             </div>
         );
     }

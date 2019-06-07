@@ -45,6 +45,7 @@ public class TestResolutionService implements ITestResolutionService {
                 .test(test)
                 .account(account)
                 .date(new Date())
+                .isChecked(false)
                 .build();
         testResolutionBean.getQuestionAnswers().forEach(qab -> {
             Question q = questionRepository.findByName(qab.getQuestionName());
@@ -53,5 +54,42 @@ public class TestResolutionService implements ITestResolutionService {
         });
         testResolution.setQuestionAnswers(questionAnswers);
         testResolutionRepository.save(testResolution);
+    }
+
+    @Override
+    public List<TestResolution> getAllResolvedTests(String header) {
+        JsonObject jsonHeader = new JsonParser().parse(header).getAsJsonObject();
+        String role = jsonHeader.get("permissionName").getAsString();
+        if (role.equals(PermissionType.permissionTypeMap.get(PermissionType.PermissionTypeEnum.EDITOR))) {
+            String username = jsonHeader.get("username").getAsString();
+            return testResolutionRepository.findTestResolutionsByTestCreatorUsernameUsernameAndIsCheckedFalse(username);
+        } else {
+            return testResolutionRepository.findAll();
+        }
+    }
+
+    @Override
+    public TestResolution getTestResolutionById(Long id) {
+        return testResolutionRepository.findTestResolutionById(id);
+    }
+
+    @Override
+    public List<TestResolution> getTestResolutionsByTestName(String header, String testName) {
+        JsonObject jsonHeader = new JsonParser().parse(header).getAsJsonObject();
+        String role = jsonHeader.get("permissionName").getAsString();
+        if (role.equals(PermissionType.permissionTypeMap.get(PermissionType.PermissionTypeEnum.EDITOR))) {
+            String username = jsonHeader.get("username").getAsString();
+            return testResolutionRepository.findTestResolutionsByTestCreatorUsernameUsernameAndTestName(username, testName);
+        } else {
+            return testResolutionRepository.findAll();
+        }
+    }
+
+    @Override
+    public void updateTestResolution(TestResolutionBean testResolutionBean) {
+        TestResolution testResolutionToUpdate = testResolutionRepository.findByAccountUsernameAndTestName(
+                testResolutionBean.getUsername(), testResolutionBean.getTestName());
+        testResolutionToUpdate.setIsChecked(true);
+        testResolutionRepository.save(testResolutionToUpdate);
     }
 }

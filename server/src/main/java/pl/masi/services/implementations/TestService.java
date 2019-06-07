@@ -1,5 +1,6 @@
 package pl.masi.services.implementations;
 
+import com.google.cloud.translate.Translation;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -11,13 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import pl.masi.beans.alternative.TranslatedQuestionBean;
 import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.entities.Question;
+import pl.masi.entities.QuestionTranslation;
 import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
-import pl.masi.repositories.AccountRepository;
-import pl.masi.repositories.PositionRepository;
-import pl.masi.repositories.QuestionRepository;
+import pl.masi.repositories.*;
 import pl.masi.services.interfaces.ITestService;
-import pl.masi.repositories.TestRepository;
+import pl.masi.services.implementations.TranslationService;
 import pl.masi.entities.Test;
 
 import java.util.ArrayList;
@@ -35,6 +35,12 @@ public class TestService implements ITestService {
     private QuestionRepository questionRepository;
     @Autowired
     private AccountRepository accountRepository;
+    @Autowired
+    private LanguageRepository languageRepository;
+    @Autowired
+    private QuestionTranslationService questionTranslationService;
+
+    private TranslationService translationService=new TranslationService();
 
     @Override
     public void add(TestBean testBean) {
@@ -128,13 +134,6 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public void updateName(String oldName, TestBean testBean) throws AppException {
-        Test testToUpdate = getByName(oldName);
-        testToUpdate.setName(testBean.getTestName());
-        testRepository.save(testToUpdate);
-    }
-
-    @Override
     public void deleteQuestion(String testName, String questionName) throws AppException {
         Test testToUpdate = getByName(testName);
 
@@ -144,5 +143,30 @@ public class TestService implements ITestService {
             throw new AppException("QUESTION_NOT_EXIST", "Question with " + questionName + " is not added to the" + testName + ".");
         }
         testRepository.save(testToUpdate);
+    }
+
+    @Override
+    public void translateTest(String testName, String targetLanguage) throws AppException {
+        Test testToTranslate = getByName(testName);
+        for (Question q : testToTranslate.getQuestions()) {
+            boolean translationExist = false;
+            for (QuestionTranslation qt : q.getQuestionTranslations()) {
+                if (qt.getLanguage().getName().equalsIgnoreCase(targetLanguage)) {
+                    translationExist = true;
+                }
+            }
+            if (!translationExist) {
+                List<QuestionTranslation> translations = q.getQuestionTranslations();
+                QuestionTranslation translation = QuestionTranslation.builder()
+                        .question(q)
+                        .language(languageRepository.findByName(targetLanguage))
+                        .content(translationService.translateText(q.getContent(), "pl"))
+                        .build();
+                questionTranslationService.add(translation);
+                translations.add(translation);
+                q.setQuestionTranslations(translations);
+            }
+        }
+        testRepository.save(testToTranslate);
     }
 }

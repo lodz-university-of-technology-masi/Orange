@@ -5,3 +5,6 @@ export * from './test.service';
 export * from './editor.service';
 export * from './question.service';
 export * from './menu.service';
+export * from './language.service';
+export * from './testResolution.service';
+export * from './questionAnswer.service'

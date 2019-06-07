@@ -65,14 +65,14 @@ public class TestController {
         testService.updatePosition(testBean);
     }
 
-    @PutMapping(value = "/updateName/{oldName}")
-    public void updateName(@PathVariable String oldName, @RequestBody TestBean testBean) throws AppException {
-        testService.updateName(oldName, testBean);
-    }
-
     @DeleteMapping(value = "/{testName}/{questionName}")
     public void deleteQuestion(@PathVariable String testName, @PathVariable String questionName) throws AppException {
         testService.deleteQuestion(testName, questionName);
+    }
+
+    @PutMapping(value= "/translate/{testName}/{targetLanguage}")
+    public void translateTest(@PathVariable String testName, @PathVariable String targetLanguage) throws AppException {
+        testService.translateTest(testName, targetLanguage);
     }
 
     @ExceptionHandler({AppException.class})

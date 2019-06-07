@@ -10,7 +10,7 @@ export const testService = {
     updatePosition,
     addQuestion,
     deleteQuestion,
-    updateName
+    translate
 };
 
 function getAll(positionName) {
@@ -64,19 +64,6 @@ function deleteQuestion(testName, questionName){
     .then(handleResponse);
 }
 
-function updateName(oldName,testObj){
-    const requestOptions = {
-        method: 'PUT',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': localStorage.getItem('Token')
-        },
-        body: JSON.stringify(testObj)
-    };
-    return fetch(`${config.apiUrl}/test/updateName/${oldName}`, requestOptions)
-    .then(handleResponse);
-}
-
 function updatePosition(testObj){
     const requestOptions = {
         method: 'PUT',
@@ -88,4 +75,10 @@ function updatePosition(testObj){
     };
     return fetch(`${config.apiUrl}/test/updatePosition`, requestOptions)
     .then(handleResponse);
+}
+
+function translate(testName, targetLanguage) {
+    const requestOptions = { method: 'PUT', headers: authHeader() };
+    return fetch(`${config.apiUrl}/test/translate/${testName}/${targetLanguage}`, requestOptions)
+        .then(handleResponse);
 }

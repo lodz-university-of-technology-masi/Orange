@@ -230,7 +230,7 @@ class QuestionEditorPage extends React.Component {
                                     displayEmpty
                                 >
                                     <MenuItem value="" disabled>
-                                        Select Question Type
+                                        Select translation language
                                     </MenuItem>
                                     {newAccessibleLanguages.map(l =>
                                         <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
