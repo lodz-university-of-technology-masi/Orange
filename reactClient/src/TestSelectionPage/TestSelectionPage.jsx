@@ -39,12 +39,15 @@ class TestSelectionPage extends React.Component {
         const { preferredLanguageName } = this.state;
         const selectedTestName = event.target.value;
         testService.getTranslated(selectedTestName, preferredLanguageName).then(selectedTest => {
-            let isTestTranslationAccessible = false;
-            selectedTest.translatedQuestions.forEach(tq => {
-                if (preferredLanguageName !== null && tq.translation === null) {
-                    isTestTranslationAccessible = true;
-                }
-            });
+            let isTestTranslationAccessible = true;
+
+            if (preferredLanguageName) {
+                selectedTest.translatedQuestions.forEach(tq => {
+                    if (preferredLanguageName !== null && tq.translation === null) {
+                        isTestTranslationAccessible = false;
+                    }
+                });
+            }
             this.setState({selectedTest, isTestTranslationAccessible})
         });
     };
@@ -56,6 +59,7 @@ class TestSelectionPage extends React.Component {
 
     render() {
         const { positions, selectedPositionName, tests, selectedTest, isTestTranslationAccessible } = this.state;
+        
         return (
             <div>
                 <h2>Apply and Fill Test!</h2>
@@ -101,7 +105,7 @@ class TestSelectionPage extends React.Component {
                             </select>
                         </div>
 
-                        <div hidden={ selectedTest === null || !isTestTranslationAccessible }
+                        <div hidden={ selectedTest === null || isTestTranslationAccessible }
                              style={{marginBottom: '1rem'}}>
                             Warning: given test is not fully translated to Your preferred language.
                         </div>
