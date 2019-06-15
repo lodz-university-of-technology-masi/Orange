@@ -42,10 +42,12 @@ public class Account implements Serializable {
     @NotNull(message = "Name can not be empty")
     @NotEmpty(message = "Name can not be empty")
     @Length(min = 2, message = "Name must contain at least 2 characters")
+    @Column(name = "first_name")
     private String firstName;
 
     @NotNull(message = "Surname can not be empty")
     @Length(min = 2, message = "Surname must contain at least 2 characters")
+    @Column(name = "last_name")
     private String lastName;
 
     @ManyToOne

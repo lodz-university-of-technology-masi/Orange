@@ -43,6 +43,7 @@ public class Question {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "question_type")
     private QuestionType questionType;
 
     @Override

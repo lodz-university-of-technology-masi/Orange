@@ -15,6 +15,7 @@ import java.util.Objects;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="question_translation")
 public class QuestionTranslation {
 
     @Id

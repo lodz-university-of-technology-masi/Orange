@@ -14,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="question_answer")
 public class QuestionAnswer implements Serializable {
 
     @Id
@@ -21,7 +22,7 @@ public class QuestionAnswer implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name = "test_resolution")
     private TestResolution testResolution;
 
     @ManyToOne
