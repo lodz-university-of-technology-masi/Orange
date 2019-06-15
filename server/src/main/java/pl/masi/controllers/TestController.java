@@ -1,7 +1,12 @@
 package pl.masi.controllers;
 
+import javassist.NotFoundException;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -13,6 +18,7 @@ import pl.masi.entities.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
@@ -73,6 +79,25 @@ public class TestController {
     @PutMapping(value= "/translate/{testName}/{targetLanguage}")
     public void translateTest(@PathVariable String testName, @PathVariable String targetLanguage) throws AppException {
         testService.translateTest(testName, targetLanguage);
+    }
+
+    @GetMapping(value = "/generatePdf/{testName}/{targetLanguage}",
+            produces = MediaType.APPLICATION_PDF_VALUE)
+    public ResponseEntity<InputStreamResource> generateReport(@PathVariable String testName, @PathVariable String targetLanguage) throws NotFoundException {
+
+        HttpHeaders headers = new HttpHeaders();
+        String filename = testName + ".pdf";
+        String headerKey = "Content-Disposition";
+        String headerValue = String.format("inline; filename=\"%s\"", filename);
+        headers.add(headerKey, headerValue);
+
+        ByteArrayInputStream bis = testService.generateReport(testName, targetLanguage);
+
+        return ResponseEntity
+                .ok()
+                .headers(headers)
+                .contentType(MediaType.APPLICATION_PDF)
+                .body(new InputStreamResource(bis));
     }
 
     @ExceptionHandler({AppException.class})

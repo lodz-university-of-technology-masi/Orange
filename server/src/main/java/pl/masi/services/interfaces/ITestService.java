@@ -1,10 +1,12 @@
 package pl.masi.services.interfaces;
 
+import javassist.NotFoundException;
 import pl.masi.beans.TestBean;
 import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.entities.Test;
 import pl.masi.exceptions.AppException;
 
+import java.io.ByteArrayInputStream;
 import java.util.List;
 
 public interface ITestService {
@@ -26,4 +28,6 @@ public interface ITestService {
     void deleteQuestion(String testName, String questionName) throws AppException;
 
     void translateTest(String testName, String targetLanguage) throws AppException;
+
+    ByteArrayInputStream generateReport(String testName, String targetLanguage) throws NotFoundException;
 }

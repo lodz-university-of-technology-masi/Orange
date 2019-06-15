@@ -1,5 +1,6 @@
 import config from 'config';
 import { authHeader, handleResponse } from '@/_helpers';
+import axios from "axios";
 
 export const testService = {
     getAll,
@@ -10,7 +11,8 @@ export const testService = {
     updatePosition,
     addQuestion,
     deleteQuestion,
-    translate
+    translate,
+    generatePdf
 };
 
 function getAll(positionName) {
@@ -81,4 +83,20 @@ function translate(testName, targetLanguage) {
     const requestOptions = { method: 'PUT', headers: authHeader() };
     return fetch(`${config.apiUrl}/test/translate/${testName}/${targetLanguage}`, requestOptions)
         .then(handleResponse);
+}
+
+function generatePdf(testName, targetLanguage) {
+    axios({
+        url: `${config.apiUrl}/test/generatePdf/${testName}/${targetLanguage}`,
+        method: 'GET',
+        headers: authHeader(),
+        responseType: 'blob', // important
+    }).then((response) => {
+        const url = window.URL.createObjectURL(new Blob([response.data]));
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', testName+ ".pdf");
+        document.body.appendChild(link);
+        link.click();
+    });
 }

@@ -21,7 +21,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-
+const DEFAULT_LANGUGAE_TO_PDF = 'English';
 class TestEditorPage extends React.Component {
     constructor(props) {
         super(props);
@@ -106,6 +106,16 @@ class TestEditorPage extends React.Component {
             this.setState({targetTranslationError:true});
         }
     };
+
+    handleGeneratePdf() {
+        const {targetTranslation} = this.state;
+        if (targetTranslation !== "") {
+            testService.generatePdf(this.state.test.name, targetTranslation);
+        } else {
+            testService.generatePdf(this.state.test.name, DEFAULT_LANGUGAE_TO_PDF);
+        }
+    }
+
     handleCloseSuccessModal = () => {
         this.setState({translatedSuccessfully: false})
     };
@@ -150,7 +160,7 @@ class TestEditorPage extends React.Component {
                             displayEmpty
                         >
                             <MenuItem value="" disabled>
-                                Select target test translation
+                                Select target language
                             </MenuItem>
                             {accessibleLanguages.map(l =>
                                 <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
@@ -162,6 +172,14 @@ class TestEditorPage extends React.Component {
                             variant="contained"
                             color="default">
                             Translate
+                        </Button>
+                        <Button
+                            onClick={() =>this.handleGeneratePdf()}
+                            size="small"
+                            variant="contained"
+                            color="default"
+                            style={{ marginLeft: '15px'}}>
+                            Generate PDF
                         </Button>
                     </div>
                         <Divider style={{marginBottom:20, marginTop:20}}/>

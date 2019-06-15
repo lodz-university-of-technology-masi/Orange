@@ -1,10 +1,11 @@
 package pl.masi.services.implementations;
 
-import com.google.cloud.translate.Translation;
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import org.hibernate.sql.ordering.antlr.TranslationContext;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import pl.masi.beans.TestBean;
@@ -17,15 +18,19 @@ import pl.masi.enums.PermissionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.*;
 import pl.masi.services.interfaces.ITestService;
-import pl.masi.services.implementations.TranslationService;
 import pl.masi.entities.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 @Transactional
 public class TestService implements ITestService {
+
+    private static String DEFAULT_LANG = "English";
 
     @Autowired
     private TestRepository testRepository;
@@ -168,5 +173,53 @@ public class TestService implements ITestService {
             }
         }
         testRepository.save(testToTranslate);
+    }
+
+    @Override
+    public ByteArrayInputStream generateReport(String testName, String targetLanguage) throws NotFoundException {
+        Document document = new Document();
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        Test test = testRepository.findByName(testName);
+
+        if(test == null) {
+            throw new NotFoundException("Test not found in database");
+        }
+
+        try{
+            PdfWriter pdfWriter = PdfWriter.getInstance(document, out);
+            document.open();
+            document.add(new Paragraph("Test: " + test.getName()));
+            document.add(new Paragraph("Position: " + test.getPosition().getName()));
+            document.add(new Paragraph("Language: " + targetLanguage));
+
+            int number = 0;
+            for (Question question : test.getQuestions()) {
+                number++;
+                document.add(new Paragraph("\nQuestion " + number + ": "));
+                document.add(new Paragraph("Name: " + question.getName()));
+                if(DEFAULT_LANG.equals(targetLanguage)){
+                    document.add(new Paragraph("Content: " + question.getContent()));
+                } else if(languageRepository.findByName(targetLanguage) != null) {
+                    Optional<String> questionContent = question.getQuestionTranslations().stream()
+                                .filter(questionTranslation -> targetLanguage.equals(questionTranslation.getLanguage().getName()))
+                                .findFirst()
+                                .map(QuestionTranslation::getContent);
+
+                    if(questionContent.isPresent()){
+                        document.add(new Paragraph("Content: "  + questionContent.get()));
+                    } else {
+                        document.add(new Paragraph("Content: "  + question.getContent()));
+                    }
+                }
+
+            }
+
+            document.close();
+            pdfWriter.close();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return new ByteArrayInputStream(out.toByteArray());
     }
 }
