@@ -19,7 +19,7 @@ function login(username, password) {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch('http://localhost:8080/login', requestOptions)
+    return fetch(`${config.apiUrl}/login`, requestOptions)
         .then(response => {
             localStorage.setItem('Token', response.headers.get('Authorization'));
             return response.json();

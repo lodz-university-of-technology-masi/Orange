@@ -21,4 +21,5 @@ public class MetricBean {
     private int dist;
     private boolean fail;
     private String error;
+    private String screenShot;
 }

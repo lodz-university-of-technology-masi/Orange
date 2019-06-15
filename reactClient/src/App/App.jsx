@@ -23,7 +23,7 @@ import { TestPage } from "@/TestPage";
 import { ContextMenu, handleContextMenu } from "@/ContextMenu";
 import { TestResolutionManagerPage } from "@/TestResolutionManagerPage";
 import { TestResolutionCheckPage } from "@/TestResolutionCheckPage";
-
+import  html2canvas from 'html2canvas';
 
 import { detect } from 'detect-browser'
 const browser = detect();
@@ -40,7 +40,7 @@ class App extends React.Component {
             isEditor: false,
             isUser: false,
             isMetricActive: false,
-            USABILITY_DATA: { ip: null, browser: null, username: null, m_id: 0, savetime: null, res_w: null, res_h: null, mc: 0, time: 0, dist: 0, fail: false, error: null },
+            USABILITY_DATA: { ip: null, browser: null, username: null, m_id: 0, savetime: null, res_w: null, res_h: null, mc: 0, time: 0, dist: 0, fail: false, error: null, screenShot:null },
             mouseX: 0,
             mouseY: 0,
         };
@@ -71,7 +71,9 @@ class App extends React.Component {
         usabilityData.dist = usabilityData.dist + calculatedDistance;
         this.setState({ USABILITY_DATA: usabilityData, mouseX: e.clientX, mouseY: e.clientY });
         console.log('Mouse Clicked '+ this.printUsabilityData(usabilityData))
+        
     }
+
 
     
 
@@ -85,11 +87,19 @@ class App extends React.Component {
             publicIp.v4().then(myIp => {
                 usabilityData.ip = myIp;
                 usabilityData.browser = browser.name[0].toUpperCase()
-                usabilityData.username = this.state.currentUser.username;
+                if(this.state.currentUser != null){
+                    usabilityData.username = this.state.currentUser.username;
+                }else{
+                    usabilityData.username = 'guest';
+                }
                 usabilityData.savetime = event.timeStamp;
                 usabilityData.res_w = window.screen.width //window.screen.availWidth
                 usabilityData.res_h = window.screen.height //window.screen.availHeight
             });
+            html2canvas(document.getElementById("app")).then(canvas => {
+                usabilityData.screenShot = canvas.toDataURL("image/png");
+            });
+
             this.setState({ isMetricActive: true, USABILITY_DATA: usabilityData });
         }
         console.log('shift+d,  '+ this.printUsabilityData(usabilityData))
