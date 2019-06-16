@@ -22,6 +22,7 @@ import pl.masi.entities.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @Transactional
@@ -71,16 +72,20 @@ public class TestService implements ITestService {
         List<TranslatedQuestionBean> translatedQuestions = new ArrayList<TranslatedQuestionBean>();
         test.getQuestions().forEach(q -> {
             String[] translation = new String[1];
+            List<String>[] translatedChoices = new List[1];
             q.getQuestionTranslations().forEach(qt -> {
                 if (qt.getLanguage().getName().equals(preferredLanguageName)) {
                     translation[0] = qt.getContent();
+                    translatedChoices[0] = qt.getChoices().stream().map(ch -> ch.getContent()).collect(Collectors.toList());
                 }
             });
             translatedQuestions.add(
                     TranslatedQuestionBean.builder()
                             .name(q.getName())
                             .original(q.getContent())
+                            .choices(q.getChoices().stream().map(ch -> ch.getContent()).collect(Collectors.toList()))
                             .translation(translation[0])
+                            .translatedChoices(translatedChoices[0])
                             .questionType(q.getQuestionType().toString())
                             .build());
         });
