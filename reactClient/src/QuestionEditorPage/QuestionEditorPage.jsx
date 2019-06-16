@@ -16,6 +16,7 @@ import {questionTranslationService} from "@/_services/questionTranslation.servic
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
 import DeleteIcon from '@material-ui/icons/Delete';
+import {choiceService} from "@/_services/choice.service";
 
 class QuestionEditorPage extends React.Component {
     constructor(props) {
@@ -170,17 +171,23 @@ class QuestionEditorPage extends React.Component {
 
     handleDeleteEnglishChoice = (choiceId) => {
       const { question } = this.state;
-      for (let i = 0; i < question.choices.length; i++) {
-          if (question.choices[i].id === choiceId) {
-              question.choices.splice(i, 1);
-              break;
+      choiceService.remove(choiceId).then(res => {
+          for (let i = 0; i < question.choices.length; i++) {
+              if (question.choices[i].id === choiceId) {
+                  question.choices.splice(i, 1);
+                  break;
+              }
           }
-      }
-      this.setState({question});
+          this.setState({question});
+      });
     };
 
-    handleSubmitEditEnglishChoice = (choiceId) => {
-        this.setState({editedChoiceId: null})
+    handleSubmitEditEnglishChoice = (choice) => {
+        choiceService.update(choice).then(
+            res => {
+                this.setState({editedChoiceId: null})
+            }
+        );
     };
 
     handleNewEnglishChoiceChanged = (event) => {
@@ -331,7 +338,7 @@ class QuestionEditorPage extends React.Component {
                                         <EditIcon />
                                     </IconButton>}
                                     { choice.id === editedChoiceId &&
-                                    <IconButton onClick={() =>this.handleSubmitEditEnglishChoice()}>
+                                    <IconButton onClick={() =>this.handleSubmitEditEnglishChoice(choice)}>
                                         <DoneIcon />
                                     </IconButton>}
                                 </ListItem>)}
