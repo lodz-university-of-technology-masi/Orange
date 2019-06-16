@@ -23,7 +23,7 @@ public class QuestionTranslation {
     private Long id;
 
     @JsonIgnore
-    @OneToMany(mappedBy = "question", cascade = { CascadeType.ALL })
+    @OneToMany(mappedBy = "questionTranslation", cascade = { CascadeType.ALL })
     private List<Choice> choices;
 
     @ManyToOne

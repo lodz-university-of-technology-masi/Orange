@@ -23,7 +23,7 @@ public class Choice implements Serializable {
 
     @ManyToOne
     @JoinColumn
-    private Question questionTranslation;
+    private QuestionTranslation questionTranslation;
 
     private String content;
 }

@@ -50,6 +50,9 @@ public class QuestionController {
                         QuestionTranslationBean.builder()
                                 .languageName(qt.getLanguage().getName())
                                 .content(qt.getContent())
+                                .choices(qt.getChoices().stream().map( ch ->
+                                        ChoiceBean.builder().id(ch.getId().toString()).content(ch.getContent()).build()
+                                ).collect(Collectors.toList()))
                                 .build()).collect(Collectors.toList()))
                 .choices(question.getChoices().stream().map(ch ->
                         ChoiceBean.builder().content(ch.getContent()).id(ch.getId().toString()).build())

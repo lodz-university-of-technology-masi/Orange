@@ -33,6 +33,10 @@ class QuestionEditorPage extends React.Component {
             editedChoiceId: null,
             newEnglishChoice: '',
             newChoice: '',
+            newChoicesForNewTranslation: [],
+            newChoiceForNewTranslation: '',
+            newChoiceForNewTranslationError: false,
+            editedChoiceForNewTranslationIndex: null,
         };
     }
 
@@ -71,6 +75,7 @@ class QuestionEditorPage extends React.Component {
 
     handleNewTextChange = (event) => {
         this.setState({
+            newContentTextError: false,
             newContentText: event.target.value,
         });
     };
@@ -82,25 +87,31 @@ class QuestionEditorPage extends React.Component {
     };
 
     handleAdd = () => {
-        const { question, newContentText, newSelectedLanguage } = this.state;
+        const { question, newContentText, newSelectedLanguage, newChoicesForNewTranslation } = this.state;
 
         if (newContentText.length < 5) {
             this.setState({newContentTextError: true});
             return;
         }
 
+        if (question.questionType === 'CHOICE' && newChoicesForNewTranslation.length < 1) {
+            this.setState({newChoiceForNewTranslationError: true});
+            return;
+        }
+
         const newTranslation = {
             content: newContentText,
             languageName: newSelectedLanguage,
-            questionName: question.name
+            questionName: question.name,
+            choices: newChoicesForNewTranslation,
         };
 
         questionTranslationService.add(newTranslation).then(res => {
-            if (!question.questionTranslations) {
-                question.questionTranslations = [];
-            }
-            question.questionTranslations.push(newTranslation);
-            this.setQuestion(question);
+            questionService.get(this.props.match.params.questionName).then(
+                question => {
+                    this.setQuestion(question);
+                }
+            );
         })
     };
 
@@ -222,6 +233,9 @@ class QuestionEditorPage extends React.Component {
 
     handleAddNewChoice = (languageName) => {
         const { newChoice, question } = this.state;
+        if (newChoice.length < 3) {
+            return;
+        }
         question.questionTranslations.forEach(qt => {
             if (qt.languageName === languageName) {
                 qt.choices.push({id: 'TODO', content: newChoice});
@@ -230,10 +244,35 @@ class QuestionEditorPage extends React.Component {
         this.setState({ newChoice: '', question })
     };
 
+    handleNewChoiceForNewTranslationChange = (event) => {
+        this.setState({
+            newChoiceForNewTranslationError: false,
+            newChoiceForNewTranslation: event.target.value,
+        });
+    };
+
+    handleAddNewChoiceForNewTranslation = () => {
+        const { newChoicesForNewTranslation, newChoiceForNewTranslation } = this.state;
+        if ( newChoiceForNewTranslation.length < 3 ) {
+            return;
+        }
+        newChoicesForNewTranslation.push({content: newChoiceForNewTranslation});
+        this.setState({
+            newChoicesForNewTranslation, newChoiceForNewTranslation: '',
+        })
+    };
+
+    handleChoiceForNewTranslationDelete = (index) => {
+        const { newChoicesForNewTranslation } = this.state;
+        newChoicesForNewTranslation.splice(index, 1);
+        this.setState({newChoicesForNewTranslation});
+    };
+
     render() {
         const {question, editEnglishBase, editedTranslationLangName,
             newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages,
-            editedChoiceId, newEnglishChoice, newChoice,
+            editedChoiceId, newEnglishChoice, newChoice, editedChoiceForNewTranslationIndex,
+            newChoicesForNewTranslation, newChoiceForNewTranslation, newChoiceForNewTranslationError,
              } = this.state;
         const sthEdited = (editEnglishBase || editedTranslationLangName !== null || editedChoiceId !== null);
         return (
@@ -314,7 +353,7 @@ class QuestionEditorPage extends React.Component {
                         { question.questionTranslations && question.questionTranslations.length > 0 &&
                             <ListItem key='translations-key'>
                                 <Typography component="h2" variant="display3" gutterBottom
-                                            style={{fontSize: '1rem'}}>
+                                            style={{fontSize: '1.5rem'}}>
                                     Translations
                                 </Typography>
                             </ListItem>
@@ -352,7 +391,7 @@ class QuestionEditorPage extends React.Component {
                                         </Typography>
                                     </ListItem>
                                     { qt.choices.map((choice, index) =>
-                                        <ListItem key={'choice' + choice.id}>
+                                        <ListItem key={'translation-choice' + choice.id}>
                                             <TextField
                                                 label={`Choice ${index + 1}`}
                                                 value={choice.content}
@@ -396,42 +435,75 @@ class QuestionEditorPage extends React.Component {
                         {newAccessibleLanguages.length > 0 &&
                             <ListItem key='add-translation-key'>
                                 <Typography component="h2" variant="display3" gutterBottom
-                                            style={{fontSize: '1rem'}}>
+                                            style={{fontSize: '1.5rem'}}>
                                     Add Translation
                                 </Typography>
                             </ListItem>
                         }
                         { newAccessibleLanguages.length > 0 &&
-                            <ListItem key='new-languages-add-key'>
-                                <TextField
-                                    id="standard-dense"
-                                    label="Question Content"
-                                    value={newContentText}
-                                    onChange={this.handleNewTextChange}
-                                    error={newContentTextError}
-                                    style={{marginRight: 18}}
-                                    variant="outlined"
-                                />
-                                <Select
-                                    value={newSelectedLanguage}
-                                    onChange={this.handleNewSelectChange}
-                                    input={<OutlinedInput labelWidth={0}/>}
-                                    style={{width: '30%'}}
-                                    displayEmpty
-                                >
-                                    <MenuItem value="" disabled>
-                                        Select translation language
-                                    </MenuItem>
-                                    {newAccessibleLanguages.map(l =>
-                                        <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
-                                    )}
-                                </Select>
-                                <ListItemSecondaryAction>
-                                    <IconButton onClick={() =>this.handleAdd()}>
-                                        <AddIcon />
-                                    </IconButton>
-                                </ListItemSecondaryAction>
-                            </ListItem>
+                            <div>
+                                <ListItem key='new-languages-add-key'>
+                                    <TextField
+                                        id="standard-dense"
+                                        label="Question Content"
+                                        value={newContentText}
+                                        onChange={this.handleNewTextChange}
+                                        error={newContentTextError}
+                                        style={{marginRight: 18}}
+                                        variant="outlined"
+                                    />
+                                    <Select
+                                        value={newSelectedLanguage}
+                                        onChange={this.handleNewSelectChange}
+                                        input={<OutlinedInput labelWidth={0}/>}
+                                        style={{width: '30%'}}
+                                        displayEmpty
+                                    >
+                                        <MenuItem value="" disabled>
+                                            Select translation language
+                                        </MenuItem>
+                                        {newAccessibleLanguages.map(l =>
+                                            <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
+                                        )}
+                                    </Select>
+                                    <ListItemSecondaryAction>
+                                        <IconButton onClick={() =>this.handleAdd()}>
+                                            <AddIcon />
+                                        </IconButton>
+                                    </ListItemSecondaryAction>
+                                </ListItem>
+                                { question.questionType === 'CHOICE' &&
+                                <div>
+                                    { newChoicesForNewTranslation.map((choice, index) =>
+                                        <ListItem key={'choice' + index}>
+                                            <TextField
+                                                label={`Choice ${index + 1}`}
+                                                value={choice.content}
+                                                disabled={index !== editedChoiceForNewTranslationIndex}
+                                                style={{width: '60%'}}
+                                                variant="outlined"
+                                            />
+                                            <IconButton onClick={() => this.handleChoiceForNewTranslationDelete(index)}>
+                                                <DeleteIcon />
+                                            </IconButton>
+                                        </ListItem>)}
+                                    <ListItem>
+                                        <TextField
+                                            id="add-choice-for-new-translation"
+                                            label="Add choice"
+                                            value={newChoiceForNewTranslation}
+                                            onChange={this.handleNewChoiceForNewTranslationChange}
+                                            error={newChoiceForNewTranslationError}
+                                            style={{width: '60%'}}
+                                            variant="outlined"
+                                        />
+                                        <IconButton onClick={() =>this.handleAddNewChoiceForNewTranslation()}>
+                                            <AddIcon />
+                                        </IconButton>
+                                    </ListItem>
+                                </div>
+                                }
+                            </div>
                         }
                     </List></div>
 
