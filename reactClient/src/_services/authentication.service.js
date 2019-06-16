@@ -19,8 +19,11 @@ function login(username, password) {
         body: JSON.stringify({ username, password })
     };
 
-    return fetch('http://localhost:8080/login', requestOptions)
+    return fetch(`${config.apiUrl}/login`, requestOptions)
         .then(response => {
+            if(!response.ok){
+                throw Error("Wrong username or password");
+            }
             localStorage.setItem('Token', response.headers.get('Authorization'));
             return response.json();
         })
@@ -28,6 +31,9 @@ function login(username, password) {
             localStorage.setItem('currentUser', JSON.stringify(data));
             currentUserSubject.next(data);
             return localStorage.getItem('currentUser');
+        })
+        .catch(error => {
+            alert("Wrong username or password");
         });
 
     // store user details and jwt token in local storage to keep user logged in between page refreshes

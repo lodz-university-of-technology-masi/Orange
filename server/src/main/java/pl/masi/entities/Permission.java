@@ -7,10 +7,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
+import javax.persistence.*;
 
 @Entity
 @Getter @Setter
@@ -18,11 +15,13 @@ import javax.persistence.Id;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "permission")
 public class Permission {
 
     @Id
     @GeneratedValue(strategy= GenerationType.SEQUENCE, generator = "optimized-sequence")
     private Long id;
 
+    @Column(name = "permission_name")
     private String permissionName;
 }

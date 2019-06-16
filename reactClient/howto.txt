@@ -1,0 +1,17 @@
+Jak włączyć front:
+1. skopiować folder reactClient bez folderu node_modules, nadpisać to co jest aktualnie
+2. Komendy linuxowe:
+
+cd reactClient
+npm install
+npm run-script build
+
+npm run-script startprod
+ALBO
+npm run-script startprod & //żeby działało w tle 
+//spradzić czy odpaliło się poprawnie na porcie 6070
+
+3. Żeby ubić process ctrl+c, chyba że jest w tle to komenda: 
+fuser -k 6070/tcp
+
+4. adres http://212.191.92.88:6070/#/login

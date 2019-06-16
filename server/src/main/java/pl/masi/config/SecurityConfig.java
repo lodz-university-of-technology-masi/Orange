@@ -20,9 +20,7 @@ import pl.masi.repositories.InvalidTokenRepository;
 
 import javax.servlet.http.HttpServletResponse;
 
-import static pl.masi.config.security.SecurityConstans.LOGIN_URL;
-import static pl.masi.config.security.SecurityConstans.LOGOUT_URL;
-import static pl.masi.config.security.SecurityConstans.REGISTER_URL;
+import static pl.masi.config.security.SecurityConstans.*;
 
 @Configuration
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
@@ -51,6 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                 .and()
                 .csrf().disable().authorizeRequests()
+                .antMatchers(HttpMethod.POST, METRIC_URL).permitAll()
                 .antMatchers(HttpMethod.POST, LOGIN_URL).permitAll()
                 .antMatchers(HttpMethod.POST, REGISTER_URL).permitAll()
                 .antMatchers(HttpMethod.GET, "/language/list").permitAll()

@@ -1,8 +1,9 @@
 import React from 'react';
+import keydown from 'react-keydown';
 import { Router, Route, Link } from 'react-router-dom';
 
 import { history, Role } from '@/_helpers';
-import { authenticationService } from '@/_services';
+import { authenticationService, metricService } from '@/_services';
 import { PrivateRoute } from '@/_components';
 import { HomePage } from '@/HomePage';
 import { AdminPage } from '@/AdminPage';
@@ -11,17 +12,24 @@ import { RegistrationPage } from '@/RegistrationPage';
 import { PositionEditorPage } from '@/PositionEditorPage';
 import { TestManagerPage } from '@/TestManagerPage';
 import { TestEditorPage } from '@/TestEditorPage';
-import {EditorManagerPage} from "@/EditorManagerPage";
-import {EditorFormPage} from "@/EditorsFormPage";
-import {QuestionManagerPage} from "@/QuestionManagerPage";
-import {QuestionEditorPage} from "@/QuestionEditorPage";
-import {LanguageManagerPage} from "@/LanguageManagerPage";
-import {AccountEditorPage} from "@/AccountEditorPage";
-import {TestSelectionPage} from "@/TestSelectionPage";
-import {TestPage} from "@/TestPage";
+import { EditorManagerPage } from "@/EditorManagerPage";
+import { EditorFormPage } from "@/EditorsFormPage";
+import { QuestionManagerPage } from "@/QuestionManagerPage";
+import { QuestionEditorPage } from "@/QuestionEditorPage";
+import { LanguageManagerPage } from "@/LanguageManagerPage";
+import { AccountEditorPage } from "@/AccountEditorPage";
+import { TestSelectionPage } from "@/TestSelectionPage";
+import { TestPage } from "@/TestPage";
 import { ContextMenu, handleContextMenu } from "@/ContextMenu";
 import { TestResolutionManagerPage } from "@/TestResolutionManagerPage";
 import { TestResolutionCheckPage } from "@/TestResolutionCheckPage";
+import  html2canvas from 'html2canvas';
+
+import { detect } from 'detect-browser'
+const browser = detect();
+const publicIp = require('public-ip');
+
+
 class App extends React.Component {
     constructor(props) {
         super(props);
@@ -31,6 +39,10 @@ class App extends React.Component {
             isAdmin: false,
             isEditor: false,
             isUser: false,
+            isMetricActive: false,
+            USABILITY_DATA: { ip: null, browser: null, username: null, m_id: 0, savetime: null, res_w: null, res_h: null, mc: 0, time: 0, dist: 0, fail: false, error: null, screenShot:null },
+            mouseX: 0,
+            mouseY: 0,
         };
         this.handleContextMenu = handleContextMenu.bind(this);
     }
@@ -42,6 +54,7 @@ class App extends React.Component {
             isEditor: x && x.permissionName === Role.Editor,
             isUser: x && x.permissionName === Role.User,
         }));
+        onmouseup = (e) => this.handleMouseClick(e);
     }
 
     logout() {
@@ -49,7 +62,85 @@ class App extends React.Component {
         history.push('/login');
     }
 
-    render(){
+    handleMouseClick(e) {
+        if (!this.state.isMetricActive) return;
+
+        var usabilityData = this.state.USABILITY_DATA;
+        var calculatedDistance = Math.sqrt(Math.pow((this.state.mouseX - e.clientX), 2) + Math.pow((this.state.mouseY - e.clientY), 2))
+        usabilityData.mc = usabilityData.mc + 1;
+        usabilityData.dist = usabilityData.dist + calculatedDistance;
+        this.setState({ USABILITY_DATA: usabilityData, mouseX: e.clientX, mouseY: e.clientY });
+        console.log('Mouse Clicked '+ this.printUsabilityData(usabilityData))
+        
+    }
+
+
+    
+
+    @keydown('shift+d')
+    changeMetricActivity(event) {
+        var usabilityData = this.state.USABILITY_DATA;
+        if (this.state.isMetricActive) {
+            usabilityData.time = event.timeStamp - usabilityData.savetime;
+            metricService.add(usabilityData).then(this.resetMetricsData());
+        } else {
+            publicIp.v4().then(myIp => {
+                usabilityData.ip = myIp;
+                usabilityData.browser = browser.name[0].toUpperCase()
+                if(this.state.currentUser != null){
+                    usabilityData.username = this.state.currentUser.username;
+                }else{
+                    usabilityData.username = 'guest';
+                }
+                usabilityData.savetime = event.timeStamp;
+                usabilityData.res_w = window.screen.width //window.screen.availWidth
+                usabilityData.res_h = window.screen.height //window.screen.availHeight
+            });
+            html2canvas(document.getElementById("app")).then(canvas => {
+                usabilityData.screenShot = canvas.toDataURL("image/png");
+            });
+
+            this.setState({ isMetricActive: true, USABILITY_DATA: usabilityData });
+        }
+        console.log('shift+d,  '+ this.printUsabilityData(usabilityData))
+    }
+
+    @keydown('shift+w')
+    failMetric(event) {
+        if (!this.state.isMetricActive) return;
+
+        var usabilityData = this.state.USABILITY_DATA;
+        usabilityData.time = event.timeStamp - usabilityData.savetime;
+        //don't save to DB
+        console.log('shift+w, '+ this.printUsabilityData(usabilityData))
+        this.resetMetricsData()
+    }
+
+    @keydown('shift+r')
+    failMetricSave(event) {
+        if (!this.state.isMetricActive) return;
+
+        var usabilityData = this.state.USABILITY_DATA;
+        usabilityData.time = event.timeStamp - usabilityData.savetime;
+        usabilityData.fail = true;
+        console.log('shift+r, '+ this.printUsabilityData(usabilityData))
+        metricService.add(usabilityData);
+        this.resetMetricsData()
+    }
+
+    printUsabilityData(usabilityData) {
+        return `USABILITY_DATA: {IP:${usabilityData.ip}, BROWSER:${usabilityData.browser}, USERNAME:${usabilityData.username}, M_ID:${usabilityData.m_id}, 
+        SAVETIME:${usabilityData.savetime}, RES_W:${usabilityData.res_w}, RES_H:${usabilityData.res_h}, MC:${usabilityData.mc}, TIME:${usabilityData.time}, 
+        DIST:${usabilityData.dist}, FAIL:${usabilityData.fail}, ERROR: ${usabilityData.error} }`
+    }
+
+    resetMetricsData(){
+        var usabilityData = { ip: null, browser: null, username: null, m_id: 0, savetime: null, res_w: null, res_h: null, mc: 0, time: 0, dist: 0, fail: false, error: null }
+        this.setState({ isMetricActive: false, USABILITY_DATA: usabilityData, mouseX: 0, mouseY: 0 });
+    }
+
+
+    render() {
         const { currentUser, isAdmin, isEditor, isUser } = this.state;
         return (
             <Router history={history}>

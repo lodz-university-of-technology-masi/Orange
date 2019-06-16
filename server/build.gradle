@@ -30,6 +30,7 @@ dependencies {
 	compile"io.jsonwebtoken:jjwt:0.7.0"
 	compile('com.google.code.gson:gson:2.8.2')
 	compile 'com.google.cloud:google-cloud-translate:1.74.0'
+	compile group: 'com.itextpdf', name: 'itextpdf', version: '5.5.13'
 	runtimeOnly 'org.postgresql:postgresql'
 	annotationProcessor 'org.projectlombok:lombok'
 	compileOnly("org.projectlombok:lombok:1.16.18")

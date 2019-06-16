@@ -17,6 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="test_resolution")
 public class TestResolution implements Serializable {
 
     @Id
@@ -37,5 +38,6 @@ public class TestResolution implements Serializable {
 
     private Date date;
 
+    @Column(name = "is_checked")
     private Boolean isChecked;
 }

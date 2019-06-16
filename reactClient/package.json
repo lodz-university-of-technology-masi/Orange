@@ -7,25 +7,34 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --open",
+    "build": "webpack --config webpack.production.config.js",
+    "startprod": "(cd dist && serve -l 6070 && cd ..)"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
-    "axios": "^0.18.0",
+    "clean-webpack-plugin": "^3.0.0",
+    "axios": "^0.19.0",
+    "detect-browser": "^4.5.0",
     "formik": "^1.4.2",
     "history": "^4.7.2",
+    "html2canvas": "^1.0.0-rc.3",
+    "public-ip": "^3.1.0",
     "react": "^16.0.0",
-    "react-contexify": "^4.1.0",
     "react-axios": "^2.0.3",
+    "react-contexify": "^4.1.0",
     "react-dom": "^16.0.0",
+    "react-keydown": "^1.9.10",
     "react-router-dom": "^4.1.2",
     "rxjs": "^6.3.3",
+    "serve": "^11.0.1",
     "yup": "^0.26.10"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.5",
+    "babel-plugin-transform-decorators-legacy": "^1.3.5",
     "babel-preset-env": "^1.6.1",
     "babel-preset-react": "^6.16.0",
     "babel-preset-stage-0": "^6.24.1",

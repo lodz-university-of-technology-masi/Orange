@@ -7,10 +7,10 @@ import javax.validation.constraints.NotNull;
 
 @Entity
 @Getter @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="language")
 public class Language {
 
     @Id

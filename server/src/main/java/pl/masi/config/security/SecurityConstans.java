@@ -10,4 +10,5 @@ public class SecurityConstans {
     public static final String LOGOUT_URL = "/logout";
     public static final String LOGIN_URL = "/login";
     public static final String REGISTER_URL = "/account/create";
+    public static final String METRIC_URL = "/metric";
 }

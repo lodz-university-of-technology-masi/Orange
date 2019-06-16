@@ -11,10 +11,10 @@ import java.util.Objects;
 
 @Entity
 @Getter @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name="question_translation")
 public class QuestionTranslation {
 
     @Id

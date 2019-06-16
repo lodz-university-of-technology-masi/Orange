@@ -16,10 +16,10 @@ import java.util.Objects;
 
 @Entity
 @Getter @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "question")
 public class Question {
 
     @Id
@@ -47,6 +47,7 @@ public class Question {
 
     @NotNull
     @Enumerated(EnumType.STRING)
+    @Column(name = "question_type")
     private QuestionType questionType;
 
     @Override

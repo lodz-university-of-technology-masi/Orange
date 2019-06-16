@@ -14,10 +14,10 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "test")
 public class Test {
 
     @Id

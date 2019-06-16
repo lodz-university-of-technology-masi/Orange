@@ -11,6 +11,7 @@ HELP.md
 /server/.settings
 /server/.springBeans
 /server/.sts4-cache
+/server/*.bmp
 
 ### IntelliJ IDEA ###
 *.idea

@@ -8,13 +8,7 @@ import lombok.Setter;
 import lombok.ToString;
 import org.hibernate.validator.constraints.Length;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 import java.io.Serializable;
@@ -25,6 +19,7 @@ import java.io.Serializable;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@Table(name = "account")
 public class Account implements Serializable {
 
     @Id
@@ -42,10 +37,12 @@ public class Account implements Serializable {
     @NotNull(message = "Name can not be empty")
     @NotEmpty(message = "Name can not be empty")
     @Length(min = 2, message = "Name must contain at least 2 characters")
+    @Column(name = "first_name")
     private String firstName;
 
     @NotNull(message = "Surname can not be empty")
     @Length(min = 2, message = "Surname must contain at least 2 characters")
+    @Column(name = "last_name")
     private String lastName;
 
     @ManyToOne

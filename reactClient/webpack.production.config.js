@@ -1,11 +1,9 @@
-var HtmlWebpackPlugin = require('html-webpack-plugin');
 const path = require('path');
+const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-    mode: 'development',
-    resolve: {
-        extensions: ['.js', '.jsx']
-    },
+    mode: 'production',
     module: {
         rules: [
             {
@@ -25,22 +23,22 @@ module.exports = {
             '@': path.resolve(__dirname, 'src/'),
         }
     },
-    plugins: [new HtmlWebpackPlugin({
-        template: './src/index.html'
+    plugins: [
+        new CleanWebpackPlugin(),
+        new HtmlWebpackPlugin({
+        template: './src/index.html',
+        title: 'Production'
     })],
-    
-    devServer: {
-        historyApiFallback: true,
-        port:6070
-    },
-    
     externals: {
         // global app config object
         config: JSON.stringify({
-            apiUrl: 'http://localhost:6069',
+            apiUrl: 'http://212.191.92.88:6069',
             synonymDictUrl:'http://thesaurus.altervista.org/thesaurus/v1',
             wikiUrl:'https://en.wikipedia.org/'
         })
     },
-    
-}
+    output: {
+        filename: '[name].bundle.js',
+        path: path.resolve(__dirname, 'dist')
+    }
+};

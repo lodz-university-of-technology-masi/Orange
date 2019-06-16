@@ -8,3 +8,4 @@ export * from './menu.service';
 export * from './language.service';
 export * from './testResolution.service';
 export * from './questionAnswer.service'
+export * from './metric.service';
