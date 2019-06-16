@@ -21,7 +21,7 @@ import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Dialog from "@material-ui/core/Dialog";
 import DialogTitle from "@material-ui/core/DialogTitle";
 
-
+const DEFAULT_LANGUGAE_TO_PDF = 'English';
 class TestEditorPage extends React.Component {
     constructor(props) {
         super(props);
@@ -32,8 +32,10 @@ class TestEditorPage extends React.Component {
             question: null,
             selectedQuestion:"",
             targetTranslation: "",
+            targetExportLanguage: "English",
             targetTranslationError:false,
             accessibleLanguages:[],
+            accessibleLanguagesToExport: ['English', 'Polish'],
             selectedPosition:false,
             translatedSuccessfully:false
         };
@@ -56,7 +58,13 @@ class TestEditorPage extends React.Component {
             targetTranslationError:false,
             targetTranslation: event.target.value,
         });
-      };
+    };
+
+    handleExportLanguageChange = (event) => {
+        this.setState({
+            targetExportLanguage: event.target.value,
+        });
+    };
 
     handleRemove(name){
         var newTest = this.state.test;
@@ -106,12 +114,18 @@ class TestEditorPage extends React.Component {
             this.setState({targetTranslationError:true});
         }
     };
+
+    handleGeneratePdf() {
+        const {targetExportLanguage} = this.state;
+        testService.generatePdf(this.state.test.name, targetExportLanguage);
+    }
+
     handleCloseSuccessModal = () => {
         this.setState({translatedSuccessfully: false})
     };
 
     render() {
-        const {positions, test, accessibleLanguages, targetTranslation, targetTranslationError, translatedSuccessfully} = this.state;
+        const {positions, test, accessibleLanguages, targetTranslation, targetExportLanguage, targetTranslationError, translatedSuccessfully, accessibleLanguagesToExport} = this.state;
         return (
             <div>
                 {(positions && test) &&
@@ -150,7 +164,7 @@ class TestEditorPage extends React.Component {
                             displayEmpty
                         >
                             <MenuItem value="" disabled>
-                                Select target test translation
+                                Select target language
                             </MenuItem>
                             {accessibleLanguages.map(l =>
                                 <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
@@ -162,6 +176,28 @@ class TestEditorPage extends React.Component {
                             variant="contained"
                             color="default">
                             Translate
+                        </Button>
+                    </div>
+                    <div style={{display: 'flex', flexWrap: 'wrap', marginTop: '10px'}}>
+                        <Select
+                            value={targetExportLanguage}
+                            onChange={this.handleExportLanguageChange}
+                            input={<OutlinedInput labelWidth={0}/>}
+                            style={{width: '35%', marginRight:30}}
+                        >
+                            <MenuItem value="English" selected>
+                                English
+                            </MenuItem>
+                            <MenuItem value="Polish" selected>
+                                Polish
+                            </MenuItem>
+                        </Select>
+                        <Button
+                            onClick={() =>this.handleGeneratePdf()}
+                            size="small"
+                            variant="contained"
+                            color="default">
+                            Generate PDF
                         </Button>
                     </div>
                         <Divider style={{marginBottom:20, marginTop:20}}/>
