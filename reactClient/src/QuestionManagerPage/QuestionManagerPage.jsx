@@ -83,7 +83,7 @@ class QuestionManagerPage extends React.Component {
             return
         }
         this.setState({contentTextError: false})
-        var qstBean = {name: this.state.contentText, content: this.state.contentText, questionType: this.state.selectedQuestionType}
+        var qstBean = {name: this.state.contentText, content: this.state.contentText, questionType: this.state.selectedQuestionType, choices: this.state.choices}
         questionService.add(qstBean)
         var newData = this.state.questions
         newData.push(qstBean)

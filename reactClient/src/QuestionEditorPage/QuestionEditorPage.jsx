@@ -29,6 +29,7 @@ class QuestionEditorPage extends React.Component {
             newAccessibleLanguages: [],
             editEnglishBase: false,
             editedTranslationLangName: null,
+            editedChoiceId: null,
         };
     }
 
@@ -36,6 +37,7 @@ class QuestionEditorPage extends React.Component {
         questionService.get(this.props.match.params.questionName).then(
             question => {
                 this.setQuestion(question);
+                console.log(question)
             }
         );
     }
@@ -139,9 +141,28 @@ class QuestionEditorPage extends React.Component {
         });
     };
 
+    handleEditChoice = (editedChoiceId) => {
+        this.setState({editedChoiceId})
+    };
+
+    handleEnglishChoiceChange = (event, choiceId) => {
+        const { question } = this.state;
+        question.choices.forEach(ch => {
+            if (ch.id === choiceId) {
+                ch.content = event.target.value;
+            }
+        });
+        this.setQuestion(question);
+    };
+
+    handleSubmitEditEnglishChoice = () => {
+        this.setState({editedChoiceId: null})
+    };
+
     render() {
         const {question, editEnglishBase, editedTranslationLangName,
             newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages,
+            editedChoiceId,
              } = this.state;
         const sthEdited = (editEnglishBase || editedTranslationLangName !== null);
         return (
@@ -169,6 +190,38 @@ class QuestionEditorPage extends React.Component {
                                 </IconButton>
                             }
                         </ListItem>
+
+
+                        { question.questionType === 'CHOICE' && question.choices && question.choices.length > 0 &&
+                            <div>
+                                <ListItem>
+                                    <Typography component="h2" variant="display3" gutterBottom
+                                                style={{fontSize: '1rem'}}>
+                                        Choices in english
+                                    </Typography>
+                                </ListItem>
+                                { question.choices.map((choice, index) =>
+                                <ListItem key={'choice' + choice.id}>
+                                    <TextField
+                                        label={`Choice ${index + 1}`}
+                                        value={choice.content}
+                                        disabled={choice.id !== editedChoiceId}
+                                        onChange={(evt) => this.handleEnglishChoiceChange(evt, choice.id)}
+                                        multiline
+                                        style={{width: '60%'}}
+                                        variant="outlined"
+                                    />
+                                    { choice.id !== editedChoiceId &&
+                                    <IconButton onClick={() =>this.handleEditChoice(choice.id)}>
+                                        <EditIcon />
+                                    </IconButton>}
+                                    { choice.id === editedChoiceId &&
+                                    <IconButton onClick={() =>this.handleSubmitEditEnglishChoice()}>
+                                        <DoneIcon />
+                                    </IconButton>}
+                                </ListItem>)}
+                            </div>
+                        }
 
                         { question.questionTranslations && question.questionTranslations.length > 0 &&
                             <ListItem>
