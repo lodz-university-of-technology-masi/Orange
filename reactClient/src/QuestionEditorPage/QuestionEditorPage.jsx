@@ -196,6 +196,14 @@ class QuestionEditorPage extends React.Component {
 
     handleAddNewEnglishChoice = () => {
         const { newEnglishChoice, question } = this.state;
+        choiceService.create({questionName: question.name, content: newEnglishChoice}).then(res => {
+            questionService.get(this.props.match.params.questionName).then(
+                question => {
+                    this.setQuestion(question);
+                    this.setState({newEnglishChoice: ''})
+                }
+            );
+        });
         question.choices.push({id: 'TODO', content: newEnglishChoice});
         this.setState({ newEnglishChoice: '', question })
     };
@@ -243,10 +251,13 @@ class QuestionEditorPage extends React.Component {
         if (newChoice.length < 3) {
             return;
         }
-        question.questionTranslations.forEach(qt => {
-            if (qt.languageName === languageName) {
-                qt.choices.push({id: 'TODO', content: newChoice});
-            }
+        choiceService.create({questionName: question.name, translationLanguageName: languageName, content: newChoice}).then(res => {
+            questionService.get(this.props.match.params.questionName).then(
+                question => {
+                    this.setQuestion(question);
+                    this.setState({newChoice: ''})
+                }
+            );
         });
         this.setState({ newChoice: '', question })
     };

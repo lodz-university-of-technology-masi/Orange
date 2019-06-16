@@ -2,9 +2,18 @@ import config from 'config';
 import { authHeader, handleResponse } from '@/_helpers';
 
 export const choiceService = {
+    create,
     update,
     remove,
 };
+
+function create(choice) {
+    const requestOptions = { method: 'POST',
+        headers: {...authHeader(), ...{'Content-Type': 'application/json'}},
+        body: JSON.stringify(choice)
+    };
+    return fetch(`${config.apiUrl}/choice/create`, requestOptions).then(handleResponse);
+}
 
 function update(choice) {
     const requestOptions = { method: 'PUT',

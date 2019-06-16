@@ -23,6 +23,11 @@ public class ChoiceController {
 
     private final IChoiceService choiceService;
 
+    @PostMapping(value = "/create", consumes = "application/json")
+    public void createChoice(@RequestBody ChoiceBean choiceBean) throws AppException {
+        this.choiceService.createChoice(choiceBean);
+    }
+
     @PutMapping(value = "/update", consumes = "application/json")
     public void updateChoice(@RequestBody ChoiceBean choiceBean) throws AppException {
         this.choiceService.updateChoice(Long.parseLong(choiceBean.getId()), choiceBean.getContent());

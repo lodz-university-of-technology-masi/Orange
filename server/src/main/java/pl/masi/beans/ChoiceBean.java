@@ -15,4 +15,6 @@ import java.util.List;
 public class ChoiceBean {
     private String id;
     private String content;
+    private String questionName;
+    private String translationLanguageName;
 }
