@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import pl.masi.beans.QuestionBean;
+import pl.masi.entities.Choice;
 import pl.masi.entities.Test;
 import pl.masi.enums.QuestionType;
 import pl.masi.exceptions.AppException;
@@ -32,6 +33,13 @@ public class QuestionService implements IQuestionService {
                 .tests(questionBean.getTests())
                 .questionType(questionBean.getQuestionType())
                 .build();
+        if (newQuestion.getQuestionType().toString().equals("CHOICE")) {
+            List<Choice> choices = new ArrayList<>();
+            questionBean.getChoices().forEach(ch -> {
+                choices.add(Choice.builder().content(ch.getContent()).question(newQuestion).build());
+            });
+            newQuestion.setChoices(choices);
+        }
         questionRepository.save(newQuestion);
     }
 

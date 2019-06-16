@@ -22,6 +22,10 @@ public class QuestionTranslation {
     @Column(nullable = false, unique = true)
     private Long id;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "question", cascade = { CascadeType.ALL })
+    private List<Choice> choices;
+
     @ManyToOne
     @JoinColumn
     private Question question;

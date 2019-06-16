@@ -24,4 +24,5 @@ public class QuestionBean {
     private List<Test> tests;
     private List<QuestionTranslationBean> questionTranslations;
     private QuestionType questionType;
+    private List<ChoiceBean> choices;
 }

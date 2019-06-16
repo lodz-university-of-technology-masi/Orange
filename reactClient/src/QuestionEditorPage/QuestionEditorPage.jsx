@@ -15,6 +15,7 @@ import {languageService} from "@/_services/language.service";
 import {questionTranslationService} from "@/_services/questionTranslation.service";
 import EditIcon from '@material-ui/icons/Edit';
 import DoneIcon from '@material-ui/icons/Done';
+import DeleteIcon from '@material-ui/icons/Delete';
 
 class QuestionEditorPage extends React.Component {
     constructor(props) {
@@ -30,6 +31,8 @@ class QuestionEditorPage extends React.Component {
             editEnglishBase: false,
             editedTranslationLangName: null,
             editedChoiceId: null,
+            newEnglishChoice: '',
+            newChoice: '',
         };
     }
 
@@ -37,10 +40,9 @@ class QuestionEditorPage extends React.Component {
         questionService.get(this.props.match.params.questionName).then(
             question => {
                 this.setQuestion(question);
-                console.log(question)
             }
         );
-    }
+    };
 
     setQuestion = (question) => {
         languageService.getAll().then(allLanguages => {
@@ -155,16 +157,37 @@ class QuestionEditorPage extends React.Component {
         this.setQuestion(question);
     };
 
-    handleSubmitEditEnglishChoice = () => {
+    handleDeleteEnglishChoice = (choiceId) => {
+      const { question } = this.state;
+      for (let i = 0; i < question.choices.length; i++) {
+          if (question.choices[i].id === choiceId) {
+              question.choices.splice(i, 1);
+              break;
+          }
+      }
+      this.setState({question});
+    };
+
+    handleSubmitEditEnglishChoice = (choiceId) => {
         this.setState({editedChoiceId: null})
+    };
+
+    handleNewEnglishChoiceChanged = (event) => {
+        this.setState({newEnglishChoice: event.target.value});
+    };
+
+    handleAddNewEnglishChoice = () => {
+        const { newEnglishChoice, question } = this.state;
+        question.choices.push({id: 'TODO', content: newEnglishChoice});
+        this.setState({ newEnglishChoice: '', question })
     };
 
     render() {
         const {question, editEnglishBase, editedTranslationLangName,
             newContentText, newContentTextError, newSelectedLanguage, newAccessibleLanguages,
-            editedChoiceId,
+            editedChoiceId, newEnglishChoice, newChoice,
              } = this.state;
-        const sthEdited = (editEnglishBase || editedTranslationLangName !== null);
+        const sthEdited = (editEnglishBase || editedTranslationLangName !== null || editedChoiceId !== null);
         return (
             <div>
                 {(question) &&
@@ -211,7 +234,10 @@ class QuestionEditorPage extends React.Component {
                                         style={{width: '60%'}}
                                         variant="outlined"
                                     />
-                                    { choice.id !== editedChoiceId &&
+                                    <IconButton onClick={() =>this.handleDeleteEnglishChoice(choice.id)}>
+                                        <DeleteIcon />
+                                    </IconButton>
+                                    { choice.id !== editedChoiceId && !sthEdited &&
                                     <IconButton onClick={() =>this.handleEditChoice(choice.id)}>
                                         <EditIcon />
                                     </IconButton>}
@@ -220,6 +246,18 @@ class QuestionEditorPage extends React.Component {
                                         <DoneIcon />
                                     </IconButton>}
                                 </ListItem>)}
+                                <ListItem key={'add-new-english-choice'}>
+                                    <TextField
+                                        label={`Add new choice in English`}
+                                        value={newEnglishChoice}
+                                        onChange={this.handleNewEnglishChoiceChanged}
+                                        style={{width: '60%'}}
+                                        variant="outlined"
+                                    />
+                                    <IconButton onClick={() =>this.handleAddNewEnglishChoice()}>
+                                        <AddIcon />
+                                    </IconButton>
+                                </ListItem>
                             </div>
                         }
 
