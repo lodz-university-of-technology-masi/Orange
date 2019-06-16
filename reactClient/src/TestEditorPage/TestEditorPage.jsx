@@ -32,8 +32,10 @@ class TestEditorPage extends React.Component {
             question: null,
             selectedQuestion:"",
             targetTranslation: "",
+            targetExportLanguage: "English",
             targetTranslationError:false,
             accessibleLanguages:[],
+            accessibleLanguagesToExport: ['English', 'Polish'],
             selectedPosition:false,
             translatedSuccessfully:false
         };
@@ -56,7 +58,13 @@ class TestEditorPage extends React.Component {
             targetTranslationError:false,
             targetTranslation: event.target.value,
         });
-      };
+    };
+
+    handleExportLanguageChange = (event) => {
+        this.setState({
+            targetExportLanguage: event.target.value,
+        });
+    };
 
     handleRemove(name){
         var newTest = this.state.test;
@@ -108,12 +116,8 @@ class TestEditorPage extends React.Component {
     };
 
     handleGeneratePdf() {
-        const {targetTranslation} = this.state;
-        if (targetTranslation !== "") {
-            testService.generatePdf(this.state.test.name, targetTranslation);
-        } else {
-            testService.generatePdf(this.state.test.name, DEFAULT_LANGUGAE_TO_PDF);
-        }
+        const {targetExportLanguage} = this.state;
+        testService.generatePdf(this.state.test.name, targetExportLanguage);
     }
 
     handleCloseSuccessModal = () => {
@@ -121,7 +125,7 @@ class TestEditorPage extends React.Component {
     };
 
     render() {
-        const {positions, test, accessibleLanguages, targetTranslation, targetTranslationError, translatedSuccessfully} = this.state;
+        const {positions, test, accessibleLanguages, targetTranslation, targetExportLanguage, targetTranslationError, translatedSuccessfully, accessibleLanguagesToExport} = this.state;
         return (
             <div>
                 {(positions && test) &&
@@ -173,12 +177,26 @@ class TestEditorPage extends React.Component {
                             color="default">
                             Translate
                         </Button>
+                    </div>
+                    <div style={{display: 'flex', flexWrap: 'wrap', marginTop: '10px'}}>
+                        <Select
+                            value={targetExportLanguage}
+                            onChange={this.handleExportLanguageChange}
+                            input={<OutlinedInput labelWidth={0}/>}
+                            style={{width: '35%', marginRight:30}}
+                        >
+                            <MenuItem value="English" selected>
+                                English
+                            </MenuItem>
+                            <MenuItem value="Polish" selected>
+                                Polish
+                            </MenuItem>
+                        </Select>
                         <Button
                             onClick={() =>this.handleGeneratePdf()}
                             size="small"
                             variant="contained"
-                            color="default"
-                            style={{ marginLeft: '15px'}}>
+                            color="default">
                             Generate PDF
                         </Button>
                     </div>
