@@ -7,12 +7,15 @@
   },
   "license": "MIT",
   "scripts": {
-    "start": "webpack-dev-server --open"
+    "start": "webpack-dev-server --open",
+    "build": "webpack --config webpack.production.config.js",
+    "startprod": "(cd dist && serve -l 6070 && cd ..)"
   },
   "dependencies": {
     "@material-ui/core": "^3.9.3",
     "@material-ui/icons": "^3.0.2",
     "axios": "^0.18.0",
+    "clean-webpack-plugin": "^3.0.0",
     "detect-browser": "^4.5.0",
     "formik": "^1.4.2",
     "history": "^4.7.2",
@@ -25,6 +28,7 @@
     "react-keydown": "^1.9.10",
     "react-router-dom": "^4.1.2",
     "rxjs": "^6.3.3",
+    "serve": "^11.0.1",
     "yup": "^0.26.10"
   },
   "devDependencies": {
