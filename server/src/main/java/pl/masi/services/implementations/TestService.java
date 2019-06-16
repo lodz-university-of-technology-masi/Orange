@@ -14,6 +14,7 @@ import pl.masi.beans.TestBean;
 import org.springframework.transaction.annotation.Transactional;
 import pl.masi.beans.alternative.TranslatedQuestionBean;
 import pl.masi.beans.alternative.TranslatedTestBean;
+import pl.masi.entities.Choice;
 import pl.masi.entities.Question;
 import pl.masi.entities.QuestionTranslation;
 import pl.masi.enums.PermissionType;
@@ -173,7 +174,15 @@ public class TestService implements ITestService {
                         .question(q)
                         .language(languageRepository.findByName(targetLanguage))
                         .content(translationService.translateText(q.getContent(), "pl"))
+                        .choices(q.getChoices().stream().map(ch ->
+                                    Choice.builder()
+                                        .content(translationService.translateText(ch.getContent(), "pl"))
+                                        .build())
+                                .collect(Collectors.toList()))
                         .build();
+                translation.getChoices().forEach(ch -> {
+                    ch.setQuestionTranslation(translation);
+                });
                 questionTranslationService.add(translation);
                 translations.add(translation);
                 q.setQuestionTranslations(translations);

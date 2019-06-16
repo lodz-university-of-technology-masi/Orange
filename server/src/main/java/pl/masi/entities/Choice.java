@@ -18,11 +18,11 @@ public class Choice implements Serializable {
     private Long id;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(nullable = true)
     private Question question;
 
     @ManyToOne
-    @JoinColumn
+    @JoinColumn(name="question_translation", nullable = true)
     private QuestionTranslation questionTranslation;
 
     private String content;
