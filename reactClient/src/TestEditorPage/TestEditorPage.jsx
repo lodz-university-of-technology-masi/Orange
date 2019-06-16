@@ -188,9 +188,9 @@ class TestEditorPage extends React.Component {
                             <MenuItem value="English" selected>
                                 English
                             </MenuItem>
-                            <MenuItem value="Polish" selected>
-                                Polish
-                            </MenuItem>
+                            {accessibleLanguages.map(l =>
+                                <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
+                            )}
                         </Select>
                         <Button
                             onClick={() =>this.handleGeneratePdf()}
