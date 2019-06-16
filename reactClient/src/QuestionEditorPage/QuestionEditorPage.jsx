@@ -222,24 +222,30 @@ class QuestionEditorPage extends React.Component {
         this.setQuestion(question);
     };
 
-    handleSubmitEditChoice = (choiceId) => {
-        this.setState({editedChoiceId: null})
+    handleSubmitEditChoice = (choice) => {
+        choiceService.update(choice).then(
+            res => {
+                this.setState({editedChoiceId: null})
+            }
+        );
     };
 
     handleDeleteChoice = (languageName, choiceId) => {
         const { question } = this.state;
-        for (let i = 0; i < question.questionTranslations.length; i++) {
-            if (question.questionTranslations[i].languageName === languageName) {
-                for (let j = 0; j < question.questionTranslations[i].choices.length; j++) {
-                    if (question.questionTranslations[i].choices[j].id === choiceId) {
-                        question.questionTranslations[i].choices.splice(j, 1);
-                        break;
+        choiceService.remove(choiceId).then(res => {
+            for (let i = 0; i < question.questionTranslations.length; i++) {
+                if (question.questionTranslations[i].languageName === languageName) {
+                    for (let j = 0; j < question.questionTranslations[i].choices.length; j++) {
+                        if (question.questionTranslations[i].choices[j].id === choiceId) {
+                            question.questionTranslations[i].choices.splice(j, 1);
+                            break;
+                        }
                     }
+                    break;
                 }
-                break;
             }
-        }
-        this.setState({question});
+            this.setState({question});
+        });
     };
 
     handleNewChoiceChanged = (event) => {
@@ -429,7 +435,7 @@ class QuestionEditorPage extends React.Component {
                                                 <EditIcon />
                                             </IconButton>}
                                             { choice.id === editedChoiceId &&
-                                            <IconButton onClick={() =>this.handleSubmitEditChoice()}>
+                                            <IconButton onClick={() =>this.handleSubmitEditChoice(choice)}>
                                                 <DoneIcon />
                                             </IconButton>}
                                         </ListItem>)}
