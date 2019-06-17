@@ -115,17 +115,10 @@ function importTest(testName, testFile, testPosition) {
 }
 
 function exportTest(testName, languageName) {
-    axios({
+    return axios({
         url: `${config.apiUrl}/test/export/${testName}/${languageName}`,
         method: 'GET',
         headers: authHeader(),
         responseType: 'blob', // important
-    }).then((response) => {
-        const url = window.URL.createObjectURL(new Blob([response.data]));
-        const link = document.createElement('a');
-        link.href = url;
-        link.setAttribute('download', testName+ ".csv");
-        document.body.appendChild(link);
-        link.click();
-    });
+    })
 }

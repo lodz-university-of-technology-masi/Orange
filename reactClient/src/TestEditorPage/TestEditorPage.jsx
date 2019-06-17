@@ -37,7 +37,9 @@ class TestEditorPage extends React.Component {
             accessibleLanguages:[],
             accessibleLanguagesToExport: ['English', 'Polish'],
             selectedPosition:false,
-            translatedSuccessfully:false
+            translatedSuccessfully:false,
+            targetCsvLanguage: 'English',
+            csvError: '',
         };
     }
 
@@ -64,6 +66,13 @@ class TestEditorPage extends React.Component {
         this.setState({
             targetExportLanguage: event.target.value,
         });
+    };
+
+    handleCsvLanguageChange = (event) => {
+        this.setState({
+            targetCsvLanguage: event.target.value,
+            csvError: null,
+        })
     };
 
     handleRemove(name){
@@ -120,12 +129,30 @@ class TestEditorPage extends React.Component {
         testService.generatePdf(this.state.test.name, targetExportLanguage);
     }
 
+    handleGenerateCsv() {
+        const {targetCsvLanguage, test} = this.state;
+        testService.exportTest(test.name, targetCsvLanguage)
+        .then(
+            (response) => {
+                const url = window.URL.createObjectURL(new Blob([response.data]));
+                const link = document.createElement('a');
+                link.href = url;
+                link.setAttribute('download', test.name + ".csv");
+                document.body.appendChild(link);
+                link.click();
+                this.setState({csvError: null});
+            },
+            (csvError) => this.setState({csvError: 'This language might be not supported'})
+        );
+    }
+
     handleCloseSuccessModal = () => {
         this.setState({translatedSuccessfully: false})
     };
 
     render() {
-        const {positions, test, accessibleLanguages, targetTranslation, targetExportLanguage, targetTranslationError, translatedSuccessfully, accessibleLanguagesToExport} = this.state;
+        const {positions, test, accessibleLanguages, targetTranslation, targetExportLanguage, targetCsvLanguage, csvError,
+            targetTranslationError, translatedSuccessfully, accessibleLanguagesToExport} = this.state;
         return (
             <div>
                 {(positions && test) &&
@@ -199,6 +226,31 @@ class TestEditorPage extends React.Component {
                             color="default">
                             Generate PDF
                         </Button>
+                    </div>
+                    <div style={{display: 'flex', flexWrap: 'wrap', marginTop: '10px'}}>
+                        <Select
+                            value={targetCsvLanguage}
+                            onChange={this.handleCsvLanguageChange}
+                            input={<OutlinedInput labelWidth={0}/>}
+                            style={{width: '35%', marginRight:30}}
+                        >
+                            <MenuItem value="English" selected>
+                                English
+                            </MenuItem>
+                            {accessibleLanguages.map(l =>
+                                <MenuItem key={l.name} value={l.name}>{l.name}</MenuItem>
+                            )}
+                        </Select>
+                        <Button
+                            onClick={() =>this.handleGenerateCsv()}
+                            size="small"
+                            variant="contained"
+                            color="default">
+                            Export CSV
+                        </Button>
+                        { csvError &&
+                        <div className={'alert alert-danger'}>{csvError}</div>
+                        }
                     </div>
                         <Divider style={{marginBottom:20, marginTop:20}}/>
                         <List subheader={<ListSubheader><h3>Questions</h3></ListSubheader>}>

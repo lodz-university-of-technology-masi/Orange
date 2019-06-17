@@ -44,7 +44,6 @@ class TestManagerPage extends React.Component {
     }
 
     componentDidMount() {
-        testService.exportTest('import', 'Polski').then(res => console.log(res) );
         testService.getAll().then(tests => {
             this.setState({tests})
         });
