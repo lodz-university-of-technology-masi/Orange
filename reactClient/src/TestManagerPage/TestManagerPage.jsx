@@ -144,7 +144,6 @@ class TestManagerPage extends React.Component {
                 });
             },
             error => {
-                console.log(error);
                 this.setState({importError: error, importTestNameTextError: false });
             }
         )
@@ -256,13 +255,15 @@ class TestManagerPage extends React.Component {
                                 )
                                 }
                             </Select>
-                            <Input
-                                accept=".csv"
-                                id="raised-button-file"
-                                multiple
-                                type="file"
-                                onChange={this.handleSelectFileToImport}
-                            />
+                            <ListItem>
+                                <Input
+                                    accept=".csv"
+                                    id="raised-button-file"
+                                    multiple
+                                    type="file"
+                                    onChange={this.handleSelectFileToImport}
+                                />
+                            </ListItem>
                             { importFile && selectedImportPosition && selectedImportPosition.length > 0 &&
                                 importTestName && importTestName.length > 0 &&
                             <ListItem>
