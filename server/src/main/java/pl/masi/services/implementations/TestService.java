@@ -46,6 +46,8 @@ public class TestService implements ITestService {
     @Autowired
     private QuestionRepository questionRepository;
     @Autowired
+    private QuestionTranslationRepository questionTranslationRepository;
+    @Autowired
     private AccountRepository accountRepository;
     @Autowired
     private LanguageRepository languageRepository;
@@ -248,6 +250,7 @@ public class TestService implements ITestService {
     public void importTest(String name, String positionName, MultipartFile multipartFile) throws AppException, IOException {
         Test test = Test.builder().name(name).build();
         List<Question> questions = new ArrayList<>();
+        List<QuestionTranslation> questionTranslations = new ArrayList<>();
         test.setQuestions(null);
         test.setPosition(positionRepository.findByName(positionName));
         byte[] fileBytes = multipartFile.getBytes();
@@ -259,15 +262,26 @@ public class TestService implements ITestService {
         for(int i = 0; i < questionStrings.length; i++) {
             String questionString = questionStrings[i];
             String[] questionParts = questionString.split(";");
+            Question q = null;
             if (questionParts[2].toUpperCase().equals("EN")) {
-                Question q = questionFromCsv(questionParts, name + "_" + (i + 1));
-                if (q != null)
-                    questions.add(q);
+                q = questionFromCsv(questionParts, name + "_" + (i + 1));
+
             } else if (questionParts[2].toUpperCase().equals("PL")) {
+                QuestionTranslation qt = questionTranslationFromCsv(questionParts);
+                if (qt != null) {
+                    q = originalQuestion(questionParts, name + "_" + (i + 1), qt);
+                    qt.setQuestion(q);
+                    questionTranslations.add(qt);
+                }
             }
+            if (q != null)
+                questions.add(q);
         }
         for (Question q : questions) {
             questionRepository.save(q);
+        }
+        for (QuestionTranslation qt : questionTranslations) {
+            questionTranslationRepository.save(qt);
         }
         test.setQuestions(questions);
         testRepository.save(test);
@@ -291,6 +305,40 @@ public class TestService implements ITestService {
             }
             q.setChoices(choices);
         }
+        return q;
+    }
+
+    private QuestionTranslation questionTranslationFromCsv(String[] questionParts) {
+        QuestionTranslation qt = QuestionTranslation.builder()
+                .language(languageRepository.findByName("Polski"))
+                .content(questionParts[3])
+                .build();
+        QuestionType type = getQuestionTypeFromCsv(questionParts[1]);
+        if (type.equals(QuestionType.CHOICE)) {
+            List<Choice> choices = new ArrayList<>();
+            for (int i = 4; i < questionParts.length; i++) {
+                choices.add(Choice.builder().questionTranslation(qt).content(questionParts[i]).build());
+            }
+            if (choices.isEmpty()) {
+                return null;
+            }
+            qt.setChoices(choices);
+        }
+        return qt;
+    }
+
+    private Question originalQuestion(String[] questionParts, String name, QuestionTranslation qt) {
+        Question q = Question.builder()
+                .content(translationService.translateText(qt.getContent(), "EN"))
+                .choices(qt.getChoices().stream().map(ch ->
+                        Choice.builder()
+                                .content(translationService.translateText(ch.getContent(), "EN"))
+                                .build())
+                        .collect(Collectors.toList()))
+                .name(name)
+                .questionType(getQuestionTypeFromCsv(questionParts[1]))
+                .build();
+        q.getChoices().forEach(ch -> ch.setQuestion(q));
         return q;
     }
 
