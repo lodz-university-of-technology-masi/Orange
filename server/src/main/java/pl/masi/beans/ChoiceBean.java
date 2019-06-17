@@ -1,6 +1,8 @@
 package pl.masi.beans;
 
 import lombok.*;
+import pl.masi.entities.Test;
+import pl.masi.enums.QuestionType;
 
 import java.util.List;
 
@@ -10,9 +12,9 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class QuestionTranslationBean {
+public class ChoiceBean {
+    private String id;
     private String content;
     private String questionName;
-    private String languageName;
-    private List<ChoiceBean> choices;
+    private String translationLanguageName;
 }

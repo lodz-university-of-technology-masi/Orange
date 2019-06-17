@@ -5,7 +5,6 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemSecondaryAction from '@material-ui/core/ListItemSecondaryAction';
 import ListItemText from '@material-ui/core/ListItemText';
 import ListSubheader from '@material-ui/core/ListSubheader';
-import Switch from '@material-ui/core/Switch';
 import IconButton from '@material-ui/core/IconButton';
 import AddIcon from '@material-ui/icons/Add';
 import EditIcon from '@material-ui/icons/Edit';
@@ -16,7 +15,7 @@ import Typography from '@material-ui/core/Typography';
 import Select from '@material-ui/core/Select';
 import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
-import { positionService, questionService } from '@/_services';
+import { questionService } from '@/_services';
 
 
 class QuestionManagerPage extends React.Component {
@@ -27,7 +26,11 @@ class QuestionManagerPage extends React.Component {
             contentText:"",
             contentTextError:false,
             selectedQuestionType:"",
-            qstTypes:[{name: "OPEN"},{name: "NUMERICAL"},{name: "SCALE"}],
+            qstTypes:[{name: "OPEN"},{name: "NUMERICAL"},{name: "SCALE"},{name: "CHOICE"}],
+            choices: [],
+            qstTypeChoiceSelected: false,
+            choiceTextError: false,
+            choiceText: '',
         };
     }
 
@@ -42,11 +45,19 @@ class QuestionManagerPage extends React.Component {
         });
       };
 
-    handleSelectChange = (event) => {
+    handleChoiceTextChange = (event) => {
         this.setState({
-            selectedQuestionType: event.target.value,
-           });
-     }
+            choiceText: event.target.value,
+        });
+    };
+
+    handleSelectChange = (event) => {
+        const value = event.target.value;
+        this.setState({
+            selectedQuestionType: value,
+            qstTypeChoiceSelected: value === "CHOICE",
+        });
+     };
 
     handleRemove = (name) => {
         var newData = this.state.questions;
@@ -54,7 +65,7 @@ class QuestionManagerPage extends React.Component {
         delete newData.splice(index,1)
         this.setState({questions: newData})
         questionService.remove(name)
-    }
+    };
 
     handleEdit(question){
         this.props.history.push({pathname: `/questionEditor/${question.name}`})
@@ -68,13 +79,27 @@ class QuestionManagerPage extends React.Component {
         if(this.state.selectedQuestionType.length<1){
             return
         }
+        if (this.state.selectedQuestionType === "CHOICE" && this.state.choices.length < 1) {
+            return
+        }
         this.setState({contentTextError: false})
-        var qstBean = {name: this.state.contentText.replace(/[^\w\s]/gi, ''), content: this.state.contentText, questionType: this.state.selectedQuestionType}
+        var qstBean = {name: this.state.contentText.replace(/[^\w\s]/gi, ''), content: this.state.contentText, questionType: this.state.selectedQuestionType, choices: this.state.choices}
         questionService.add(qstBean)
         var newData = this.state.questions
         newData.push(qstBean)
-        this.setState({questions: newData})
-    }
+        this.setState({questions: newData, choices: []})
+    };
+
+    handleAddChoice = () => {
+        if(this.state.choiceText.length < 3){
+            this.setState({choiceTextError: true})
+            return
+        }
+        const { choiceText, choices } = this.state;
+        choices.push({content: choiceText});
+        this.setState({ choiceText: '', choices })
+    };
+
     render() {
         return (
             <div>
@@ -131,6 +156,31 @@ class QuestionManagerPage extends React.Component {
                             </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
+
+                {this.state.qstTypeChoiceSelected &&
+                    <div>
+                        <h5>Choices</h5>
+                        {this.state.choices && this.state.choices.map(choice =>
+                            <ListItem key={'choice-' + choice.content}>
+                                <ListItemText primary={choice.content} />
+                            </ListItem>
+                        )}
+                        <ListItem>
+                            <TextField
+                                id="choice-content"
+                                label="Choice Content"
+                                value={this.state.choiceText}
+                                onChange={this.handleChoiceTextChange}
+                                error={this.state.choiceTextError}
+                                style={{marginRight: 18}}
+                                variant="outlined"
+                            />
+                            <IconButton onClick={() =>this.handleAddChoice()}>
+                                <AddIcon />
+                            </IconButton>
+                        </ListItem>
+                    </div>
+                }
             </List>
                 }
     </div>

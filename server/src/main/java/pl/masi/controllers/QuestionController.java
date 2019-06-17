@@ -3,6 +3,7 @@ package pl.masi.controllers;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import pl.masi.beans.ChoiceBean;
 import pl.masi.beans.QuestionBean;
 import pl.masi.beans.QuestionTranslationBean;
 import pl.masi.entities.Question;
@@ -49,7 +50,13 @@ public class QuestionController {
                         QuestionTranslationBean.builder()
                                 .languageName(qt.getLanguage().getName())
                                 .content(qt.getContent())
+                                .choices(qt.getChoices().stream().map( ch ->
+                                        ChoiceBean.builder().id(ch.getId().toString()).content(ch.getContent()).build()
+                                ).collect(Collectors.toList()))
                                 .build()).collect(Collectors.toList()))
+                .choices(question.getChoices().stream().map(ch ->
+                        ChoiceBean.builder().content(ch.getContent()).id(ch.getId().toString()).build())
+                    .collect(Collectors.toList()))
                 .build();
     }
 

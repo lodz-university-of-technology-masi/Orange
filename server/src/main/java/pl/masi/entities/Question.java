@@ -41,6 +41,10 @@ public class Question {
     @OneToMany(mappedBy = "question")
     private List<QuestionTranslation> questionTranslations;
 
+    @JsonIgnore
+    @OneToMany(mappedBy = "question", cascade = { CascadeType.ALL })
+    private List<Choice> choices;
+
     @NotNull
     @Enumerated(EnumType.STRING)
     @Column(name = "question_type")

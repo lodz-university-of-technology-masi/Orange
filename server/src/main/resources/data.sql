@@ -42,3 +42,5 @@ INSERT INTO test_question(test_id, question_id) VALUES (2, 3);
 INSERT INTO test_question(test_id, question_id) VALUES (2, 5);
 INSERT INTO test_question(test_id, question_id) VALUES (2, 6);
 INSERT INTO test_question(test_id, question_id) VALUES (2, 7);
+
+INSERT INTO language(id, name) VALUES(1, 'Polski');

@@ -12,7 +12,9 @@ export const testService = {
     addQuestion,
     deleteQuestion,
     translate,
-    generatePdf
+    generatePdf,
+    importTest,
+    exportTest,
 };
 
 function getAll(positionName) {
@@ -99,4 +101,25 @@ function generatePdf(testName, targetLanguage) {
         document.body.appendChild(link);
         link.click();
     });
+}
+
+
+function importTest(testName, testFile, testPosition, creatorUsername) {
+    let data = new FormData();
+    data.append('file', testFile);
+    data.append('name', testName);
+    data.append('creatorUsername', creatorUsername);
+    data.append('positionName', testPosition);
+    const requestOptions = { method: 'POST', headers: authHeader(), body: data };
+    return fetch(`${config.apiUrl}/test/import`, requestOptions)
+        .then(handleResponse);
+}
+
+function exportTest(testName, languageName) {
+    return axios({
+        url: `${config.apiUrl}/test/export/${testName}/${languageName}`,
+        method: 'GET',
+        headers: authHeader(),
+        responseType: 'blob', // important
+    })
 }

@@ -19,6 +19,8 @@ import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
+import Input from "@material-ui/core/Input";
+import {ErrorMessage} from "formik";
 
 class TestManagerPage extends React.Component {
     constructor(props) {
@@ -32,7 +34,12 @@ class TestManagerPage extends React.Component {
             selectedPosition: "",
             resolvedTests: [],
             resolvedTestNames: [],
-            isEditor: false
+            isEditor: false,
+            selectedImportPosition: '',
+            importTestName: '',
+            importFile: null,
+            importError: null,
+            importTestNameTextError: false,
         };
     }
 
@@ -102,7 +109,49 @@ class TestManagerPage extends React.Component {
         this.props.history.push({pathname: `/testResolutions/${testName}`, query: {testResolutions}})
     };
 
+    handleSelectFileToImport = (evt) => {
+        this.setState({
+            importFile: evt.target.files[0],
+            importError: null,
+        })
+
+    };
+
+    handleSelectImportPositionChange = (evt) => {
+        this.setState({
+            selectedImportPosition: evt.target.value,
+            importError: null,
+        })
+    };
+
+    handleImportTestNameChange = (evt) => {
+        this.setState({
+            importTestNameTextError: false, importTestName: evt.target.value,
+        })
+    };
+
+    handleImport = () => {
+        const { selectedImportPosition, importTestName, importFile } = this.state;
+        if (this.state.importTestName.length < 5) {
+            this.setState({importTestNameTextError: true});
+            return
+        }
+        testService.importTest(importTestName, importFile, selectedImportPosition, JSON.parse(localStorage.getItem("currentUser")).username).then(
+            res => {
+                testService.getAll().then(tests => {
+                    this.setState({ tests, selectedImportPosition: '', importTestName: '',
+                        importError: null, importTestNameTextError: false })
+                });
+            },
+            error => {
+                this.setState({importError: error, importTestNameTextError: false });
+            }
+        )
+    };
+
+
     render() {
+        const { selectedImportPosition, importTestName, importFile, importError, importTestNameTextError } = this.state;
         return (
             <div>
                 <List subheader={<ListSubheader disableSticky><h3>Tests</h3></ListSubheader>}>
@@ -178,6 +227,58 @@ class TestManagerPage extends React.Component {
                             </IconButton>
                         </ListItemSecondaryAction>
                     </ListItem>
+                    {this.state.positions &&
+                        <div>
+                            <ListItem>
+                                <h5>Import Test</h5>
+                            </ListItem>
+                            <TextField
+                                id="standard-dense"
+                                label="Imported Test Name"
+                                value={importTestName}
+                                onChange={this.handleImportTestNameChange}
+                                error={importTestNameTextError}
+                                style={{marginRight: 18}}
+                                variant="outlined"
+                            />
+                            <Select
+                                value={selectedImportPosition}
+                                onChange={this.handleSelectImportPositionChange}
+                                input={<OutlinedInput labelWidth={0}/>}
+                                displayEmpty
+                            >
+                                <MenuItem value="" disabled>
+                                    Select Position
+                                </MenuItem>
+                                {this.state.positions.map(position =>
+                                    <MenuItem key={position.id} value={position.name}>{position.name}</MenuItem>
+                                )
+                                }
+                            </Select>
+                            <ListItem>
+                                <Input
+                                    accept=".csv"
+                                    id="raised-button-file"
+                                    multiple
+                                    type="file"
+                                    onChange={this.handleSelectFileToImport}
+                                />
+                            </ListItem>
+                            { importFile && selectedImportPosition && selectedImportPosition.length > 0 &&
+                                importTestName && importTestName.length > 0 &&
+                            <ListItem>
+                                <Button onClick={this.handleImport}>
+                                    Import!
+                                </Button>
+                            </ListItem>
+                            }
+                            { importError &&
+                            <ListItem>
+                                <div className={'alert alert-danger'}>{importError}</div>
+                            </ListItem>
+                            }
+                        </div>
+                    }
                 </List>
             </div>
         );
