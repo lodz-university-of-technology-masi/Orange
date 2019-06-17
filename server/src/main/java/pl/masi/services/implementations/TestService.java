@@ -10,6 +10,7 @@ import com.itextpdf.text.pdf.PdfWriter;
 import javassist.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.multipart.MultipartFile;
 import pl.masi.beans.TestBean;
 import org.springframework.transaction.annotation.Transactional;
 import pl.masi.beans.alternative.TranslatedQuestionBean;
@@ -18,6 +19,7 @@ import pl.masi.entities.Choice;
 import pl.masi.entities.Question;
 import pl.masi.entities.QuestionTranslation;
 import pl.masi.enums.PermissionType;
+import pl.masi.enums.QuestionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.repositories.*;
 import pl.masi.services.interfaces.ITestService;
@@ -25,6 +27,7 @@ import pl.masi.entities.Test;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -239,5 +242,70 @@ public class TestService implements ITestService {
         }
 
         return new ByteArrayInputStream(out.toByteArray());
+    }
+
+    @Override
+    public void importTest(String name, String positionName, MultipartFile multipartFile) throws AppException, IOException {
+        Test test = Test.builder().name(name).build();
+        List<Question> questions = new ArrayList<>();
+        test.setQuestions(null);
+        test.setPosition(positionRepository.findByName(positionName));
+        byte[] fileBytes = multipartFile.getBytes();
+        StringBuilder builder = new StringBuilder();
+        for(int i = 0; i < fileBytes.length; i++) {
+            builder.append((char)fileBytes[i]);
+        }
+        String[] questionStrings = builder.toString().split("(\\r\\n\\s*|\\n\\s*|\\r\\s*)");
+        for(int i = 0; i < questionStrings.length; i++) {
+            String questionString = questionStrings[i];
+            String[] questionParts = questionString.split(";");
+            if (questionParts[2].toUpperCase().equals("EN")) {
+                Question q = questionFromCsv(questionParts, name + "_" + (i + 1));
+                if (q != null)
+                    questions.add(q);
+            } else if (questionParts[2].toUpperCase().equals("PL")) {
+            }
+        }
+        for (Question q : questions) {
+            questionRepository.save(q);
+        }
+        test.setQuestions(questions);
+        testRepository.save(test);
+    }
+
+    private Question questionFromCsv(String[] questionParts, String name) {
+        Question q = new Question();
+        QuestionType type = getQuestionTypeFromCsv(questionParts[1]);
+        if (type==null)
+            return null;
+        q.setQuestionType(type);
+        q.setName(name);
+        q.setContent(questionParts[3]);
+        if (type.equals(QuestionType.CHOICE)) {
+            List<Choice> choices = new ArrayList<>();
+            for (int i = 4; i < questionParts.length; i++) {
+                choices.add(Choice.builder().question(q).content(questionParts[i]).build());
+            }
+            if (choices.isEmpty()) {
+                return null;
+            }
+            q.setChoices(choices);
+        }
+        return q;
+    }
+
+    private QuestionType getQuestionTypeFromCsv(String identifier) {
+        switch (identifier.toUpperCase()) {
+            case "O":
+                return QuestionType.OPEN;
+            case "W":
+                return QuestionType.CHOICE;
+            case "S":
+                return QuestionType.SCALE;
+            case "L":
+                return QuestionType.NUMERICAL;
+            default:
+                return null;
+        }
     }
 }

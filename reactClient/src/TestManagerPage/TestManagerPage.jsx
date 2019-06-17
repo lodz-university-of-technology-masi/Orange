@@ -19,6 +19,7 @@ import Typography from '@material-ui/core/Typography';
 import MenuItem from '@material-ui/core/MenuItem';
 import OutlinedInput from '@material-ui/core/OutlinedInput';
 import Button from '@material-ui/core/Button';
+import Input from "@material-ui/core/Input";
 
 class TestManagerPage extends React.Component {
     constructor(props) {
@@ -102,6 +103,10 @@ class TestManagerPage extends React.Component {
         this.props.history.push({pathname: `/testResolutions/${testName}`, query: {testResolutions}})
     };
 
+    handleSelectFileToImport = (evt) => {
+        testService.importTest('import', evt.target.files[0])
+    };
+
     render() {
         return (
             <div>
@@ -177,6 +182,18 @@ class TestManagerPage extends React.Component {
                                 <AddIcon/>
                             </IconButton>
                         </ListItemSecondaryAction>
+                    </ListItem>
+                    <ListItem>
+                        <h5>Import Test</h5>
+                    </ListItem>
+                    <ListItem>
+                        <Input
+                            accept=".csv"
+                            id="raised-button-file"
+                            multiple
+                            type="file"
+                            onChange={this.handleSelectFileToImport}
+                        />
                     </ListItem>
                 </List>
             </div>

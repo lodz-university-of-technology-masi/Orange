@@ -12,7 +12,8 @@ export const testService = {
     addQuestion,
     deleteQuestion,
     translate,
-    generatePdf
+    generatePdf,
+    importTest
 };
 
 function getAll(positionName) {
@@ -100,3 +101,15 @@ function generatePdf(testName, targetLanguage) {
         link.click();
     });
 }
+
+
+function importTest(testName, testFile) {
+    let data = new FormData();
+    data.append('file', testFile);
+    data.append('name', testName);
+    data.append('positionName', 'Network Engineer');
+    const requestOptions = { method: 'POST', headers: authHeader(), body: data };
+    return fetch(`${config.apiUrl}/test/import`, requestOptions)
+        .then(handleResponse);
+}
+

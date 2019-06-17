@@ -1,12 +1,14 @@
 package pl.masi.services.interfaces;
 
 import javassist.NotFoundException;
+import org.springframework.web.multipart.MultipartFile;
 import pl.masi.beans.TestBean;
 import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.entities.Test;
 import pl.masi.exceptions.AppException;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.util.List;
 
 public interface ITestService {
@@ -30,4 +32,6 @@ public interface ITestService {
     void translateTest(String testName, String targetLanguage) throws AppException;
 
     ByteArrayInputStream generateReport(String testName, String targetLanguage) throws NotFoundException;
+
+    void importTest(String name, String positionName, MultipartFile multipartFile) throws AppException, IOException;
 }

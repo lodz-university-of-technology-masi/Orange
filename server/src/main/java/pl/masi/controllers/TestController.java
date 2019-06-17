@@ -1,6 +1,7 @@
 package pl.masi.controllers;
 
 import javassist.NotFoundException;
+import jdk.nashorn.internal.runtime.regexp.RegExp;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
@@ -10,20 +11,32 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import org.springframework.web.multipart.MultipartFile;
 import pl.masi.beans.TestBean;
 import pl.masi.beans.alternative.TranslatedTestBean;
+import pl.masi.entities.Question;
+import pl.masi.entities.QuestionTranslation;
+import pl.masi.entities.Test;
+import pl.masi.entities.Choice;
+import pl.masi.enums.QuestionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.ITestService;
-import pl.masi.entities.Test;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Pattern;
+import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.sql.Blob;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
 @RequestMapping(value = "/test")
+@CrossOrigin(value = {"*"}, exposedHeaders = {"Content-Disposition"})
 public class TestController {
 
     @Autowired
@@ -100,8 +113,21 @@ public class TestController {
                 .body(new InputStreamResource(bis));
     }
 
+
+    @PostMapping
+    @RequestMapping(value= "/import")
+    public void importTest(@NotNull @RequestParam("name") String name, @NotNull @RequestParam("positionName") String positionName,
+                           @NotNull @RequestParam("file") MultipartFile multipartFile) throws AppException, IOException {
+        testService.importTest(name, positionName, multipartFile);
+    }
+
     @ExceptionHandler({AppException.class})
     public void handleException(AppException appException, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), appException.toString());
+    }
+
+    @ExceptionHandler({IOException.class})
+    public void handleException(IOException ioException, HttpServletResponse response) throws IOException {
+        response.sendError(HttpStatus.BAD_REQUEST.value(), ioException.toString());
     }
 }
