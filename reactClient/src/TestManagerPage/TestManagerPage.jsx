@@ -136,7 +136,7 @@ class TestManagerPage extends React.Component {
             this.setState({importTestNameTextError: true});
             return
         }
-        testService.importTest(importTestName, importFile, selectedImportPosition).then(
+        testService.importTest(importTestName, importFile, selectedImportPosition, JSON.parse(localStorage.getItem("currentUser")).username).then(
             res => {
                 testService.getAll().then(tests => {
                     this.setState({ tests, selectedImportPosition: '', importTestName: '',

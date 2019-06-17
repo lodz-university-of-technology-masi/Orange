@@ -33,5 +33,5 @@ public interface ITestService {
 
     ByteArrayInputStream generateReport(String testName, String targetLanguage) throws NotFoundException;
 
-    void importTest(String name, String positionName, MultipartFile multipartFile) throws AppException, IOException;
+    void importTest(String name, String positionName, String creatorUsername, MultipartFile multipartFile) throws AppException, IOException;
 }

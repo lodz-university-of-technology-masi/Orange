@@ -114,8 +114,9 @@ public class TestController {
     @RequestMapping(value= "/import")
     @Transactional(rollbackFor=Exception.class)
     public void importTest(@NotNull @RequestParam("name") String name, @NotNull @RequestParam("positionName") String positionName,
+                           @NotNull @RequestParam("creatorUsername") String creatorUsername,
                            @NotNull @RequestParam("file") MultipartFile multipartFile) throws AppException, IOException {
-        testService.importTest(name, positionName, multipartFile);
+        testService.importTest(name, positionName, creatorUsername, multipartFile);
     }
 
     @GetMapping

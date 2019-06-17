@@ -247,8 +247,10 @@ public class TestService implements ITestService {
     }
 
     @Override
-    public void importTest(String name, String positionName, MultipartFile multipartFile) throws AppException, IOException {
-        Test test = Test.builder().name(name).build();
+    public void importTest(String name, String positionName, String creatorUserName, MultipartFile multipartFile) throws AppException, IOException {
+        Test test = Test.builder()
+                .creatorUsername(accountRepository.findByUsername(creatorUserName).get())
+                .name(name).build();
         if (testRepository.findByName(name) != null) {
             throw new AppException("400", "Cannot import! This test name is already in use!");
         }

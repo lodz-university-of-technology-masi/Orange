@@ -104,10 +104,11 @@ function generatePdf(testName, targetLanguage) {
 }
 
 
-function importTest(testName, testFile, testPosition) {
+function importTest(testName, testFile, testPosition, creatorUsername) {
     let data = new FormData();
     data.append('file', testFile);
     data.append('name', testName);
+    data.append('creatorUsername', creatorUsername);
     data.append('positionName', testPosition);
     const requestOptions = { method: 'POST', headers: authHeader(), body: data };
     return fetch(`${config.apiUrl}/test/import`, requestOptions)
