@@ -249,6 +249,9 @@ public class TestService implements ITestService {
     @Override
     public void importTest(String name, String positionName, MultipartFile multipartFile) throws AppException, IOException {
         Test test = Test.builder().name(name).build();
+        if (testRepository.findByName(name) != null) {
+            throw new AppException("400", "Cannot import! This test name is already in use!");
+        }
         List<Question> questions = new ArrayList<>();
         List<QuestionTranslation> questionTranslations = new ArrayList<>();
         test.setQuestions(null);
@@ -262,6 +265,12 @@ public class TestService implements ITestService {
         for(int i = 0; i < questionStrings.length; i++) {
             String questionString = questionStrings[i];
             String[] questionParts = questionString.split(";");
+            if (questionParts.length < 5) {
+                throw new AppException("400", "Cannot import! Too little information about one of the quesitons!");
+            }
+            if (questionParts[3].length() < 3) {
+                throw new AppException("400", "Cannot import! Question content must be at least 3 characters long!");
+            }
             Question q = null;
             if (questionParts[2].toUpperCase().equals("EN")) {
                 q = questionFromCsv(questionParts, name + "_" + (i + 1));
@@ -273,6 +282,8 @@ public class TestService implements ITestService {
                     qt.setQuestion(q);
                     questionTranslations.add(qt);
                 }
+            } else {
+                throw new AppException("400", "Cannot import! Unknown language is used!");
             }
             if (q != null)
                 questions.add(q);
@@ -287,11 +298,9 @@ public class TestService implements ITestService {
         testRepository.save(test);
     }
 
-    private Question questionFromCsv(String[] questionParts, String name) {
+    private Question questionFromCsv(String[] questionParts, String name) throws AppException {
         Question q = new Question();
         QuestionType type = getQuestionTypeFromCsv(questionParts[1]);
-        if (type==null)
-            return null;
         q.setQuestionType(type);
         q.setName(name);
         q.setContent(questionParts[3]);
@@ -301,14 +310,14 @@ public class TestService implements ITestService {
                 choices.add(Choice.builder().question(q).content(questionParts[i]).build());
             }
             if (choices.isEmpty()) {
-                return null;
+                throw new AppException("400", "Cannot import! Question of type \"CHOICE\" must contain at least one choice!");
             }
             q.setChoices(choices);
         }
         return q;
     }
 
-    private QuestionTranslation questionTranslationFromCsv(String[] questionParts) {
+    private QuestionTranslation questionTranslationFromCsv(String[] questionParts) throws AppException {
         QuestionTranslation qt = QuestionTranslation.builder()
                 .language(languageRepository.findByName("Polski"))
                 .content(questionParts[3])
@@ -320,14 +329,14 @@ public class TestService implements ITestService {
                 choices.add(Choice.builder().questionTranslation(qt).content(questionParts[i]).build());
             }
             if (choices.isEmpty()) {
-                return null;
+                throw new AppException("400", "Cannot import! Question of type \"CHOICE\" must contain at least one choice!");
             }
             qt.setChoices(choices);
         }
         return qt;
     }
 
-    private Question originalQuestion(String[] questionParts, String name, QuestionTranslation qt) {
+    private Question originalQuestion(String[] questionParts, String name, QuestionTranslation qt) throws AppException {
         Question q = Question.builder()
                 .content(translationService.translateText(qt.getContent(), "EN"))
                 .choices(qt.getChoices().stream().map(ch ->
@@ -342,7 +351,7 @@ public class TestService implements ITestService {
         return q;
     }
 
-    private QuestionType getQuestionTypeFromCsv(String identifier) {
+    private QuestionType getQuestionTypeFromCsv(String identifier) throws AppException {
         switch (identifier.toUpperCase()) {
             case "O":
                 return QuestionType.OPEN;
@@ -353,7 +362,7 @@ public class TestService implements ITestService {
             case "L":
                 return QuestionType.NUMERICAL;
             default:
-                return null;
+                throw new AppException("400", "Cannot import! Wrong type of question was specified!");
         }
     }
 }

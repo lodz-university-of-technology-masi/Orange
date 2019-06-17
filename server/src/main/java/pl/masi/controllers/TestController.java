@@ -8,6 +8,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -116,6 +117,7 @@ public class TestController {
 
     @PostMapping
     @RequestMapping(value= "/import")
+    @Transactional(rollbackFor=Exception.class)
     public void importTest(@NotNull @RequestParam("name") String name, @NotNull @RequestParam("positionName") String positionName,
                            @NotNull @RequestParam("file") MultipartFile multipartFile) throws AppException, IOException {
         testService.importTest(name, positionName, multipartFile);
@@ -123,7 +125,7 @@ public class TestController {
 
     @ExceptionHandler({AppException.class})
     public void handleException(AppException appException, HttpServletResponse response) throws IOException {
-        response.sendError(HttpStatus.BAD_REQUEST.value(), appException.toString());
+        response.sendError(HttpStatus.BAD_REQUEST.value(), appException.getDescription());
     }
 
     @ExceptionHandler({IOException.class})
