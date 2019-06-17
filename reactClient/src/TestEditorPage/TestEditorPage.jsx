@@ -51,7 +51,11 @@ class TestEditorPage extends React.Component {
         if(!this.props.location.query){
             testService.get(this.props.match.params.testName).then(test => this.setState({ test }));
         }else{
-            this.setState({test: this.props.location.query.test})
+            const test = this.props.location.query.test;
+            if (!test.questions) {
+                test.questions = [];
+            }
+            this.setState({test})
         }
     }
 
@@ -87,7 +91,6 @@ class TestEditorPage extends React.Component {
         this.setState({
             selectedPosition: event.target.value,
            });
-           console.log({testName: this.state.test.name, positionName: this.state.selectedPosition})
            testService.updatePosition({testName: this.state.test.name, positionName: this.state.selectedPosition})
 
      }
