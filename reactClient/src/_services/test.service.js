@@ -103,11 +103,11 @@ function generatePdf(testName, targetLanguage) {
 }
 
 
-function importTest(testName, testFile) {
+function importTest(testName, testFile, testPosition) {
     let data = new FormData();
     data.append('file', testFile);
     data.append('name', testName);
-    data.append('positionName', 'Network Engineer');
+    data.append('positionName', testPosition);
     const requestOptions = { method: 'POST', headers: authHeader(), body: data };
     return fetch(`${config.apiUrl}/test/import`, requestOptions)
         .then(handleResponse);
