@@ -306,7 +306,7 @@ public class TestService implements ITestService {
         q.setContent(questionParts[3]);
         if (type.equals(QuestionType.CHOICE)) {
             List<Choice> choices = new ArrayList<>();
-            for (int i = 4; i < questionParts.length; i++) {
+            for (int i = 5; i < 5 + parseChoicesNumber(questionParts[4], questionParts.length - 5); i++) {
                 choices.add(Choice.builder().question(q).content(questionParts[i]).build());
             }
             if (choices.isEmpty()) {
@@ -317,6 +317,18 @@ public class TestService implements ITestService {
         return q;
     }
 
+    private Integer parseChoicesNumber(String choicesNumber, int numberOfRemainingQuestionParts) throws AppException {
+        try {
+            Integer result = Integer.parseInt(choicesNumber);
+            if (numberOfRemainingQuestionParts < result) {
+                throw new AppException("400", "Cannot import! Question of type \"CHOICE\" must specify valid number of questions!");
+            }
+            return result;
+        } catch (NumberFormatException e) {
+            throw new AppException("400", "Cannot import! Question of type \"CHOICE\" must specify number of questions!");
+        }
+    }
+
     private QuestionTranslation questionTranslationFromCsv(String[] questionParts) throws AppException {
         QuestionTranslation qt = QuestionTranslation.builder()
                 .language(languageRepository.findByName("Polski"))
@@ -325,7 +337,7 @@ public class TestService implements ITestService {
         QuestionType type = getQuestionTypeFromCsv(questionParts[1]);
         if (type.equals(QuestionType.CHOICE)) {
             List<Choice> choices = new ArrayList<>();
-            for (int i = 4; i < questionParts.length; i++) {
+            for (int i = 5; i < 5 + parseChoicesNumber(questionParts[4], questionParts.length - 5); i++) {
                 choices.add(Choice.builder().questionTranslation(qt).content(questionParts[i]).build());
             }
             if (choices.isEmpty()) {

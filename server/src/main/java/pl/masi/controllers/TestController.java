@@ -152,6 +152,7 @@ public class TestController {
                 row.add("EN");
                 row.add(question.getContent());
                 if (question.getQuestionType().equals(QuestionType.CHOICE)) {
+                    row.add(Integer.toString(question.getChoices().size()));
                     question.getChoices().forEach(ch -> row.add(ch.getContent()));
                 } else {
                     row.add("|");
@@ -165,6 +166,7 @@ public class TestController {
                         row.add("PL");
                         row.add(translation.getContent());
                         if (question.getQuestionType().equals(QuestionType.CHOICE)) {
+                            row.add(Integer.toString(translation.getChoices().size()));
                             translation.getChoices().forEach(ch -> row.add(ch.getContent()));
                         } else {
                             row.add("|");
@@ -175,6 +177,7 @@ public class TestController {
                     row.add("EN");
                     row.add(question.getContent());
                     if (question.getQuestionType().equals(QuestionType.CHOICE)) {
+                        row.add(Integer.toString(question.getChoices().size()));
                         question.getChoices().forEach(ch -> row.add(ch.getContent()));
                     } else {
                         row.add("|");
