@@ -1,7 +1,7 @@
 package pl.masi.controllers;
 
+import com.opencsv.CSVWriter;
 import javassist.NotFoundException;
-import jdk.nashorn.internal.runtime.regexp.RegExp;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.data.repository.query.Param;
 import org.springframework.http.HttpHeaders;
@@ -18,7 +18,6 @@ import pl.masi.beans.alternative.TranslatedTestBean;
 import pl.masi.entities.Question;
 import pl.masi.entities.QuestionTranslation;
 import pl.masi.entities.Test;
-import pl.masi.entities.Choice;
 import pl.masi.enums.QuestionType;
 import pl.masi.exceptions.AppException;
 import pl.masi.services.interfaces.ITestService;
@@ -26,12 +25,8 @@ import pl.masi.services.interfaces.ITestService;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Pattern;
-import java.awt.*;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.sql.Blob;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -123,6 +118,76 @@ public class TestController {
         testService.importTest(name, positionName, multipartFile);
     }
 
+    @GetMapping
+    @RequestMapping(value = "/export/{testName}/{languageName}")
+    public void exportTest(HttpServletResponse response, @PathVariable String testName, @PathVariable String languageName) throws AppException, IOException, Exception {
+
+        CSVWriter csvWriter = new CSVWriter(response.getWriter(),
+                ';',
+                CSVWriter.NO_QUOTE_CHARACTER,
+                CSVWriter.DEFAULT_ESCAPE_CHARACTER,
+                CSVWriter.DEFAULT_LINE_END);
+
+        Test test = testService.getByName(testName);
+
+        for (int i = 0; i < test.getQuestions().size(); i++) {
+            Question question = test.getQuestions().get(i);
+            List<String> row = new ArrayList<>();
+            row.add(Integer.toString(i));
+            switch (question.getQuestionType()) {
+                case CHOICE:
+                    row.add("W");
+                    break;
+                case NUMERICAL:
+                    row.add("L");
+                    break;
+                case SCALE:
+                    row.add("S");
+                    break;
+                case OPEN:
+                    row.add("O");
+                    break;
+            }
+            if (languageName.equals("English")) {
+                row.add("EN");
+                row.add(question.getContent());
+                if (question.getQuestionType().equals(QuestionType.CHOICE)) {
+                    question.getChoices().forEach(ch -> row.add(ch.getContent()));
+                } else {
+                    row.add("|");
+                }
+            } else if (languageName.equals("Polski")) {
+                boolean translationPresent = false;
+                for (int j = 0; j < question.getQuestionTranslations().size(); j++) {
+                    QuestionTranslation translation = question.getQuestionTranslations().get(j);
+                    if (translation.getLanguage().getName().equals(languageName)) {
+                        translationPresent = true;
+                        row.add("PL");
+                        row.add(translation.getContent());
+                        if (question.getQuestionType().equals(QuestionType.CHOICE)) {
+                            translation.getChoices().forEach(ch -> row.add(ch.getContent()));
+                        } else {
+                            row.add("|");
+                        }
+                    }
+                }
+                if (!translationPresent) {
+                    row.add("EN");
+                    row.add(question.getContent());
+                    if (question.getQuestionType().equals(QuestionType.CHOICE)) {
+                        question.getChoices().forEach(ch -> row.add(ch.getContent()));
+                    } else {
+                        row.add("|");
+                    }
+                }
+            } else {
+                throw new AppException("400", "Cannot export test, selected language is not supported.");
+            }
+            row.add("");
+            csvWriter.writeNext(row.toArray(new String[row.size()]));
+        }
+    }
+
     @ExceptionHandler({AppException.class})
     public void handleException(AppException appException, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), appException.getDescription());
@@ -131,5 +196,10 @@ public class TestController {
     @ExceptionHandler({IOException.class})
     public void handleException(IOException ioException, HttpServletResponse response) throws IOException {
         response.sendError(HttpStatus.BAD_REQUEST.value(), ioException.toString());
+    }
+
+    @ExceptionHandler({Exception.class})
+    public void handleException(Exception exception, HttpServletResponse response) throws Exception {
+        response.sendError(HttpStatus.BAD_REQUEST.value(), exception.toString());
     }
 }
